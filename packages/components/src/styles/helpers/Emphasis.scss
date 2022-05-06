@@ -1,0 +1,9 @@
+@mixin default() {
+  transition: opacity 120ms linear 70ms, transform 130ms linear 70ms;
+  
+  &:active {
+    opacity: 0.6;
+    transform: scale(0.96) translate3d(0, 0, 0);
+    transition: 0s;
+  }
+}

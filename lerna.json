@@ -1,0 +1,9 @@
+{
+    "npmClient": "yarn",
+    "packages": [
+      "packages/components/**",
+      "packages/kitchen-sink/**"
+    ],
+    "useWorkspaces": true,
+    "version": "independent"
+  }

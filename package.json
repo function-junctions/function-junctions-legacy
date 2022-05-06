@@ -1,0 +1,20 @@
+{
+  "name": "ultra",
+  "version": "0.1.0",
+  "private": true,
+  "workspaces": [
+    "packages/components/**",
+    "packages/kitchen-sink/**"
+  ],
+  "engines": {
+    "yarn": "^1.22.10"
+  },
+  "scripts": {
+    "components:build": "lerna run build --stream --scope @function-junction/components",
+    "kitchen-sink:start": "lerna run start --stream --scope @function-junction/kitchen-sink",
+    "kitchen-sink:build": "lerna run build --stream --scope @function-junction/kitchen-sink"
+  },
+  "devDependencies": {
+    "lerna": "^4.0.0"
+  }
+}

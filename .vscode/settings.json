@@ -1,0 +1,29 @@
+{
+    "eslint.format.enable": true,
+    "editor.defaultFormatter": "dbaeumer.vscode-eslint",
+    "eslint.validate": [
+        "javascript",
+        "svelte"
+    ],
+    "editor.codeActionsOnSave": {
+        "source.fixAll.eslint": true
+    },
+    "vscode-graphql.useSchemaFileDefinitions": true,
+    "eslint.workingDirectories": [
+		{
+			"directory": "packages/**/*",
+			"changeProcessCWD": true
+		}
+    ],
+    "cSpell.words": [
+        "codegen",
+        "collapsable",
+        "comparables",
+        "deepmerge",
+        "icds",
+        "leftindust",
+        "multiselect",
+        "Pinnable",
+        "selectables"
+    ]
+}

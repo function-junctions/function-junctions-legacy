@@ -1,0 +1,32 @@
+:root {
+  --lucid-color-red: rgb(255, 59, 48);
+  --lucid-color-tint-red: rgba(255, 59, 48, .17);
+
+  --lucid-color-blue: rgb(32, 148, 250);
+  --lucid-color-tint-blue: rgba(32, 148, 250, .17);
+
+  --lucid-color-green: rgb(61, 211, 99);
+  --lucid-color-tint-green: rgba(60, 202, 89, .17);
+
+  --lucid-color-purple: rgb(156, 36, 177);
+  --lucid-color-tint-purple: rgb(156, 36, 177, .17);
+
+  --lucid-color-lilac: rgb(120, 122, 255);
+  --lucid-color-tint-lilac: rgb(120, 122, 255, .17);
+
+  --lucid-color-gray: rgb(142, 142, 147);
+  --lucid-color-tint-gray: rgba(207, 206, 206, 0.07);
+
+  --lucid-color-white: white;
+  --lucid-color-black: black;
+
+  --lucid-surface-primary: white;
+  --lucid-surface-opaque-primary: rgba(255, 255, 255, 0.7);
+
+  --lucid-surface-dark-primary: black;
+  --lucid-surface-dark-opaque-primary: rgb(28, 28, 30, 0.7);
+
+  --lucid-font-family: -apple-system, BlinkMacSystemFont, Yantramanav, sans-serif;
+
+  --lucid-border-radius: 5px;
+}

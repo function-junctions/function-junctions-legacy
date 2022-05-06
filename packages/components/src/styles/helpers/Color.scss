@@ -1,0 +1,56 @@
+
+@mixin add($attr, $color) {
+  #{$attr}: var(--lucid-color-#{$color});
+}
+
+@mixin fill($attr) {
+  &[class~="lucid-color-red"] {
+    @include add($attr, red);
+  }
+
+  &[class~="lucid-color-green"] {
+    @include add($attr, green);
+  }
+
+  &[class~="lucid-color-blue"] {
+    @include add($attr, blue);
+  }
+
+  &[class~="lucid-color-purple"] {
+    @include add($attr, purple);
+  }
+
+  &[class~="lucid-color-lilac"] {
+    @include add($attr, lilac);
+  }
+
+  &[class~="lucid-color-gray"] {
+    @include add($attr, gray);
+  }
+}
+
+@mixin tint($attr) {
+  &[class~="lucid-color-red"] {
+    @include add($attr, tint-red);
+  }
+
+  &[class~="lucid-color-green"] {
+    @include add($attr, tint-green);
+  }
+
+  &[class~="lucid-color-blue"] {
+    @include add($attr, tint-blue);
+  }
+
+  &[class~="lucid-color-purple"] {
+    @include add($attr, tint-purple);
+  }
+
+  &[class~="lucid-color-lilac"] {
+    @include add($attr, tint-lilac);
+  }
+
+  &[class~="lucid-color-gray"] {
+    @include add($attr, tint-gray);
+  }
+}

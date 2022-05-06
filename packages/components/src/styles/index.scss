@@ -1,0 +1,21 @@
+@use './helpers/Emphasis.scss';
+@import "./helpers/Theme.scss";
+
+@font-face {
+  font-family: 'Yantramanav';
+  font-style: normal;
+  font-weight: normal;
+  src:
+      url("../fonts/Yantramanav/Yantramanav-Regular.otf") format("truetype");
+}
+
+html,
+body {
+  height: 100%;
+  width: 100%;
+  margin: 0 auto;
+  overflow: hidden;
+
+  -webkit-font-smoothing: antialiased;
+  text-rendering: optimizeLegibility;
+}
