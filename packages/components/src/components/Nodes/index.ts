@@ -1,4 +1,4 @@
 import { Writable, writable } from 'svelte/store';
-import { RegisteredNode } from '../Node';
+import { Node } from '../Node';
 
-export const nodesRegistry: Writable<Record<string, RegisteredNode>> = writable({});
+export const nodesRegistry: Writable<Record<string, Node>> = writable({});

@@ -1,24 +1,26 @@
 import { SvelteComponentDev } from 'svelte/internal';
 import { writable } from 'svelte/store';
 import { Point } from '../../types';
-import { InputSocket, OutputSocket } from '../Socket';
+import {
+  createInputSocket,
+  createOutputSocket,
+  InputSocket,
+  OutputSocket,
+} from '../Socket';
 import { InputSockets, OutputSockets } from '../Sockets';
+import { SocketBlueprint } from '../Socket';
 
-export interface NodeComponentProps<I, O> extends svelte.JSX.HTMLAttributes<HTMLElementTagNameMap['div']> {
-  inputs: I;
-  outputs: O;
-}
-
-export type Node<
-  I extends Record<string, { type: string; defaultValue?: any }> = Record<string, { type: string; defaultValue?: any }>,
-  O extends Record<string, { type: string; defaultValue?: any }> = Record<string, { type: string; defaultValue?: any }>
+export type NodeBlueprint<
+  I extends Record<string, SocketBlueprint> = Record<string, SocketBlueprint>,
+  O extends Record<string, SocketBlueprint> = Record<string, SocketBlueprint>
 > = {
   inputs?: I;
   outputs?: O;
+  color?: string;
   component: typeof SvelteComponentDev;
 }
 
-export type RegisteredNode<
+export type Node<
   I extends InputSockets<Record<string, InputSocket<any>>> = Record<string, InputSocket<any>>,
   O extends OutputSockets<Record<string, OutputSocket<any>>> = Record<string, OutputSocket<any>>
 > = Point & {
@@ -26,8 +28,41 @@ export type RegisteredNode<
   outputs?: O;
   component: typeof SvelteComponentDev;
   type: string;
+  color?: string;
 }
 
 export const uniqueNodeId = writable(0);
 
-export const getUniqueActiveNodeId = () => Date.now().toString(36) + Math.random().toString(36).substring(2);
+export const registerNode = (type: string, blueprint: NodeBlueprint): Node => ({
+  inputs: (() => {
+    const inputs: InputSockets<Record<string, any>> = {};
+
+    if (blueprint.inputs) {
+      Object.keys(blueprint.inputs ?? {}).map((inputKey) => {
+        const inputBlueprint = blueprint.inputs?.[inputKey];
+        if (inputBlueprint)
+          inputs[inputKey] = createInputSocket(inputBlueprint.type, inputBlueprint?.defaultValue);
+      });
+    }
+
+    return Object.keys(inputs).length > 0 ? inputs : undefined;
+  })(),
+  outputs: (() => {
+    const outputs: OutputSockets<Record<string, any>> = {};
+
+    if (blueprint.outputs) {
+      Object.keys(blueprint.outputs ?? {}).map((inputKey) => {
+        const outputBlueprint = blueprint.outputs?.[inputKey];
+        if (outputBlueprint)
+          outputs[inputKey] = createOutputSocket(outputBlueprint.type, outputBlueprint?.defaultValue);
+      });
+    }
+    return Object.keys(outputs).length > 0 ? outputs : undefined;
+  })(),
+  type,
+  x: 0,
+  y: 0,
+  z: 0,
+  component: blueprint.component,
+  color: blueprint.color,
+});

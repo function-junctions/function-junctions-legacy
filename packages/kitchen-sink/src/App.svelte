@@ -1,38 +1,51 @@
 <script lang="ts">
-  import type { Node } from '@function-junction/components/src/components';
+  import type { NodeBlueprint, SocketBlueprint } from '@function-junction/components/src/components';
+
+  import './App.scss';
 
   import Nodes from '@function-junction/components/src/components/Nodes/Nodes.svelte';
 
   import NumberNode from './components/NumberNode.svelte';
   import MathNode from './components/MathNode.svelte';
-  
-  const numberNode: Node<Record<string, never>, { Number: { type: 'number', defaultValue: number } }> = {
-    outputs: {
-      Number: {
-        type: 'number',
-        defaultValue: 5,
-      },
-    },
-    component: NumberNode,
-  };
 
-  const mathNode: Node<{ Number: { type: 'number' } }, { Number: { type: 'number' } }> = {
-    inputs: {
-      Number: {
-        type: 'number',
-      },
-    },
-    outputs: {
-      Number: {
-        type: 'number',
-      },
-    },
-    component: MathNode,
+  const numberSocket: SocketBlueprint<number> = {
+    type: 'number',
+    defaultValue: 0,
+    color: '#ff2d55',
   };
+  
+  const numberNode: NodeBlueprint<Record<string, never>,
+    {
+      Number: SocketBlueprint<number>
+    }> = {
+      outputs: {
+        Number: numberSocket,
+      },
+      component: NumberNode,
+      color: 'linear-gradient(#228cfd, #007aff)',
+    };
+
+  const mathNode: NodeBlueprint<{
+      Number: SocketBlueprint<number>
+    },
+    {
+      Number: SocketBlueprint<number>
+    }
+    > = {
+      inputs: {
+        Number: numberSocket,
+      },
+      outputs: {
+        Number: numberSocket,
+      },
+      component: MathNode,
+      color: 'linear-gradient(#ff5776, #ff2d55)',
+    };
 
   const nodes = {
     Number: numberNode,
     Math: mathNode,
+    Test: mathNode,
   };
 
 </script>

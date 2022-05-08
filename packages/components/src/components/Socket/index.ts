@@ -12,15 +12,23 @@ export type SocketConnection = {
   connectedSocketId: string;
 }
 
+export type SocketBlueprint<T = any> = {
+  type: string;
+  defaultValue?: T;
+  color?: string;
+};
+
 export type InputSocket<T> = {
   type: string;
   value: Readable<T>;
+  color?: string;
   connection: Writable<SocketConnection | undefined>;
 };
 
 export type OutputSocket<T> = {
   type: string;
   value: Writable<T>;
+  color?: string;
 }
 
 /**
@@ -42,10 +50,7 @@ export const createInputSocket = <T>(type: string, defaultValue?: T): InputSocke
             const connectedSocket = nodes[connectedNodeId].outputs?.[connectedSocketId];
     
             if (connectedSocket && connectedSocket.type === type) {
-              connectedSocket.value.subscribe((value) => {
-                console.log(value);
-                set(value);
-              });
+              connectedSocket.value.subscribe((value) => set(value));
               return;
             }
           }

@@ -1,0 +1,41 @@
+.function-junction-socket {
+  &.function-junction-socket-output {
+    text-align: right;
+
+    .function-junction-socket-connection {
+      margin: 7px 7px 7px 3px;
+    }
+  }
+
+  &.function-junction-socket-input {
+    text-align: left;
+
+    .function-junction-socket-connection {
+      margin: 7px 3px 7px 7px;
+    }
+  }
+
+  .function-junction-socket-title {
+    vertical-align: middle;
+    color: black;
+    display: inline-block;
+    font-size: 12px;
+    margin: 4px;
+    line-height: 24px;
+  }
+
+  .function-junction-socket-connection {
+    display: inline-block;
+    cursor: pointer;
+    border-radius: 8px;
+    width: 14px;
+    height: 14px;
+    
+    vertical-align: middle;
+    background: #007aff;
+    position: relative;
+    z-index: 2;
+    border: 1px solid black;
+  }
+}
+

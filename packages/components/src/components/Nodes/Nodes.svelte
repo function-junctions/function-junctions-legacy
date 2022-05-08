@@ -1,48 +1,15 @@
 <script lang="ts">
   import { nodesRegistry } from '.';
-  import { Node as NodeType, uniqueNodeId } from '../Node';
-  import { InputSockets, OutputSockets } from '../Sockets';
-  import { createInputSocket, createOutputSocket } from '../Socket';
+  import { registerNode, NodeBlueprint, uniqueNodeId } from '../Node';
   import Node from '../Node/Node.svelte';
   
-  export let nodes: Record<string, NodeType>;
+  export let nodes: Record<string, NodeBlueprint>;
 
   // Setup nodes to be consumed in DOM
   Object.keys(nodes).forEach((key) => {
     $nodesRegistry = {
       ...$nodesRegistry,
-      [$uniqueNodeId]: {
-        inputs: (() => {
-          const inputs: InputSockets<Record<string, any>> = {};
-
-          if (nodes[key].inputs) {
-            Object.keys(nodes[key].inputs ?? {}).map((inputKey) => {
-              const inputBlueprint = nodes[key].inputs?.[inputKey];
-              if (inputBlueprint)
-                inputs[inputKey] = createInputSocket(inputBlueprint.type, inputBlueprint?.defaultValue);
-            });
-          }
-
-          return Object.keys(inputs).length > 0 ? inputs : undefined;
-        })(),
-        outputs: (() => {
-          const outputs: OutputSockets<Record<string, any>> = {};
-
-          if (nodes[key].outputs) {
-            Object.keys(nodes[key].outputs ?? {}).map((inputKey) => {
-              const outputBlueprint = nodes[key].outputs?.[inputKey];
-              if (outputBlueprint)
-                outputs[inputKey] = createOutputSocket(outputBlueprint.type, outputBlueprint?.defaultValue);
-            });
-          }
-          return Object.keys(outputs).length > 0 ? outputs : undefined;
-        })(),
-        type: key,
-        x: 0,
-        y: 0,
-        z: 0,
-        component: nodes[key].component,
-      },
+      [$uniqueNodeId]: registerNode(key, nodes[key]),
     };
 
     $uniqueNodeId += 1;
@@ -53,6 +20,11 @@
 
   $nodesRegistry['1'].inputs?.['Number'].connection.set({
     connectedNodeId: '0',
+    connectedSocketId: 'Number',
+  });
+
+  $nodesRegistry['2'].inputs?.['Number'].connection.set({
+    connectedNodeId: '1',
     connectedSocketId: 'Number',
   });
 </script>
@@ -68,5 +40,8 @@
       y: $nodesRegistry[key].y,
       z: $nodesRegistry[key].z,
     }}
+    color={$nodesRegistry[key].color}
   />
+  <br />
+  <br />
 {/each}
