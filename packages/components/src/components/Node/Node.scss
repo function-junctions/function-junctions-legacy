@@ -11,6 +11,9 @@
   opacity: 0.7;
   border: 1px solid rgb(99, 99, 102);
 
+  position: absolute;
+  touch-action: none;
+
   .function-junction-node-title {
     color: white;
     font-weight: 400;
@@ -23,6 +26,10 @@
 }
 
 .function-junction-node:hover {
+  opacity: 1;
+}
+
+.function-junction-node.function-junction-node-selected {
   opacity: 1;
 }
 

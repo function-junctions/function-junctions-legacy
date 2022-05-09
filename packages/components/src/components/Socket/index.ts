@@ -5,6 +5,7 @@ import {
   writable,
   Writable,
 } from 'svelte/store';
+import { Point } from '../../types';
 import { nodesRegistry } from '../Nodes';
 
 export type SocketConnection = {
@@ -23,12 +24,14 @@ export type InputSocket<T> = {
   value: Readable<T>;
   color?: string;
   connection: Writable<SocketConnection | undefined>;
+  coordinates: Point;
 };
 
 export type OutputSocket<T> = {
   type: string;
   value: Writable<T>;
   color?: string;
+  coordinates: Point;
 }
 
 /**
@@ -57,7 +60,7 @@ export const createInputSocket = <T>(type: string, defaultValue?: T): InputSocke
         }
       }
       
-      if (defaultValue) set(defaultValue);
+      if (typeof defaultValue !== 'undefined') set(defaultValue);
     });
   });
 
@@ -65,6 +68,10 @@ export const createInputSocket = <T>(type: string, defaultValue?: T): InputSocke
     type,
     value,
     connection,
+    coordinates: {
+      x: 0,
+      y: 0,
+    },
   };
 };
 
@@ -79,5 +86,9 @@ export const createOutputSocket = <T>(type: string, defaultValue?: T): OutputSoc
   return {
     type,
     value,
+    coordinates: {
+      x: 0,
+      y: 0,
+    },
   };
 };

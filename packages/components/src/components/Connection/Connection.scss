@@ -1,0 +1,13 @@
+.function-junction-connection {
+  overflow: visible !important;
+  position: absolute;
+  z-index: -1;
+  pointer-events: none;
+
+  path {
+    fill: none;
+    stroke: rgb(199, 199, 204);
+    stroke-width: 2px;
+    pointer-events: none;
+  }
+}

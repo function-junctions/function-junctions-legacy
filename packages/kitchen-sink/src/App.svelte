@@ -3,7 +3,7 @@
 
   import './App.scss';
 
-  import Nodes from '@function-junction/components/src/components/Nodes/Nodes.svelte';
+  import Editor from '@function-junction/components/src/components/Editor/Editor.svelte';
 
   import NumberNode from './components/NumberNode.svelte';
   import MathNode from './components/MathNode.svelte';
@@ -50,4 +50,4 @@
 
 </script>
 
-<Nodes {nodes} />
+<Editor {nodes} />

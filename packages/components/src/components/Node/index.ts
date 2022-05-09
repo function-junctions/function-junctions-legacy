@@ -1,5 +1,5 @@
 import { SvelteComponentDev } from 'svelte/internal';
-import { writable } from 'svelte/store';
+import { get, writable } from 'svelte/store';
 import { Point } from '../../types';
 import {
   createInputSocket,
@@ -9,6 +9,7 @@ import {
 } from '../Socket';
 import { InputSockets, OutputSockets } from '../Sockets';
 import { SocketBlueprint } from '../Socket';
+import { nodeMoving, nodesRegistry, selectedNode } from '../Nodes';
 
 export type NodeBlueprint<
   I extends Record<string, SocketBlueprint> = Record<string, SocketBlueprint>,
@@ -30,6 +31,8 @@ export type Node<
   type: string;
   color?: string;
 }
+
+export type OnNodeDrag = (id: string, event: MouseEvent) => void;
 
 export const uniqueNodeId = writable(0);
 
@@ -66,3 +69,20 @@ export const registerNode = (type: string, blueprint: NodeBlueprint): Node => ({
   component: blueprint.component,
   color: blueprint.color,
 });
+
+export const onNodeDrag: OnNodeDrag = (id, event) => {
+  if (get(nodeMoving) && get(selectedNode) === id) {
+    const node = get(nodesRegistry)[id];
+
+    if (node) {
+      nodesRegistry.set({
+        ...get(nodesRegistry),
+        [id]: {
+          ...node,
+          x: node.x + event.movementX,
+          y: node.y + event.movementY,
+        },
+      });
+    }
+  }
+};

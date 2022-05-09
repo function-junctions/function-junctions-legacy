@@ -1,7 +1,15 @@
 <script lang="ts">
-  import { nodesRegistry } from '.';
-  import { registerNode, NodeBlueprint, uniqueNodeId } from '../Node';
+  import { nodesRegistry, selectedNode, nodeMoving } from '.';
+import Connections from '../Connections/Connections.svelte';
+  import {
+    registerNode,
+    NodeBlueprint,
+    uniqueNodeId,
+    onNodeDrag,
+  } from '../Node';
   import Node from '../Node/Node.svelte';
+
+  import './Nodes.scss';
   
   export let nodes: Record<string, NodeBlueprint>;
 
@@ -29,19 +37,31 @@
   });
 </script>
 
-{#each Object.keys($nodesRegistry) as key}
-  <Node
-    title={$nodesRegistry[key].type}
-    component={$nodesRegistry[key].component}
-    inputs={$nodesRegistry[key].inputs}
-    outputs={$nodesRegistry[key].outputs}
-    coordinates={{
-      x: $nodesRegistry[key].x,
-      y: $nodesRegistry[key].y,
-      z: $nodesRegistry[key].z,
-    }}
-    color={$nodesRegistry[key].color}
-  />
-  <br />
-  <br />
-{/each}
+<div
+  class="function-junction-nodes"
+  on:mouseup={() => ($nodeMoving = false)}
+  on:mousemove={(event) => $nodeMoving && onNodeDrag($selectedNode, event)}
+>
+  <Connections />
+  {#each Object.keys($nodesRegistry) as key}
+    <Node
+      title={$nodesRegistry[key].type}
+      id={key}
+      component={$nodesRegistry[key].component}
+      inputs={$nodesRegistry[key].inputs}
+      outputs={$nodesRegistry[key].outputs}
+      coordinates={{
+        x: $nodesRegistry[key].x,
+        y: $nodesRegistry[key].y,
+        z: $nodesRegistry[key].z,
+      }}
+      color={$nodesRegistry[key].color}
+      on:mousedown={() => {
+        $selectedNode = key;
+        $nodeMoving = true;
+      }}
+    />
+    <br />
+    <br />
+  {/each}
+</div>
