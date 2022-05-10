@@ -1,6 +1,7 @@
 <script lang="ts">
   import { nodesRegistry, selectedNode, nodeMoving } from '.';
-import Connections from '../Connections/Connections.svelte';
+  import { showLiveConnection, liveConnectionPoints } from '../Connection';
+  import Connections from '../Connections/Connections.svelte';
   import {
     registerNode,
     NodeBlueprint,
@@ -10,7 +11,7 @@ import Connections from '../Connections/Connections.svelte';
   import Node from '../Node/Node.svelte';
 
   import './Nodes.scss';
-  
+    
   export let nodes: Record<string, NodeBlueprint>;
 
   // Setup nodes to be consumed in DOM
@@ -41,6 +42,7 @@ import Connections from '../Connections/Connections.svelte';
   class="function-junction-nodes"
   on:mouseup={() => ($nodeMoving = false)}
   on:mousemove={(event) => $nodeMoving && onNodeDrag($selectedNode, event)}
+  on:click={() => $liveConnectionPoints && ($showLiveConnection = false)}
 >
   <Connections />
   {#each Object.keys($nodesRegistry) as key}

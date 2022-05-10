@@ -1,7 +1,6 @@
 <script lang="ts">
-  import { onMount } from 'svelte';
-
   import { nodesRegistry } from '../Nodes';
+  import { createTemporaryOutputConnection } from '../Connection';
 
   import './Socket.scss';
 
@@ -16,16 +15,14 @@
   let ref: HTMLDivElement;
   let coordinates: DOMRect;
 
-  $: $nodesRegistry[nodeId], (() => {
+  $: $nodesRegistry[nodeId], ref, (() => {
     coordinates = ref?.getBoundingClientRect();
     const sockets = $nodesRegistry[nodeId][type === 'input' ? 'inputs' : 'outputs'];
 
-    if (sockets) {
-      sockets[id].coordinates = {
-        x: coordinates?.left ?? 0,
-        y: coordinates?.top ?? 0,
-      };
-    }
+    if (sockets) sockets[id].coordinates = {
+      x: coordinates?.left ?? 0,
+      y: coordinates?.top ?? 0,
+    };
   })();
 </script>
 
@@ -33,7 +30,12 @@
   {#if type === 'output'}
     <div class="function-junction-socket-title">{title}</div>
   {/if}
-  <div class="function-junction-socket-connection" style={`background: ${color}`} bind:this={ref} />
+  <div
+    class="function-junction-socket-connection"
+    style={`background: ${color}`}
+    bind:this={ref}
+    on:click={type === 'input' ? () => undefined : () => createTemporaryOutputConnection({ nodeId, id })}
+  />
   {#if type === 'input'}
     <div class="function-junction-socket-title">{title}</div>
   {/if}

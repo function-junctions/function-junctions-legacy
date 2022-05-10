@@ -17,7 +17,7 @@
   const { value: input } = inputs.Number;
   const { value: output } = outputs.Number;
   
-  $: $output = $input + 3;
+  $: $output = $input * 3;
 </script>
 
 <h1>{$output}</h1>
