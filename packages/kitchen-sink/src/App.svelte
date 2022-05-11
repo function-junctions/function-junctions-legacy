@@ -26,14 +26,16 @@
     };
 
   const mathNode: NodeBlueprint<{
-      Number: SocketBlueprint<number>
-    },
+    LHS: SocketBlueprint<number>
+    RHS: SocketBlueprint<number>
+  },
     {
       Number: SocketBlueprint<number>
     }
     > = {
       inputs: {
-        Number: numberSocket,
+        LHS: numberSocket,
+        RHS: numberSocket,
       },
       outputs: {
         Number: numberSocket,

@@ -8,7 +8,7 @@
   import Connection from '../Connection/Connection.svelte';
   let connections: { p1: Point, p2: Point }[];
 
-  $: $nodesRegistry, (connections = getConnections());
+  $: $nodesRegistry, $liveConnectionPoints, (connections = getConnections());
 </script>
 
 <div class="function-junction-connections">
@@ -18,12 +18,12 @@
 
   {#if $showLiveConnection}
     {#if
-      $liveConnectionPoints?.p1.x
-      && $liveConnectionPoints?.p1.y
-      && $liveConnectionPoints?.p2.x
-      && $liveConnectionPoints?.p2.y
+      $liveConnectionPoints?.points.p1.x
+      && $liveConnectionPoints?.points.p1.y
+      && $liveConnectionPoints?.points.p2.x
+      && $liveConnectionPoints?.points.p2.y
     }
-      <Connection connection={$liveConnectionPoints} />
+      <Connection connection={$liveConnectionPoints.points} />
     {/if}
   {/if}
 </div>

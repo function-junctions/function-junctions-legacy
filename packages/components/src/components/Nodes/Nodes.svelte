@@ -3,7 +3,7 @@
   import { showLiveConnection, liveConnectionPoints } from '../Connection';
   import Connections from '../Connections/Connections.svelte';
   import {
-    registerNode,
+    createNode,
     NodeBlueprint,
     uniqueNodeId,
     onNodeDrag,
@@ -18,7 +18,7 @@
   Object.keys(nodes).forEach((key) => {
     $nodesRegistry = {
       ...$nodesRegistry,
-      [$uniqueNodeId]: registerNode(key, nodes[key]),
+      [$uniqueNodeId]: createNode(key, nodes[key]),
     };
 
     $uniqueNodeId += 1;
@@ -26,16 +26,6 @@
 
   console.log(nodes);
   console.log($nodesRegistry);
-
-  $nodesRegistry['1'].inputs?.['Number'].connection.set({
-    connectedNodeId: '0',
-    connectedSocketId: 'Number',
-  });
-
-  $nodesRegistry['2'].inputs?.['Number'].connection.set({
-    connectedNodeId: '1',
-    connectedSocketId: 'Number',
-  });
 </script>
 
 <div
@@ -58,6 +48,7 @@
         z: $nodesRegistry[key].z,
       }}
       color={$nodesRegistry[key].color}
+      selected={$selectedNode === key}
       on:mousedown={() => {
         $selectedNode = key;
         $nodeMoving = true;

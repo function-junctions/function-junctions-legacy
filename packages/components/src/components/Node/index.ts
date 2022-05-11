@@ -36,7 +36,7 @@ export type OnNodeDrag = (id: string, event: MouseEvent) => void;
 
 export const uniqueNodeId = writable(0);
 
-export const registerNode = (type: string, blueprint: NodeBlueprint): Node => ({
+export const createNode = (type: string, blueprint: NodeBlueprint): Node => ({
   inputs: (() => {
     const inputs: InputSockets<Record<string, any>> = {};
 

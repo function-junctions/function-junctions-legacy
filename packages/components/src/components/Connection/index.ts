@@ -1,8 +1,11 @@
-import { get, writable } from 'svelte/store';
+import { writable } from 'svelte/store';
 import { Point } from '../../types';
-import { nodesRegistry } from '../Nodes';
+import { ConnectionSocket } from '../Socket';
 
-export const liveConnectionPoints = writable<{ p1: Point, p2: Point } | undefined>();
+export const liveConnectionPoints = writable<{
+  points: { p1: Point, p2: Point },
+  socket?: ConnectionSocket;
+} | undefined>();
 export const showLiveConnection = writable<boolean>(false);
 
 export const computeSVGPath = (points: { p1: Point, p2: Point }, curvature: number): string => {
@@ -29,33 +32,4 @@ export const createConnectionPath = (svg: SVGSVGElement, points: { p1: Point, p2
   
     svg.appendChild(path);
   }
-};
-
-export const createTemporaryOutputConnection = (output: { nodeId: string, id: string }): void => {
-  const { nodeId, id } = output;
-  const nodes = get(nodesRegistry);
-  showLiveConnection.set(true);
-
-  const coordinates = nodes[nodeId]['outputs']?.[id].coordinates;
-
-  const mousemove = (event: MouseEvent) => {
-    if (coordinates) {
-      liveConnectionPoints.set({
-        p1: {
-          x: event.clientX,
-          y: event.clientY,
-        },
-        p2: coordinates,
-      });
-    }
-  };
-
-  document.addEventListener('mousemove', mousemove);
-
-  showLiveConnection.subscribe((connected) => {
-    if (!connected) {
-      document.removeEventListener('mousemove', mousemove);
-      liveConnectionPoints.set(undefined);
-    }
-  });
 };

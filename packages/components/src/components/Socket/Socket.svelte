@@ -1,6 +1,6 @@
 <script lang="ts">
   import { nodesRegistry } from '../Nodes';
-  import { createTemporaryOutputConnection } from '../Connection';
+  import { createSocketConnection } from '.';
 
   import './Socket.scss';
 
@@ -34,7 +34,7 @@
     class="function-junction-socket-connection"
     style={`background: ${color}`}
     bind:this={ref}
-    on:click={type === 'input' ? () => undefined : () => createTemporaryOutputConnection({ nodeId, id })}
+    on:click={() => createSocketConnection({ [type]: { nodeId, socketId: id } })}
   />
   {#if type === 'input'}
     <div class="function-junction-socket-title">{title}</div>

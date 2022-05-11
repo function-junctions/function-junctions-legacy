@@ -1,7 +1,6 @@
 <script lang="ts">
   import { SvelteComponentDev } from 'svelte/internal';
   import { Point } from '../../types';
-  import { nodeMoving } from '../Nodes';
 
   import './Node.scss';
 
