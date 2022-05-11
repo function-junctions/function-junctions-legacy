@@ -17,7 +17,6 @@
 
   .function-junction-socket-title {
     vertical-align: middle;
-    color: black;
     display: inline-block;
     font-size: 12px;
     margin: 4px;
@@ -39,3 +38,8 @@
   }
 }
 
+.function-junction-appearance-dark {
+  .function-junction-socket-connection {
+    border: 1px solid white;
+  }
+}

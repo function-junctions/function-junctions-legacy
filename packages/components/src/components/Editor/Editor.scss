@@ -11,5 +11,13 @@
   position: relative;
 
   height: 100%;
-  width: 1005;
+  width: 100%;
+}
+
+.function-junction-appearance-dark {
+  &.function-junction-editor {
+    color: white;
+    background-image: linear-gradient(to right, #363636 1px, transparent 1px), linear-gradient(to bottom, #363636 1px, transparent 1px);
+    background-color: #272727;
+  }
 }

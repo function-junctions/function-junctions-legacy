@@ -12,3 +12,11 @@
     pointer-events: none;
   }
 }
+
+.function-junction-appearance-dark {
+  .function-junction-connection {
+    path {
+      stroke: white;
+    }
+  }
+}

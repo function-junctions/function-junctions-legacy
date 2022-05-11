@@ -32,7 +32,7 @@
   {/if}
   <div
     class="function-junction-socket-connection"
-    style={`background: ${color}`}
+    style={color ? `background: ${color}` : ''}
     bind:this={ref}
     on:click={() => createSocketConnection({ [type]: { nodeId, socketId: id } })}
   />
