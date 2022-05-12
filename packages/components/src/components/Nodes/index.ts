@@ -25,25 +25,24 @@ export const onNodesWheel = (event: WheelEvent): void => {
   pos.x = -target.x * scale + event.clientX;
   pos.y = -target.y * scale + event.clientY;
 
+  console.log(pos.y);
+
   nodesCoordinates.set({
     x: pos.x,
     y: pos.x,
     z: scale,
   });
-
-  console.log(get(nodesCoordinates));
 };
 
 export const onNodesPan = (ref: HTMLDivElement, event: MouseEvent): void => {
   event.preventDefault();
-  pos.x = (pos.x + event.movementX);
-  pos.y = (pos.y + event.movementY);
+
+  pos.x += event.movementX;
+  pos.y += event.movementY;
 
   nodesCoordinates.set({
     ...get(nodesCoordinates),
     x: pos.x,
     y: pos.y,
   });
-
-  console.log(get(nodesCoordinates));
 };

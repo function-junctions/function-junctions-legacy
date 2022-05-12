@@ -45,7 +45,7 @@
     $nodeMoving = false;
     $nodesContainerMoving = false;
   }}
-  on:mousemove={(event) =>{
+  on:mousemove={(event) => {
     if ($nodesContainerMoving && !$nodeMoving) {
       onNodesPan(containerRef, event);
     } else if ($nodesContainerMoving && $nodeMoving && $selectedNode) {
