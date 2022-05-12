@@ -8,7 +8,7 @@ import {
 } from 'svelte/store';
 import { Point } from '../../types';
 import { liveConnectionPoints, showLiveConnection } from '../Connection';
-import { nodesRegistry } from '../Nodes';
+import { nodesCoordinates, nodesRegistry } from '../Nodes';
 
 export type SocketConnection = {
   connectedNodeId: string;
@@ -192,13 +192,22 @@ export const createSocketConnection = (
   
     const mousemove = (event: MouseEvent) => {
       if (coordinates) {
+        const mouseX = (event.clientX - get(nodesCoordinates).x) / (get(nodesCoordinates)?.z ?? 1);
+        const mouseY = (event.clientY - get(nodesCoordinates).y) / (get(nodesCoordinates)?.z ?? 1);
+
         liveConnectionPoints.set({
-          points: {
+          points: socket.type === 'output' ? {
             p1: {
-              x: event.clientX,
-              y: event.clientY,
+              x: mouseX,
+              y: mouseY,
             },
             p2: coordinates,
+          } : {
+            p1: coordinates,
+            p2: {
+              x: mouseX,
+              y: mouseY,
+            },
           },
           socket,
         });

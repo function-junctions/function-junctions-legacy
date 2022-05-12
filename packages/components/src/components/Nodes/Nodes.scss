@@ -2,4 +2,9 @@
   user-select: none;
   height: 100%;
   width: 100%;
+  position: relative;
+
+  .function-junction-nodes-zoom {
+    transform-origin: 0px 0px;
+  }
 }

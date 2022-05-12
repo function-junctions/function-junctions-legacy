@@ -1,6 +1,6 @@
-import { writable } from 'svelte/store';
+import { Writable, writable } from 'svelte/store';
 
-export const getAppearance = (appearance: 'light' | 'dark' | 'auto') => {
+export const getAppearance = (appearance: 'light' | 'dark' | 'auto'): Writable<'light' | 'dark'> => {
   const className = writable<'light' | 'dark'>(appearance !== 'auto' ? appearance : 'light');
 
   if (appearance !== 'auto') return className;

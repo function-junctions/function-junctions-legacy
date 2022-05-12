@@ -24,7 +24,7 @@
 
 <div
   class={`function-junction-node ${selected ? 'function-junction-node-selected' : ''}`}
-  style={`left: ${coordinates.x}px; top: ${coordinates.y}px`}
+  style={`transform: translate(${coordinates.x}px, ${coordinates.y}px)`}
   on:click
   on:mousedown
 >

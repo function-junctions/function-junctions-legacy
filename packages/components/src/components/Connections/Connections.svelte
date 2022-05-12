@@ -2,7 +2,6 @@
   import { Point } from '../../types';
   import { getConnections } from '.';
   import { nodesRegistry } from '../Nodes';
-  import './Connections.scss';
   import { showLiveConnection, liveConnectionPoints } from '../Connection';
   
   import Connection from '../Connection/Connection.svelte';
@@ -11,7 +10,6 @@
   $: $nodesRegistry, $liveConnectionPoints, (connections = getConnections());
 </script>
 
-<div class="function-junction-connections">
   {#each connections as connection}
     <Connection {connection} />
   {/each}
@@ -26,4 +24,3 @@
       <Connection connection={$liveConnectionPoints.points} />
     {/if}
   {/if}
-</div>

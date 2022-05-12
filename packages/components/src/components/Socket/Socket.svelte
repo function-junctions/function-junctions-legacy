@@ -1,5 +1,5 @@
 <script lang="ts">
-  import { nodesRegistry } from '../Nodes';
+  import { nodesCoordinates, nodesRegistry } from '../Nodes';
   import { createSocketConnection } from '.';
 
   import './Socket.scss';
@@ -15,14 +15,16 @@
   let ref: HTMLDivElement;
   let coordinates: DOMRect;
 
-  $: $nodesRegistry[nodeId], ref, (() => {
-    coordinates = ref?.getBoundingClientRect();
-    const sockets = $nodesRegistry[nodeId][type === 'input' ? 'inputs' : 'outputs'];
-
-    if (sockets) sockets[id].coordinates = {
-      x: coordinates?.left ?? 0,
-      y: coordinates?.top ?? 0,
-    };
+  $: $nodesRegistry[nodeId], $nodesCoordinates, ref, (() => {
+    if (ref) {
+      coordinates = ref.getBoundingClientRect();
+      const sockets = $nodesRegistry[nodeId][type === 'input' ? 'inputs' : 'outputs'];
+  
+      if (sockets) sockets[id].coordinates = {
+        x: (coordinates.left - $nodesCoordinates.x) / ($nodesCoordinates?.z ?? 1),
+        y: (coordinates.top - $nodesCoordinates.y) / ($nodesCoordinates?.z ?? 1),
+      };
+    }
   })();
 </script>
 

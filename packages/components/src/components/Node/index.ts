@@ -9,7 +9,12 @@ import {
 } from '../Socket';
 import { InputSockets, OutputSockets } from '../Sockets';
 import { SocketBlueprint } from '../Socket';
-import { nodeMoving, nodesRegistry, selectedNode } from '../Nodes';
+import {
+  nodeMoving,
+  nodesCoordinates,
+  nodesRegistry,
+  selectedNode,
+} from '../Nodes';
 
 export type NodeBlueprint<
   I extends Record<string, SocketBlueprint> = Record<string, SocketBlueprint>,
@@ -74,13 +79,16 @@ export const onNodeDrag: OnNodeDrag = (id, event) => {
   if (get(nodeMoving) && get(selectedNode) === id) {
     const node = get(nodesRegistry)[id];
 
+    // Get z coordinate to determine scale so nodes travel faster with scale
+    const { z } = get(nodesCoordinates);
+
     if (node) {
       nodesRegistry.set({
         ...get(nodesRegistry),
         [id]: {
           ...node,
-          x: node.x + event.movementX,
-          y: node.y + event.movementY,
+          x: node.x + event.movementX / z,
+          y: node.y + event.movementY / z,
         },
       });
     }
