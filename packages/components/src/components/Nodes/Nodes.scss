@@ -5,6 +5,8 @@
   position: relative;
 
   .function-junction-nodes-zoom {
-    transform-origin: 0px 0px;
+    transform-box: fill-box;
+    height: 100%;
+    width: 100%;
   }
 }

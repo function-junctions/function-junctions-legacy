@@ -6,7 +6,7 @@
 
   export let connection: { p1: Point, p2: Point };
 
-  let ref: SVGSVGElement;
+  let ref: SVGSVGElement;'';
 
   $: createConnectionPath(ref, { p1: connection.p1, p2: connection.p2 });
 </script>

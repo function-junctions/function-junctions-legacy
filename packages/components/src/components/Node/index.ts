@@ -80,15 +80,15 @@ export const onNodeDrag: OnNodeDrag = (id, event) => {
     const node = get(nodesRegistry)[id];
 
     // Get z coordinate to determine scale so nodes travel faster with scale
-    const { z } = get(nodesCoordinates);
+    const { scale } = get(nodesCoordinates);
 
     if (node) {
       nodesRegistry.set({
         ...get(nodesRegistry),
         [id]: {
           ...node,
-          x: node.x + event.movementX / z,
-          y: node.y + event.movementY / z,
+          x: node.x + event.movementX / scale,
+          y: node.y + event.movementY / scale,
         },
       });
     }

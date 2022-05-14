@@ -19,10 +19,11 @@
   import Node from '../Node/Node.svelte';
 
   import './Nodes.scss';
+
+  import Drag from '../Drag';
     
   export let nodes: Record<string, NodeBlueprint>;
-  
-  let containerRef: HTMLDivElement;
+
   let zoomRef: HTMLDivElement;
   
   // Setup nodes to be consumed in DOM
@@ -36,7 +37,15 @@
   });
 
   console.log(nodes);
-  console.log($nodesRegistry);
+  
+  $: instance = Drag({
+    scaleSensitivity: 50,
+    minScale: .1,
+    maxScale: 30,
+    element: zoomRef,
+    transformation: nodesCoordinates,
+  });
+
 </script>
 
 <div
@@ -47,22 +56,18 @@
   }}
   on:mousemove={(event) => {
     if ($nodesContainerMoving && !$nodeMoving) {
-      onNodesPan(containerRef, event);
+      onNodesPan(instance, event);
     } else if ($nodesContainerMoving && $nodeMoving && $selectedNode) {
       onNodeDrag($selectedNode, event);
     }
   }}
   on:click={() => $liveConnectionPoints && ($showLiveConnection = false)}
-  on:wheel={onNodesWheel}
+  on:wheel={(event) => onNodesWheel(instance, event)}
   on:mousedown={() => ($nodesContainerMoving = true)}
-  bind:this={containerRef}
 >
   <div
     class="function-junction-nodes-zoom"
     bind:this={zoomRef}
-    style={`transform:
-      translate(${$nodesCoordinates.x}px,${$nodesCoordinates.y}px) scale(${$nodesCoordinates.z},${$nodesCoordinates.z})
-    `}
   >
     <Connections />
     {#each Object.keys($nodesRegistry) as key}

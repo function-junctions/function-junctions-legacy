@@ -19,10 +19,16 @@
     if (ref) {
       coordinates = ref.getBoundingClientRect();
       const sockets = $nodesRegistry[nodeId][type === 'input' ? 'inputs' : 'outputs'];
-  
+      
+      const translateX = (coordinates.left - $nodesCoordinates.translateX);
+      const translateY = (coordinates.top - $nodesCoordinates.translateY);
+
+      const offsetX = ($nodesCoordinates.originX * $nodesCoordinates.scale) - $nodesCoordinates.originX;
+      const offsetY = ($nodesCoordinates.originY * $nodesCoordinates.scale) - $nodesCoordinates.originY;
+      
       if (sockets) sockets[id].coordinates = {
-        x: (coordinates.left - $nodesCoordinates.x) / ($nodesCoordinates?.z ?? 1),
-        y: (coordinates.top - $nodesCoordinates.y) / ($nodesCoordinates?.z ?? 1),
+        x: ((translateX + offsetX) / $nodesCoordinates.scale),
+        y: (translateY + offsetY) / $nodesCoordinates.scale,
       };
     }
   })();

@@ -192,8 +192,12 @@ export const createSocketConnection = (
   
     const mousemove = (event: MouseEvent) => {
       if (coordinates) {
-        const mouseX = (event.clientX - get(nodesCoordinates).x) / (get(nodesCoordinates)?.z ?? 1);
-        const mouseY = (event.clientY - get(nodesCoordinates).y) / (get(nodesCoordinates)?.z ?? 1);
+        const offsetX = (get(nodesCoordinates).originX * get(nodesCoordinates).scale) - get(nodesCoordinates).originX;
+        const offsetY = (get(nodesCoordinates).originY * get(nodesCoordinates).scale) - get(nodesCoordinates).originY;
+
+        const mouseX = ((event.clientX - get(nodesCoordinates).translateX) + offsetX) / (get(nodesCoordinates).scale);
+        const mouseY = ((event.clientY - get(nodesCoordinates).translateY) + offsetY) / (get(nodesCoordinates).scale);
+
 
         liveConnectionPoints.set({
           points: socket.type === 'output' ? {

@@ -1,9 +1,9 @@
 .function-junction-connection {
   overflow: visible !important;
   position: absolute;
-  z-index: -1;
   pointer-events: none;
   margin: 7px 3px 7px 7px;
+  transform-box: fill-box;
 
   path {
     fill: none;
