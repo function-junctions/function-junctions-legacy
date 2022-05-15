@@ -15,5 +15,5 @@
 </script>
 
 <div class={`function-junction-editor function-junction-appearance-${$appearanceClassName}`} {style}>
-  <Nodes {nodes} />
+  <Nodes {nodes} on:ready />
 </div>

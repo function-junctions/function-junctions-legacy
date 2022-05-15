@@ -15,7 +15,7 @@
   export let inputs: InputSockets<Record<string, InputSocket<any>>> | undefined;
   export let outputs: OutputSockets<Record<string, OutputSocket<any>>> | undefined;
   export let color: string | undefined = undefined;
-    
+
   export let component: typeof SvelteComponentDev;
   export let coordinates: Point;
 

@@ -1,51 +1,64 @@
 <script lang="ts">
   import {
-    nodesRegistry,
+    onNodesWheel,
+    onNodesPan,
+    NodesState,
+    restoreNodesState,
+    updateNodesState,
+  } from '.';
+  import {
+    activeNodes,
     selectedNode,
     nodeMoving,
-    onNodesWheel,
     nodesCoordinates,
-    onNodesPan,
     nodesContainerMoving,
-  } from '.';
-  import { showLiveConnection, liveConnectionPoints } from '../Connection';
+    registeredNodes,
+    nodesState,
+  } from './store';
+  import { showLiveConnection, liveConnectionPoints } from '../Connection/store';
   import Connections from '../Connections/Connections.svelte';
-  import {
-    createNode,
-    NodeBlueprint,
-    uniqueNodeId,
-    onNodeDrag,
-  } from '../Node';
+  import { addNode, NodeBlueprint, onNodeDrag } from '../Node';
   import Node from '../Node/Node.svelte';
+  import { createEventDispatcher } from 'svelte';
+
+  const dispatch = createEventDispatcher();
 
   import './Nodes.scss';
 
   import Drag from '../Drag';
     
   export let nodes: Record<string, NodeBlueprint>;
+  export let state: NodesState = {};
+
+  let propState = state;
 
   let zoomRef: HTMLDivElement;
   
-  // Setup nodes to be consumed in DOM
-  Object.keys(nodes).forEach((key) => {
-    $nodesRegistry = {
-      ...$nodesRegistry,
-      [$uniqueNodeId]: createNode(key, nodes[key]),
-    };
-
-    $uniqueNodeId += 1;
-  });
-
-  console.log(nodes);
-  
   $: instance = Drag({
-    scaleSensitivity: 50,
+    scaleSensitivity: 100,
     minScale: .1,
     maxScale: 30,
     element: zoomRef,
     transformation: nodesCoordinates,
   });
 
+  $: $registeredNodes = nodes;
+  $: state = $nodesState;
+  
+  $: if ($registeredNodes) {
+    if (propState) restoreNodesState(propState);
+    
+    addNode('Math');
+    addNode('Math');
+    addNode('Math');
+    addNode('Number');
+    addNode('Number');
+
+    dispatch('ready');
+  }
+
+  $: $activeNodes, updateNodesState();
+  $: console.log($nodesState);
 </script>
 
 <div
@@ -70,18 +83,18 @@
     bind:this={zoomRef}
   >
     <Connections />
-    {#each Object.keys($nodesRegistry) as key}
+    {#each Object.keys($activeNodes) as key}
       <Node
-        title={$nodesRegistry[key].type}
+        title={$activeNodes[key].type}
         id={key}
-        component={$nodesRegistry[key].component}
-        inputs={$nodesRegistry[key].inputs}
-        outputs={$nodesRegistry[key].outputs}
+        component={$activeNodes[key].component}
+        inputs={$activeNodes[key].inputs}
+        outputs={$activeNodes[key].outputs}
         coordinates={{
-          x: $nodesRegistry[key].x,
-          y: $nodesRegistry[key].y,
+          x: $activeNodes[key].x,
+          y: $activeNodes[key].y,
         }}
-        color={$nodesRegistry[key].color}
+        color={$activeNodes[key].color}
         selected={$selectedNode === key}
         on:mousedown={() => {
           $selectedNode = key;

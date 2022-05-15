@@ -47,7 +47,6 @@
   const nodes = {
     Number: numberNode,
     Math: mathNode,
-    Test: mathNode,
   };
 
 </script>

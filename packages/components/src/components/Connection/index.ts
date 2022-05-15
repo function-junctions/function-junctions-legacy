@@ -1,12 +1,4 @@
-import { writable } from 'svelte/store';
 import { Point } from '../../types';
-import { ConnectionSocket } from '../Socket';
-
-export const liveConnectionPoints = writable<{
-  points: { p1: Point, p2: Point },
-  socket?: ConnectionSocket;
-} | undefined>();
-export const showLiveConnection = writable<boolean>(false);
 
 export const computeSVGPath = (points: { p1: Point, p2: Point }, curvature: number): string => {
   const { p1, p2 } = points;

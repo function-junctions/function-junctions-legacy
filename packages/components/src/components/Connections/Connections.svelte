@@ -1,13 +1,13 @@
 <script lang="ts">
   import { Point } from '../../types';
   import { getConnections } from '.';
-  import { nodesCoordinates, nodesRegistry } from '../Nodes';
-  import { showLiveConnection, liveConnectionPoints } from '../Connection';
+  import { nodesCoordinates, activeNodes } from '../Nodes/store';
+  import { showLiveConnection, liveConnectionPoints } from '../Connection/store';
   
   import Connection from '../Connection/Connection.svelte';
   let connections: { p1: Point, p2: Point }[];
 
-  $: $nodesRegistry, $liveConnectionPoints, $nodesCoordinates, (connections = getConnections());
+  $: $activeNodes, $liveConnectionPoints, $nodesCoordinates, (connections = getConnections());
 </script>
 
 <div

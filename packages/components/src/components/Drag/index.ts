@@ -16,35 +16,47 @@ export type Drag = {
   transformation: DragPoints;
 };
 
-const hasPositionChanged = ({ pos, prevPos }: { pos: number; prevPos: number }) => pos !== prevPos;
+export type HasPositionChanged = (position: { pos: number; prevPos: number }) => boolean;
+export type ValueInRange = (scale: { minScale: number, maxScale: number, scale: number }) => boolean;
+export type GetTranslate = (scale: { minScale: number, maxScale: number, scale: number })
+  => (position: { pos: number, prevPos: number, translate: number }) => number;
+export type GetMatrix = (translate: { scale: number, translateX: number, translateY: number }) => string;
+export type GetScale = (scale: {
+  scale: number,
+  minScale: number,
+  maxScale: number,
+  scaleSensitivity: number,
+  deltaScale: number,
+}) => [number, number];
+export type Pan = (positions: { state: Drag, originX: number, originY: number }) => void;
+export type CanPan = (state: Drag) => {
+  panBy: (origins: { originX: number, originY: number }) => void;
+  panTo: (positions: { originX: number, originY: number, scale: number }) => void;
+};
+export type CanZoom = (state: Drag) => {
+  zoom: (postions: { x: number, y: number, deltaScale: number }) => void;
+};
+export type DragInstance = ReturnType<CanZoom> & ReturnType<CanPan>;
 
-const valueInRange = (
-  { minScale, maxScale, scale }: { minScale: number, maxScale: number, scale: number },
-) => scale <= maxScale && scale >= minScale;
+const hasPositionChanged: HasPositionChanged = ({ pos, prevPos }) => pos !== prevPos;
 
-const getTranslate = (
-  { minScale, maxScale, scale }: { minScale: number, maxScale: number, scale: number },
-) => (
-  { pos, prevPos, translate }: { pos: number, prevPos: number, translate: number },
-) =>
+const valueInRange: ValueInRange = ({ minScale, maxScale, scale }) => scale <= maxScale && scale >= minScale;
+
+const getTranslate: GetTranslate = ({ minScale, maxScale, scale }) => ({ pos, prevPos, translate }) =>
   valueInRange({ minScale, maxScale, scale }) && hasPositionChanged({ pos, prevPos })
     ? translate + (pos - prevPos * scale) * (1 - 1 / scale)
     : translate;
 
-const getMatrix = (
-  { scale, translateX, translateY }: { scale: number, translateX: number, translateY: number },
-) => `matrix(${scale}, 0, 0, ${scale}, ${translateX}, ${translateY})`;
+const getMatrix: GetMatrix = ({ scale, translateX, translateY }) =>
+  `matrix(${scale}, 0, 0, ${scale}, ${translateX}, ${translateY})`;
 
-const getScale = (
-  { scale, minScale, maxScale, scaleSensitivity, deltaScale }:
-    { scale: number, minScale: number, maxScale: number, scaleSensitivity: number, deltaScale: number },
-) => {
+const getScale: GetScale = ({ scale, minScale, maxScale, scaleSensitivity, deltaScale }) => {
   let newScale = scale + (deltaScale / (scaleSensitivity / scale));
   newScale = Math.max(minScale, Math.min(newScale, maxScale));
   return [scale, newScale];
 };
 
-const pan = ({ state, originX, originY }: { state: Drag, originX: number, originY: number }) => {
+const pan: Pan = ({ state, originX, originY }) => {
   const transformation = get(state.transformation);
 
   const translateX = transformation.translateX + originX;
@@ -63,9 +75,9 @@ const pan = ({ state, originX, originY }: { state: Drag, originX: number, origin
   });
 };
 
-const canPan = (state: Drag) => ({
-  panBy: ({ originX, originY }: { originX: number, originY: number }) => pan({ state, originX, originY }),
-  panTo: ({ originX, originY, scale }: { originX: number, originY: number, scale: number }) => {
+const canPan: CanPan = (state: Drag) => ({
+  panBy: ({ originX, originY }) => pan({ state, originX, originY }),
+  panTo: ({ originX, originY, scale }) => {
     const transformation = get(state.transformation);
 
     state.transformation.set({
@@ -77,8 +89,8 @@ const canPan = (state: Drag) => ({
   },
 });
 
-const canZoom = (state: Drag) => ({
-  zoom: ({ x, y, deltaScale }: { x: number, y: number, deltaScale: number }) => {
+const canZoom: CanZoom = (state) => ({
+  zoom: ({ x, y, deltaScale }) => {
     const transformation = get(state.transformation);
     const { left, top } = state.element.getBoundingClientRect();
     const { minScale, maxScale, scaleSensitivity } = state;
@@ -130,7 +142,7 @@ export default (
     transformation: Drag['transformation'];
     scaleSensitivity: number,
   },
-) => {
+): DragInstance => {
   const state: Drag = {
     element,
     minScale,

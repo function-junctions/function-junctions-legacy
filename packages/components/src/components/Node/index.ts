@@ -1,20 +1,25 @@
 import { SvelteComponentDev } from 'svelte/internal';
-import { get, writable } from 'svelte/store';
+import { get } from 'svelte/store';
 import { Point } from '../../types';
 import {
   createInputSocket,
   createOutputSocket,
   InputSocket,
+  InputSocketState,
   OutputSocket,
+  OutputSocketState,
 } from '../Socket';
 import { InputSockets, OutputSockets } from '../Sockets';
 import { SocketBlueprint } from '../Socket';
 import {
   nodeMoving,
   nodesCoordinates,
-  nodesRegistry,
+  activeNodes,
   selectedNode,
-} from '../Nodes';
+  registeredNodes,
+  nodesState,
+} from '../Nodes/store';
+import { uniqueNodeId } from './store';
 
 export type NodeBlueprint<
   I extends Record<string, SocketBlueprint> = Record<string, SocketBlueprint>,
@@ -35,56 +40,130 @@ export type Node<
   component: typeof SvelteComponentDev;
   type: string;
   color?: string;
+};
+
+export type NodeState = Point & {
+  type: string;
+  inputs?: Record<string, InputSocketState>;
+  outputs?: Record<string, OutputSocketState>;
 }
 
 export type OnNodeDrag = (id: string, event: MouseEvent) => void;
 
-export const uniqueNodeId = writable(0);
+export const getUniqueNodeId = (nodeKeys: string[]): void => {
+  const id = get(uniqueNodeId);
+  
+  if (nodeKeys.map((key) => parseInt(key, 10)).some((key) => key === id)) {
+    uniqueNodeId.set(id + 1);
+    getUniqueNodeId(nodeKeys);
+  } 
+};
 
-export const createNode = (type: string, blueprint: NodeBlueprint): Node => ({
-  inputs: (() => {
-    const inputs: InputSockets<Record<string, any>> = {};
+export const addNode = (key: string, state?: { id: number; blueprint: NodeState; }): void => {
+  const blueprint = get(registeredNodes)?.[key];
+  const nodes = get(activeNodes);
 
-    if (blueprint.inputs) {
-      Object.keys(blueprint.inputs ?? {}).map((inputKey) => {
-        const inputBlueprint = blueprint.inputs?.[inputKey];
-        if (inputBlueprint)
-          inputs[inputKey] = createInputSocket(inputBlueprint.type, inputBlueprint?.defaultValue);
-      });
-    }
+  getUniqueNodeId(Object.keys(nodes));
+  const id = state?.id ?? get(uniqueNodeId);
 
-    return Object.keys(inputs).length > 0 ? inputs : undefined;
-  })(),
-  outputs: (() => {
-    const outputs: OutputSockets<Record<string, any>> = {};
+  const x = state?.blueprint.x ?? 0;
+  const y = state?.blueprint.y ?? 0;
 
-    if (blueprint.outputs) {
-      Object.keys(blueprint.outputs ?? {}).map((inputKey) => {
-        const outputBlueprint = blueprint.outputs?.[inputKey];
-        if (outputBlueprint)
-          outputs[inputKey] = createOutputSocket(outputBlueprint.type, outputBlueprint?.defaultValue);
-      });
-    }
-    return Object.keys(outputs).length > 0 ? outputs : undefined;
-  })(),
-  type,
-  x: 0,
-  y: 0,
-  z: 0,
-  component: blueprint.component,
-  color: blueprint.color,
-});
+  const newState: NodeState = {
+    type: key,
+    x,
+    y,
+  };
+
+  if (blueprint) {
+    // Add node to active nodes list
+    activeNodes.set({
+      ...nodes,
+      [id]: {
+        inputs: (() => {
+          const inputs: InputSockets<Record<string, any>> = {};
+      
+          if (blueprint.inputs) {
+            Object.keys(blueprint.inputs ?? {}).map((inputKey) => {
+              const inputBlueprint = blueprint.inputs?.[inputKey];
+              const inputState = state?.blueprint.inputs?.[inputKey];
+
+              if (inputBlueprint) {
+                const type = inputBlueprint.type;
+                const defaultValue = inputState?.value ?? inputBlueprint?.defaultValue;
+                const connection = state?.blueprint.inputs?.[inputKey].connection;
+
+                newState.inputs = {
+                  ...newState.inputs,
+                  [inputKey]: {
+                    type,
+                    value: defaultValue,
+                    connection,
+                  },
+                };
+
+                inputs[inputKey] = createInputSocket(
+                  type,
+                  defaultValue,
+                  connection,
+                );
+              }
+            });
+          }
+      
+          return Object.keys(inputs).length > 0 ? inputs : undefined;
+        })(),
+        outputs: (() => {
+          const outputs: OutputSockets<Record<string, any>> = {};
+          
+          if (blueprint.outputs) {
+            Object.keys(blueprint.outputs ?? {}).map((outputKey) => {
+              const outputBlueprint = blueprint.outputs?.[outputKey];
+              const outputState = state?.blueprint.inputs?.[outputKey];
+
+              if (outputBlueprint) {
+                const type = outputBlueprint.type;
+                const defaultValue = outputState?.value ?? outputBlueprint?.defaultValue;
+
+                newState.outputs = {
+                  ...newState.outputs,
+                  [outputKey]: {
+                    type,
+                    value: defaultValue,
+                  },
+                };
+
+                outputs[outputKey] = createOutputSocket(type, defaultValue);
+              }
+            });
+          }
+          return Object.keys(outputs).length > 0 ? outputs : undefined;
+        })(),
+        type: key,
+        x,
+        y,
+        component: blueprint.component,
+        color: blueprint.color,
+      },
+    });
+
+    nodesState.update((prevNodesState) => ({
+      ...prevNodesState,
+      [id]: newState,
+    }));
+  }
+};
 
 export const onNodeDrag: OnNodeDrag = (id, event) => {
   if (get(nodeMoving) && get(selectedNode) === id) {
-    const node = get(nodesRegistry)[id];
+    const node = get(activeNodes)[id];
 
     // Get z coordinate to determine scale so nodes travel faster with scale
     const { scale } = get(nodesCoordinates);
 
     if (node) {
-      nodesRegistry.set({
-        ...get(nodesRegistry),
+      activeNodes.set({
+        ...get(activeNodes),
         [id]: {
           ...node,
           x: node.x + event.movementX / scale,

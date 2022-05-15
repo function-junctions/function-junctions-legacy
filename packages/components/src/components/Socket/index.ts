@@ -7,8 +7,13 @@ import {
   Writable,
 } from 'svelte/store';
 import { Point } from '../../types';
-import { liveConnectionPoints, showLiveConnection } from '../Connection';
-import { nodesCoordinates, nodesRegistry } from '../Nodes';
+import { liveConnectionPoints, showLiveConnection } from '../Connection/store';
+import {
+  nodesCoordinates,
+  activeNodes,
+  nodesState,
+  registeredNodes,
+} from '../Nodes/store';
 
 export type SocketConnection = {
   connectedNodeId: string;
@@ -34,7 +39,20 @@ export type OutputSocket<T> = {
   value: Writable<T>;
   color?: string;
   coordinates: Point;
-}
+  trigger?: boolean;
+};
+
+export type InputSocketState = {
+  type: string;
+  value: unknown;
+  connection?: SocketConnection;
+};
+
+export type OutputSocketState = {
+  type: string;
+  value: unknown;
+};
+
 
 export type ConnectionSocket = {
   type: 'input' | 'output';
@@ -47,23 +65,44 @@ export type ConnectionSocket = {
  * @param {string=} defaultValue - A default value to initialize your socket
  * @returns {Socket}
  */
-export const createInputSocket = <T>(type: string, defaultValue?: T): InputSocket<T> => {
+export const createInputSocket = <T>(
+  type: string,
+  defaultValue?: T,
+  connectionState?: SocketConnection,
+): InputSocket<T> => {
   let valueUnsubscribe: Unsubscriber | undefined;
 
-  const connection = writable<SocketConnection | undefined>();
+  const connection = writable<SocketConnection | undefined>(connectionState);
   const value = readable<T>(defaultValue, (set) => {
     connection.subscribe((connections) => {
       if (connections) {
         const { connectedNodeId, connectedSocketId } = connections;
         
         if (connectedNodeId && connectedSocketId) {
-          const nodes = get(nodesRegistry);
+          const nodes = get(activeNodes);
   
           if (nodes) {
             const connectedSocket = nodes[connectedNodeId].outputs?.[connectedSocketId];
     
             if (connectedSocket && connectedSocket.type === type) {
-              valueUnsubscribe = connectedSocket.value.subscribe((value) => set(value));
+              valueUnsubscribe = connectedSocket.value.subscribe((value) => {
+                activeNodes.set({
+                  ...nodes,
+                  [connectedNodeId]: {
+                    ...nodes[connectedNodeId],
+                    outputs: {
+                      ...nodes[connectedNodeId]?.outputs,
+                      [connectedSocketId]: {
+                        ...connectedSocket,
+                        trigger: !connectedSocket.trigger,
+                      },
+                    },
+                  },
+                });
+
+                set(value);
+              });
+              
               return;
             }
           }
@@ -121,7 +160,7 @@ export const createSocketConnection = (
   };
 
   const { nodeId, socketId } = socket;
-  const nodes = get(nodesRegistry);
+  const nodes = get(activeNodes);
 
   // If the socket is pending connection
   if (get(showLiveConnection)) {

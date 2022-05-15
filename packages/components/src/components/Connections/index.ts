@@ -1,9 +1,9 @@
 import { get } from 'svelte/store';
 import { Point } from '../../types';
-import { nodesRegistry } from '../Nodes';
+import { activeNodes } from '../Nodes/store';
 
 export const getConnections = (): { p1: Point, p2: Point }[] => {
-  const nodes = get(nodesRegistry);
+  const nodes = get(activeNodes);
   let connections: { p1: Point, p2: Point }[] = [];
 
   Object.keys(nodes).forEach((nodeId) => {
