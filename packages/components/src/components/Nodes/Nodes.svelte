@@ -2,7 +2,6 @@
   import {
     onNodesWheel,
     onNodesPan,
-    NodesState,
     restoreNodesState,
     updateNodesState,
   } from '.';
@@ -14,12 +13,15 @@
     nodesContainerMoving,
     registeredNodes,
     nodesState,
+    nodesStateRestored,
   } from './store';
+  import { getMatrix } from '../Drag';
+  import { EditorState } from '../Editor';
   import { showLiveConnection, liveConnectionPoints } from '../Connection/store';
   import Connections from '../Connections/Connections.svelte';
-  import { addNode, NodeBlueprint, onNodeDrag } from '../Node';
+  import { NodeBlueprint, onNodeDrag } from '../Node';
   import Node from '../Node/Node.svelte';
-  import { createEventDispatcher } from 'svelte';
+  import { createEventDispatcher, tick } from 'svelte';
 
   const dispatch = createEventDispatcher();
 
@@ -28,8 +30,12 @@
   import Drag from '../Drag';
     
   export let nodes: Record<string, NodeBlueprint>;
-  export let state: NodesState = {};
+  export let state: EditorState = {
+    nodes: {},
+    coordinates: $nodesCoordinates,
+  };
 
+  $nodesCoordinates = state.coordinates;
   let propState = state;
 
   let zoomRef: HTMLDivElement;
@@ -43,22 +49,23 @@
   });
 
   $: $registeredNodes = nodes;
-  $: state = $nodesState;
   
   $: if ($registeredNodes) {
-    if (propState) restoreNodesState(propState);
-    
-    addNode('Math');
-    addNode('Math');
-    addNode('Math');
-    addNode('Number');
-    addNode('Number');
+    if (propState.nodes) restoreNodesState(propState.nodes);
+
+    void tick().then(() => {
+      $nodesStateRestored = true;
+    });
 
     dispatch('ready');
   }
 
   $: $activeNodes, updateNodesState();
-  $: console.log($nodesState);
+  $: $nodesState, $nodesCoordinates, state = {
+    nodes: $nodesState,
+    coordinates: $nodesCoordinates,
+  };
+  $: console.log(JSON.stringify(state));
 </script>
 
 <div
@@ -80,6 +87,14 @@
 >
   <div
     class="function-junction-nodes-zoom"
+    style={`
+      transform-origin: ${$nodesCoordinates.originX}px ${$nodesCoordinates.originY}px;
+      transform: ${getMatrix({
+        scale: $nodesCoordinates.scale,
+        translateX: $nodesCoordinates.translateX,
+        translateY: $nodesCoordinates.translateY,
+      })}
+    `}
     bind:this={zoomRef}
   >
     <Connections />

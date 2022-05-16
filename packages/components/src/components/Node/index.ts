@@ -90,7 +90,7 @@ export const addNode = (key: string, state?: { id: number; blueprint: NodeState;
 
               if (inputBlueprint) {
                 const type = inputBlueprint.type;
-                const defaultValue = inputState?.value ?? inputBlueprint?.defaultValue;
+                const defaultValue = inputBlueprint?.defaultValue;
                 const connection = state?.blueprint.inputs?.[inputKey].connection;
 
                 newState.inputs = {
@@ -105,7 +105,10 @@ export const addNode = (key: string, state?: { id: number; blueprint: NodeState;
                 inputs[inputKey] = createInputSocket(
                   type,
                   defaultValue,
-                  connection,
+                  {
+                    connection,
+                    value: inputState?.value,
+                  },
                 );
               }
             });
@@ -119,7 +122,7 @@ export const addNode = (key: string, state?: { id: number; blueprint: NodeState;
           if (blueprint.outputs) {
             Object.keys(blueprint.outputs ?? {}).map((outputKey) => {
               const outputBlueprint = blueprint.outputs?.[outputKey];
-              const outputState = state?.blueprint.inputs?.[outputKey];
+              const outputState = state?.blueprint.outputs?.[outputKey];
 
               if (outputBlueprint) {
                 const type = outputBlueprint.type;

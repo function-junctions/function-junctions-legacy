@@ -8,12 +8,7 @@ import {
 } from 'svelte/store';
 import { Point } from '../../types';
 import { liveConnectionPoints, showLiveConnection } from '../Connection/store';
-import {
-  nodesCoordinates,
-  activeNodes,
-  nodesState,
-  registeredNodes,
-} from '../Nodes/store';
+import { nodesCoordinates, activeNodes } from '../Nodes/store';
 
 export type SocketConnection = {
   connectedNodeId: string;
@@ -68,37 +63,51 @@ export type ConnectionSocket = {
 export const createInputSocket = <T>(
   type: string,
   defaultValue?: T,
-  connectionState?: SocketConnection,
+  state?: {
+    connection?: SocketConnection;
+    value: T;
+  },
 ): InputSocket<T> => {
   let valueUnsubscribe: Unsubscriber | undefined;
 
-  const connection = writable<SocketConnection | undefined>(connectionState);
-  const value = readable<T>(defaultValue, (set) => {
+  let prevConnectedNodeId: string, prevConnectedSocketId: string;
+
+  const updateActiveNodes = (connectedNodeId: string, connectedSocketId: string) => {
+    // Not sure why the type signature here is incorrect
+    // @ts-expect-error
+    activeNodes.update((prevActiveNodes) => ({
+      ...prevActiveNodes,
+      [connectedNodeId]: {
+        ...prevActiveNodes[connectedNodeId],
+        outputs: {
+          ...prevActiveNodes[connectedNodeId]?.outputs,
+          [connectedSocketId]: {
+            ...prevActiveNodes[connectedNodeId].outputs?.[connectedSocketId],
+            trigger: !prevActiveNodes[connectedNodeId].outputs?.[connectedSocketId].trigger,
+          },
+        },
+      },
+    }));
+  };
+
+  const connection = writable<SocketConnection | undefined>(state?.connection);
+  const value = readable<T>(state?.value ?? defaultValue, (set) => {
     connection.subscribe((connections) => {
       if (connections) {
         const { connectedNodeId, connectedSocketId } = connections;
         
         if (connectedNodeId && connectedSocketId) {
           const nodes = get(activeNodes);
+
+          prevConnectedNodeId = connectedNodeId;
+          prevConnectedSocketId = connectedSocketId;
   
           if (nodes) {
             const connectedSocket = nodes[connectedNodeId].outputs?.[connectedSocketId];
     
             if (connectedSocket && connectedSocket.type === type) {
               valueUnsubscribe = connectedSocket.value.subscribe((value) => {
-                activeNodes.set({
-                  ...nodes,
-                  [connectedNodeId]: {
-                    ...nodes[connectedNodeId],
-                    outputs: {
-                      ...nodes[connectedNodeId]?.outputs,
-                      [connectedSocketId]: {
-                        ...connectedSocket,
-                        trigger: !connectedSocket.trigger,
-                      },
-                    },
-                  },
-                });
+                updateActiveNodes(connectedNodeId, connectedSocketId);
 
                 set(value);
               });
@@ -109,6 +118,7 @@ export const createInputSocket = <T>(
         }
       }
       
+      if (prevConnectedNodeId && prevConnectedSocketId) updateActiveNodes(prevConnectedNodeId, prevConnectedSocketId);
       if (valueUnsubscribe) valueUnsubscribe();
       if (typeof defaultValue !== 'undefined') set(defaultValue);
     });

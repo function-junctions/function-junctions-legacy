@@ -1,4 +1,6 @@
 <script lang="ts">
+  import { EditorState } from './index';
+
   import { NodeBlueprint } from '../Node';
   
   import Nodes from '../Nodes/Nodes.svelte';
@@ -7,6 +9,7 @@
   import './Editor.scss';
   
   export let nodes: Record<string, NodeBlueprint>;
+  export let state: EditorState | undefined = undefined;
   
   export let appearance: 'light' | 'dark' | 'auto' = 'auto';
   export let style = '';
@@ -15,5 +18,5 @@
 </script>
 
 <div class={`function-junction-editor function-junction-appearance-${$appearanceClassName}`} {style}>
-  <Nodes {nodes} on:ready />
+  <Nodes {nodes} bind:state on:ready />
 </div>

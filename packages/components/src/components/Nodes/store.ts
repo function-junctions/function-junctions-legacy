@@ -10,7 +10,7 @@ export const nodeMoving = writable<boolean>(false);
 export const nodesContainerMoving = writable<boolean>(false);
 export const selectedNode = writable<string>();
 
-export const nodesCoordinates: DragPoints = writable({
+export const nodesCoordinates: Writable<DragPoints> = writable({
   left: 0,
   top: 0,
   originX: 0,
@@ -21,3 +21,5 @@ export const nodesCoordinates: DragPoints = writable({
 });
 
 export const nodesState = writable<NodesState>({});
+
+export const nodesStateRestored = writable(false);

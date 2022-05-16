@@ -1,5 +1,6 @@
 <script lang="ts">
   import type { NodeBlueprint, SocketBlueprint } from '@function-junction/components/src/components';
+  import type { EditorState } from '@function-junction/components/src/components/Editor';
 
   import './App.scss';
 
@@ -7,6 +8,10 @@
 
   import NumberNode from './components/NumberNode.svelte';
   import MathNode from './components/MathNode.svelte';
+
+  import serializedState from './state.json';
+
+  let state: EditorState = serializedState;
 
   const numberSocket: SocketBlueprint<number> = {
     type: 'number',
@@ -48,7 +53,6 @@
     Number: numberNode,
     Math: mathNode,
   };
-
 </script>
 
-<Editor {nodes} />
+<Editor {nodes} bind:state />

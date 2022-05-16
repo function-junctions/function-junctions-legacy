@@ -1,19 +1,19 @@
 import { get, Writable } from 'svelte/store';
 
-export type DragPoints = Writable<{
+export type DragPoints = {
   originX: number;
   originY: number;
   translateX: number;
   translateY: number;
   scale: number;
-}>;
+};
 
 export type Drag = {
   element: HTMLElement;
   minScale: number;
   maxScale: number;
   scaleSensitivity: number;
-  transformation: DragPoints;
+  transformation: Writable<DragPoints>;
 };
 
 export type HasPositionChanged = (position: { pos: number; prevPos: number }) => boolean;
@@ -47,7 +47,7 @@ const getTranslate: GetTranslate = ({ minScale, maxScale, scale }) => ({ pos, pr
     ? translate + (pos - prevPos * scale) * (1 - 1 / scale)
     : translate;
 
-const getMatrix: GetMatrix = ({ scale, translateX, translateY }) =>
+export const getMatrix: GetMatrix = ({ scale, translateX, translateY }) =>
   `matrix(${scale}, 0, 0, ${scale}, ${translateX}, ${translateY})`;
 
 const getScale: GetScale = ({ scale, minScale, maxScale, scaleSensitivity, deltaScale }) => {
@@ -64,12 +64,6 @@ const pan: Pan = ({ state, originX, originY }) => {
 
   state.transformation.set({
     ...transformation,
-    translateX,
-    translateY,
-  });
-
-  state.element.style.transform = getMatrix({
-    scale: transformation.scale,
     translateX,
     translateY,
   });
@@ -122,8 +116,6 @@ const canZoom: CanZoom = (state) => ({
       translate: transformation.translateY,
     });
 
-    state.element.style.transformOrigin = `${newOriginX}px ${newOriginY}px`;
-    state.element.style.transform = getMatrix({ scale: newScale, translateX, translateY });
     state.transformation.set({
       originX: newOriginX,
       originY: newOriginY,
