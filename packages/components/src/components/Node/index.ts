@@ -50,7 +50,7 @@ export type NodeState = Point & {
 
 export type OnNodeDrag = (id: string, event: MouseEvent) => void;
 
-export const getUniqueNodeId = (nodeKeys: string[]): void => {
+const getUniqueNodeId = (nodeKeys: string[]): void => {
   const id = get(uniqueNodeId);
   
   if (nodeKeys.map((key) => parseInt(key, 10)).some((key) => key === id)) {
@@ -59,15 +59,15 @@ export const getUniqueNodeId = (nodeKeys: string[]): void => {
   } 
 };
 
-export const addNode = (key: string, state?: { id: number; blueprint: NodeState; }): void => {
+export const addNode = (key: string, position?: Point, state?: { id: number; blueprint: NodeState; }): void => {
   const blueprint = get(registeredNodes)?.[key];
   const nodes = get(activeNodes);
 
   getUniqueNodeId(Object.keys(nodes));
   const id = state?.id ?? get(uniqueNodeId);
 
-  const x = state?.blueprint.x ?? 0;
-  const y = state?.blueprint.y ?? 0;
+  const x = state?.blueprint.x ?? position?.x ?? 0;
+  const y = state?.blueprint.y ?? position?.y ?? 0;
 
   const newState: NodeState = {
     type: key,

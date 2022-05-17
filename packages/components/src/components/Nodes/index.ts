@@ -28,7 +28,7 @@ export const onNodesPan = (instance: DragInstance, event: MouseEvent): void => {
 };
 
 export const restoreNodesState = (state: NodesState): void => Object.keys(state).forEach(
-  (id) => addNode(state[id].type, { id: parseInt(id, 10), blueprint: state[id] }),
+  (id) => addNode(state[id].type, { x: 0, y: 0 }, { id: parseInt(id, 10), blueprint: state[id] }),
 );
 
 export const updateNodesState = (): void => {

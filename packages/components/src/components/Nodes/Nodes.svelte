@@ -55,9 +55,8 @@
 
     void tick().then(() => {
       $nodesStateRestored = true;
+      dispatch('ready');
     });
-
-    dispatch('ready');
   }
 
   $: $activeNodes, updateNodesState();
