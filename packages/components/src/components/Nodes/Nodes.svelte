@@ -7,23 +7,22 @@
   } from '.';
   import {
     activeNodes,
-    selectedNode,
+    selectedNodes,
     nodeMoving,
     nodesCoordinates,
     nodesContainerMoving,
     registeredNodes,
     nodesState,
     nodesStateRestored,
+    lastSelectedNode,
   } from './store';
   import { getMatrix } from '../Drag';
   import { EditorState } from '../Editor';
   import { showLiveConnection, liveConnectionPoints } from '../Connection/store';
   import Connections from '../Connections/Connections.svelte';
-  import { NodeBlueprint, onNodeDrag } from '../Node';
+  import { NodeBlueprint, onNodeDrag, Node as NodeType } from '../Node';
   import Node from '../Node/Node.svelte';
-  import { createEventDispatcher, tick } from 'svelte';
-
-  const dispatch = createEventDispatcher();
+  import { tick } from 'svelte';
 
   import './Nodes.scss';
 
@@ -34,7 +33,14 @@
     nodes: {},
     coordinates: $nodesCoordinates,
   };
+  
+  export let multiselect = true;
 
+  export let onEditorContextMenu: ((event: MouseEvent) => void) | undefined = undefined;
+  export let onNodeContextMenu: ((event: MouseEvent, node: NodeType) => void) | undefined = undefined;
+
+  export let onReady: (() => void) | undefined = undefined;
+  
   $nodesCoordinates = state.coordinates;
   let propState = state;
 
@@ -55,7 +61,7 @@
 
     void tick().then(() => {
       $nodesStateRestored = true;
-      dispatch('ready');
+      onReady && onReady();
     });
   }
 
@@ -64,6 +70,7 @@
     nodes: $nodesState,
     coordinates: $nodesCoordinates,
   };
+
   $: console.log(JSON.stringify(state));
 </script>
 
@@ -76,13 +83,17 @@
   on:mousemove={(event) => {
     if ($nodesContainerMoving && !$nodeMoving) {
       onNodesPan(instance, event);
-    } else if ($nodesContainerMoving && $nodeMoving && $selectedNode) {
-      onNodeDrag($selectedNode, event);
+    } else if ($nodesContainerMoving && $nodeMoving && $selectedNodes) {
+      $selectedNodes.forEach((node) => onNodeDrag(node, event));
     }
   }}
   on:click={() => $liveConnectionPoints && ($showLiveConnection = false)}
   on:wheel={(event) => onNodesWheel(instance, event)}
-  on:mousedown={() => ($nodesContainerMoving = true)}
+  on:mousedown={(event) => {
+    if (event.button === 2) return;
+    $nodesContainerMoving = true;
+  }}
+  on:contextmenu={(event) => onEditorContextMenu && onEditorContextMenu(event)}
 >
   <div
     class="function-junction-nodes-zoom"
@@ -109,9 +120,25 @@
           y: $activeNodes[key].y,
         }}
         color={$activeNodes[key].color}
-        selected={$selectedNode === key}
-        on:mousedown={() => {
-          $selectedNode = key;
+        selected={$selectedNodes.some((selectedNodeId) => key === selectedNodeId)}
+        on:contextmenu={(event) => {
+          event.stopPropagation();
+          if (onNodeContextMenu) onNodeContextMenu(event, $activeNodes[key]);
+        }}
+        on:mousedown={(event) => {
+          if (event.button === 2) return;
+          if (
+            event.shiftKey
+            && multiselect
+            && !$selectedNodes.some((selectedNodeId) => key === selectedNodeId)
+          ) {
+            $selectedNodes = [...$selectedNodes, key];
+          } else {
+            $selectedNodes = [key];
+          }
+
+          $lastSelectedNode = key;
+          
           $nodeMoving = true;
         }}
       />

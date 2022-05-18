@@ -15,7 +15,7 @@ import {
   nodeMoving,
   nodesCoordinates,
   activeNodes,
-  selectedNode,
+  selectedNodes,
   registeredNodes,
   nodesState,
 } from '../Nodes/store';
@@ -50,21 +50,11 @@ export type NodeState = Point & {
 
 export type OnNodeDrag = (id: string, event: MouseEvent) => void;
 
-const getUniqueNodeId = (nodeKeys: string[]): void => {
-  const id = get(uniqueNodeId);
-  
-  if (nodeKeys.map((key) => parseInt(key, 10)).some((key) => key === id)) {
-    uniqueNodeId.set(id + 1);
-    getUniqueNodeId(nodeKeys);
-  } 
-};
-
 export const addNode = (key: string, position?: Point, state?: { id: number; blueprint: NodeState; }): void => {
   const blueprint = get(registeredNodes)?.[key];
   const nodes = get(activeNodes);
 
-  getUniqueNodeId(Object.keys(nodes));
-  const id = state?.id ?? get(uniqueNodeId);
+  const id = state?.id ?? Object.keys(nodes).length;
 
   const x = state?.blueprint.x ?? position?.x ?? 0;
   const y = state?.blueprint.y ?? position?.y ?? 0;
@@ -77,8 +67,8 @@ export const addNode = (key: string, position?: Point, state?: { id: number; blu
 
   if (blueprint) {
     // Add node to active nodes list
-    activeNodes.set({
-      ...nodes,
+    activeNodes.update((prevActiveNodes) => ({
+      ...prevActiveNodes,
       [id]: {
         inputs: (() => {
           const inputs: InputSockets<Record<string, any>> = {};
@@ -148,7 +138,7 @@ export const addNode = (key: string, position?: Point, state?: { id: number; blu
         component: blueprint.component,
         color: blueprint.color,
       },
-    });
+    }));
 
     nodesState.update((prevNodesState) => ({
       ...prevNodesState,
@@ -158,21 +148,21 @@ export const addNode = (key: string, position?: Point, state?: { id: number; blu
 };
 
 export const onNodeDrag: OnNodeDrag = (id, event) => {
-  if (get(nodeMoving) && get(selectedNode) === id) {
+  if (get(nodeMoving) && get(selectedNodes).some((selectedNodeId) => id === selectedNodeId)) {
     const node = get(activeNodes)[id];
 
     // Get z coordinate to determine scale so nodes travel faster with scale
     const { scale } = get(nodesCoordinates);
 
     if (node) {
-      activeNodes.set({
-        ...get(activeNodes),
+      activeNodes.update((prevActiveNode) => ({
+        ...prevActiveNode,
         [id]: {
           ...node,
           x: node.x + event.movementX / scale,
           y: node.y + event.movementY / scale,
         },
-      });
+      }));
     }
   }
 };

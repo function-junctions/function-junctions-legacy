@@ -8,7 +8,8 @@ export const activeNodes: Writable<Record<string, Node>> = writable({});
 
 export const nodeMoving = writable<boolean>(false);
 export const nodesContainerMoving = writable<boolean>(false);
-export const selectedNode = writable<string>();
+export const selectedNodes = writable<string[]>([]);
+export const lastSelectedNode = writable<string>();
 
 export const nodesCoordinates: Writable<DragPoints> = writable({
   left: 0,

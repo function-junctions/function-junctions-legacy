@@ -1,5 +1,9 @@
 <script lang="ts">
-  import type { NodeBlueprint, SocketBlueprint } from '@function-junction/components/src/components';
+  import {
+    addNode,
+    NodeBlueprint,
+    SocketBlueprint,
+  } from '@function-junction/components/src/components';
   import type { EditorState } from '@function-junction/components/src/components/Editor';
 
   import './App.scss';
@@ -55,4 +59,13 @@
   };
 </script>
 
-<Editor {nodes} bind:state />
+<Editor
+  {nodes}
+  bind:state
+  onEditorContextMenu={(event) => {
+    event.preventDefault();
+
+    addNode('Math', { x: event.clientX, y: event.clientY });
+  }}
+  onNodeContextMenu={() => console.log('node contextmenu')}
+/>

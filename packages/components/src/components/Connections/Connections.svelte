@@ -29,8 +29,8 @@
                       y: input.coordinates.y,
                     },
                     p2: {
-                      x: output.coordinates.x,
-                      y: output.coordinates.y,
+                      x: output.coordinates?.x,
+                      y: output.coordinates?.y,
                     },
                   },
                 ];

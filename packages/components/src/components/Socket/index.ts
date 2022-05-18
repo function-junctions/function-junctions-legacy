@@ -82,8 +82,8 @@ export const createInputSocket = <T>(
         outputs: {
           ...prevActiveNodes[connectedNodeId]?.outputs,
           [connectedSocketId]: {
-            ...prevActiveNodes[connectedNodeId].outputs?.[connectedSocketId],
-            trigger: !prevActiveNodes[connectedNodeId].outputs?.[connectedSocketId].trigger,
+            ...prevActiveNodes[connectedNodeId]?.outputs?.[connectedSocketId],
+            trigger: !prevActiveNodes[connectedNodeId]?.outputs?.[connectedSocketId].trigger,
           },
         },
       },
@@ -103,7 +103,7 @@ export const createInputSocket = <T>(
           prevConnectedSocketId = connectedSocketId;
   
           if (nodes) {
-            const connectedSocket = nodes[connectedNodeId].outputs?.[connectedSocketId];
+            const connectedSocket = nodes[connectedNodeId]?.outputs?.[connectedSocketId];
     
             if (connectedSocket && connectedSocket.type === type) {
               valueUnsubscribe = connectedSocket.value.subscribe((value) => {

@@ -27,6 +27,7 @@
   style={`transform: translate(${coordinates.x}px, ${coordinates.y}px)`}
   on:click
   on:mousedown
+  on:contextmenu
 >
   <div class="function-junction-node-title" style={`background: ${color ?? 'linear-gradient(#228cfd, #007aff)'}`}>{title}</div>
   <div class="function-junction-node-content">
