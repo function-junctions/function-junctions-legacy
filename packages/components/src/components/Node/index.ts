@@ -50,7 +50,7 @@ export type NodeState = Point & {
 
 export type OnNodeDrag = (id: string, event: MouseEvent) => void;
 
-export const addNode = (key: string, position?: Point, state?: { id: number; blueprint: NodeState; }): void => {
+export const addNode = (key: string, position?: Point, state?: { id?: number; blueprint: NodeState; }): void => {
   const blueprint = get(registeredNodes)?.[key];
   const nodes = get(activeNodes);
   
@@ -147,6 +147,26 @@ export const addNode = (key: string, position?: Point, state?: { id: number; blu
       ...prevNodesState,
       [id]: newState,
     }));
+  }
+};
+
+export const deleteNode = (id: string): void => {
+  const nodes = Object.keys(get(activeNodes)).reduce((newNodes: Record<string, Node>, key) => {
+    if (key !== id) newNodes[key] = nodes[key];
+    return newNodes;
+  }, {});
+
+  activeNodes.set(nodes);
+};
+
+export const cloneNode = (id: string, position?: Point): void => {
+  const node = get(activeNodes)[id];
+  const state = get(nodesState)[id];
+
+  if (state) {
+    addNode(node.type, position, { blueprint: state });
+  } else {
+    throw new Error('Cannot clone node that does not exist');
   }
 };
 

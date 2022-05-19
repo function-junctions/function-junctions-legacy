@@ -41,10 +41,12 @@
 
   export let onReady: (() => void) | undefined = undefined;
   
-  $nodesCoordinates = state.coordinates;
+  
   let propState = state;
-
+  
   let zoomRef: HTMLDivElement;
+  
+  $nodesCoordinates = state.coordinates;
   
   $: instance = Drag({
     scaleSensitivity: 100,
@@ -53,7 +55,7 @@
     element: zoomRef,
     transformation: nodesCoordinates,
   });
-
+  
   $: $registeredNodes = nodes;
   
   $: if ($registeredNodes) {
