@@ -5,6 +5,7 @@
     SocketBlueprint,
   } from '@function-junction/components/src/components';
   import type { EditorState } from '@function-junction/components/src/components/Editor';
+  import { App } from 'framework7-svelte';
 
   import './App.scss';
 
@@ -59,13 +60,19 @@
   };
 </script>
 
-<Editor
-  {nodes}
-  bind:state
-  onEditorContextMenu={(event) => {
-    event.preventDefault();
-
-    addNode('Math', { x: event.clientX, y: event.clientY });
-  }}
-  onNodeContextMenu={() => console.log('node contextmenu')}
-/>
+<App {...{
+  theme: 'ios',
+  autoDarkMode: true,
+  name: 'Kitchen Sink',
+}}>
+  <Editor
+    {nodes}
+    bind:state
+    onEditorContextMenu={(event) => {
+      event.preventDefault();
+  
+      addNode('Math', { x: event.clientX, y: event.clientY });
+    }}
+    onNodeContextMenu={() => console.log('node contextmenu')}
+  />
+</App>

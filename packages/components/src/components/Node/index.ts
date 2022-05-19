@@ -19,7 +19,6 @@ import {
   registeredNodes,
   nodesState,
 } from '../Nodes/store';
-import { uniqueNodeId } from './store';
 
 export type NodeBlueprint<
   I extends Record<string, SocketBlueprint> = Record<string, SocketBlueprint>,
@@ -46,6 +45,7 @@ export type NodeState = Point & {
   type: string;
   inputs?: Record<string, InputSocketState>;
   outputs?: Record<string, OutputSocketState>;
+  store?: Record<string, unknown>;
 }
 
 export type OnNodeDrag = (id: string, event: MouseEvent) => void;
@@ -53,16 +53,19 @@ export type OnNodeDrag = (id: string, event: MouseEvent) => void;
 export const addNode = (key: string, position?: Point, state?: { id: number; blueprint: NodeState; }): void => {
   const blueprint = get(registeredNodes)?.[key];
   const nodes = get(activeNodes);
+  
+  const { scale } = get(nodesCoordinates);
 
   const id = state?.id ?? Object.keys(nodes).length;
 
-  const x = state?.blueprint.x ?? position?.x ?? 0;
-  const y = state?.blueprint.y ?? position?.y ?? 0;
+  const x = state?.blueprint.x ?? ((position?.x ?? 0) / scale);
+  const y = state?.blueprint.y ?? ((position?.y ?? 0) / scale);
 
   const newState: NodeState = {
     type: key,
     x,
     y,
+    store: state?.blueprint?.store,
   };
 
   if (blueprint) {

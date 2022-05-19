@@ -8,6 +8,7 @@
   import { InputSockets, OutputSockets } from '../Sockets';
 
   import Socket from '../Socket/Socket.svelte';
+import { nodesState } from '../Nodes/store';
   
   export let title: string;
   export let id: string;
@@ -20,6 +21,10 @@
   export let coordinates: Point;
 
   export let selected = false;
+
+  export let store: Record<string, unknown> | undefined = $nodesState[id].store;
+
+  $: $nodesState[id].store = store;
 </script>
 
 <div
@@ -45,7 +50,12 @@
       </div>
     {/if}
     <div class="function-junction-node-content">
-      <svelte:component this={component} {inputs} {outputs} />
+      <svelte:component
+        this={component}
+        {inputs}
+        {outputs}
+        bind:store
+      />
     </div>
     {#if inputs}
       <div class="function-junction-node-inputs">

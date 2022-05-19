@@ -2468,20 +2468,20 @@ form-data@~2.3.2:
     combined-stream "^1.0.6"
     mime-types "^2.1.12"
 
-framework7-icons@^5.0.3:
+framework7-icons@^5.0.5:
   version "5.0.5"
   resolved "https://registry.yarnpkg.com/framework7-icons/-/framework7-icons-5.0.5.tgz#a067709755054c69c22318de94c92bca40f3a908"
   integrity sha512-bvHMLyujV9TFuudehd3ORZ/EvNp19Ir3ckVzYAOf3MkLymHba/9oHLsgopCh0x5UsrYZUpkrE+fd7ggj5y4wRw==
 
-framework7-svelte@^7.0.2:
-  version "7.0.2"
-  resolved "https://registry.yarnpkg.com/framework7-svelte/-/framework7-svelte-7.0.2.tgz#f18e576e733a379a36b2fc71a57afce79218af16"
-  integrity sha512-Kn++X1hXoiipTlS/m5OOlbLYHb/QwyVEpIEV+fcHPV9JBr1/COW2gynlfPyU09hVG82EVbqlPE7qEBypXKQkHA==
+framework7-svelte@^7.0.3:
+  version "7.0.3"
+  resolved "https://registry.yarnpkg.com/framework7-svelte/-/framework7-svelte-7.0.3.tgz#ec7d7d5d2484746716f33e0b7182a33cc3bdd414"
+  integrity sha512-hgzRWAEvDQjwsGNhEfCj6qmXXZh3SGIoWEdalu2QFuVPIxGqOrThKa+acpwBlBj8YeH62RmDaEWIE/4RybyiqQ==
 
-framework7@^7.0.2:
-  version "7.0.2"
-  resolved "https://registry.yarnpkg.com/framework7/-/framework7-7.0.2.tgz#e22daeb77d0f8a2ab2cc36ee9b1327f7081719f3"
-  integrity sha512-LDjHItZ1+47wWYhItL95zqRDvfvl/5Lj7qGTPCFLO2U6/JrdYWbl2erkU8+KHwgSnB4tbDvLixWVlqOPCWbpZg==
+framework7@^7.0.3:
+  version "7.0.3"
+  resolved "https://registry.yarnpkg.com/framework7/-/framework7-7.0.3.tgz#9a01afcabd04709bf19ca9596ddeb1c257246511"
+  integrity sha512-VgkJydDqj6RogwgdckLW3h74zn9Fizy5/1ULLT8tZ10oa9qowNllpBCTyKujL8TZ3fKRS5uBd/61QHtBvEZ+VQ==
   dependencies:
     dom7 "^4.0.4"
     htm "^3.1.0"

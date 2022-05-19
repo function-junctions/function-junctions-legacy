@@ -11,7 +11,9 @@
     "@function-junction/components": "^0.1.0",
     "date-fns": "^2.23.0",
     "deepmerge": "^4.2.2",
-    "framework7-icons": "^5.0.3"
+    "framework7": "^7.0.3",
+    "framework7-icons": "^5.0.5",
+    "framework7-svelte": "^7.0.3"
   },
   "devDependencies": {
     "@typescript-eslint/parser": "^4.28.5",
@@ -23,9 +25,6 @@
     "eslint-plugin-autofix": "^1.0.5",
     "eslint-plugin-import-newlines": "^1.1.4",
     "eslint-plugin-svelte3": "^3.2.0",
-    "framework7": "^7.0.2",
-    "framework7-icons": "^5.0.5",
-    "framework7-svelte": "^7.0.2",
     "sass": "^1.35.1",
     "svelte": "^3.37.0",
     "svelte-check": "^2.1.0",

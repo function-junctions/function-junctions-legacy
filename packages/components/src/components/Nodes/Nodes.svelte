@@ -71,7 +71,7 @@
     coordinates: $nodesCoordinates,
   };
 
-  $: console.log(JSON.stringify(state));
+  $: console.log($nodesState);
 </script>
 
 <div
