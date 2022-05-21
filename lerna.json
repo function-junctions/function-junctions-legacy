@@ -2,6 +2,7 @@
     "npmClient": "yarn",
     "packages": [
       "packages/components/**",
+      "packages/prototype/**",
       "packages/kitchen-sink/**"
     ],
     "useWorkspaces": true,

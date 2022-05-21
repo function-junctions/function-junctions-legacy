@@ -4,7 +4,7 @@
     InputSocket,
     OutputSocket,
     OutputSockets,
-  } from '@function-junction/components/src/components';
+  } from '@function-junction/components/src/types';
 
   import { List, ListInput } from 'framework7-svelte';
 

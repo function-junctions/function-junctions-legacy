@@ -1,151 +1,150 @@
 <script lang="ts">
-  import {
-    onNodesWheel,
-    onNodesPan,
-    restoreNodesState,
-    updateNodesState,
-  } from '.';
-  import {
-    activeNodes,
-    selectedNodes,
-    nodeMoving,
-    nodesCoordinates,
-    nodesContainerMoving,
-    registeredNodes,
-    nodesState,
-    nodesStateRestored,
-    lastSelectedNode,
-  } from './store';
-  import { getMatrix } from '../Drag';
-  import { EditorState } from '../Editor';
-  import { showLiveConnection, liveConnectionPoints } from '../Connection/store';
-  import Connections from '../Connections/Connections.svelte';
-  import { NodeBlueprint, onNodeDrag, Node as NodeType } from '../Node';
+  import { Editor, EditorState } from '../Editor';
+  import Drag, { getMatrix } from '../Drag';
   import Node from '../Node/Node.svelte';
-  import { tick } from 'svelte';
+  import Connections from '../Connections/Connections.svelte';
 
   import './Nodes.scss';
-
-  import Drag from '../Drag';
-    
-  export let nodes: Record<string, NodeBlueprint>;
-  export let state: EditorState = {
-    nodes: {},
-    coordinates: $nodesCoordinates,
-  };
   
-  export let multiselect = true;
-
-  export let onEditorContextMenu: ((event: MouseEvent) => void) | undefined = undefined;
-  export let onNodeContextMenu: ((event: MouseEvent, node: NodeType) => void) | undefined = undefined;
+  export let editor: Editor;
+  export let state: EditorState | undefined;
+  
+  export let multiselect: boolean;
+  export let zoomable: boolean;
+  export let pannable: boolean;
+  export let moveable: boolean;
 
   export let onReady: (() => void) | undefined = undefined;
-  
-  
-  let propState = state;
-  
-  let zoomRef: HTMLDivElement;
-  
-  $nodesCoordinates = state.coordinates;
-  
-  $: instance = Drag({
+
+  let ref: HTMLDivElement;
+
+  const { position } = editor;
+  const { current: nodes, selected: selectedNodesIds } = editor.nodes;
+  const { restored: stateRestored, nodes: nodesState } = editor.state;
+  const { show: showLiveConnection, state: liveConnectionState } = editor.connection;
+
+  let nodeMoving = false;
+  let containerMoving = false;
+
+  $: drag = Drag({
     scaleSensitivity: 100,
     minScale: .1,
     maxScale: 30,
-    element: zoomRef,
-    transformation: nodesCoordinates,
+    element: ref,
+    transformation: position,
   });
-  
-  $: $registeredNodes = nodes;
-  
-  $: if ($registeredNodes) {
-    if (propState.nodes) restoreNodesState(propState.nodes);
 
-    void tick().then(() => {
-      $nodesStateRestored = true;
-      onReady && onReady();
-    });
-  }
+  $: $nodes, (() => {
+    if (stateRestored) editor.updateState();
+  })();
 
-  $: $activeNodes, updateNodesState();
-  $: $nodesState, $nodesCoordinates, state = {
+  $: $nodesState, $position, state = {
     nodes: $nodesState,
-    coordinates: $nodesCoordinates,
+    position: $position,
   };
 
-  $: console.log($nodesState);
+  $: if (stateRestored) onReady && onReady();
 </script>
 
 <div
   class="function-junction-nodes"
-  on:mouseup={() => {
-    $nodeMoving = false;
-    $nodesContainerMoving = false;
-  }}
-  on:mousemove={(event) => {
-    if ($nodesContainerMoving && !$nodeMoving) {
-      onNodesPan(instance, event);
-    } else if ($nodesContainerMoving && $nodeMoving && $selectedNodes) {
-      $selectedNodes.forEach((node) => onNodeDrag(node, event));
+  on:click={() => $liveConnectionState && ($showLiveConnection = false)}
+  on:wheel={(event) => {    
+    if (zoomable) {
+      event.preventDefault();
+
+      const factor = 3.5;
+      drag.zoom({
+        deltaScale: Math.sign(event.deltaY) > 0 ? -factor : factor,
+        x: event.pageX,
+        y: event.pageY,
+      });
     }
   }}
-  on:click={() => $liveConnectionPoints && ($showLiveConnection = false)}
-  on:wheel={(event) => onNodesWheel(instance, event)}
   on:mousedown={(event) => {
     if (event.button === 2) return;
-    $nodesContainerMoving = true;
+    containerMoving = true;
   }}
-  on:contextmenu={(event) => onEditorContextMenu && onEditorContextMenu(event)}
+  on:mouseup={() => {
+    nodeMoving = false;
+    containerMoving = false;
+  }}
+  on:mousemove={(event) => {
+    event.preventDefault();
+
+    if (containerMoving && !nodeMoving && pannable) {
+      drag.panBy({
+        originX: event.movementX,
+        originY: event.movementY,
+      });
+    } else if (containerMoving && nodeMoving && $selectedNodesIds && moveable) {
+      $selectedNodesIds.forEach((id) => {
+        if ($selectedNodesIds.some((selectedNodeId) => id === selectedNodeId)) {
+          const node = $nodes[id];
+
+          // Get z coordinate to determine scale so nodes travel faster with scale
+          const { scale } = $position;
+
+          if (node) {
+            nodes.update((prevNode) => ({
+              ...prevNode,
+              [id]: {
+                ...node,
+                x: node.x + event.movementX / scale,
+                y: node.y + event.movementY / scale,
+              },
+            }));
+          }
+        }
+      });
+    }
+  }}
 >
   <div
     class="function-junction-nodes-zoom"
     style={`
-      transform-origin: ${$nodesCoordinates.originX}px ${$nodesCoordinates.originY}px;
+      transform-origin: ${$position.originX}px ${$position.originY}px;
       transform: ${getMatrix({
-        scale: $nodesCoordinates.scale,
-        translateX: $nodesCoordinates.translateX,
-        translateY: $nodesCoordinates.translateY,
+        scale: $position.scale,
+        translateX: $position.translateX,
+        translateY: $position.translateY,
       })}
     `}
-    bind:this={zoomRef}
+    bind:this={ref}
   >
-    <Connections />
-    {#each Object.keys($activeNodes) as key}
+    <Connections {editor} />
+    {#each Object.keys($nodes) as key}
       <Node
-        title={$activeNodes[key].type}
+        title={$nodes[key].type}
         id={key}
-        component={$activeNodes[key].component}
-        inputs={$activeNodes[key].inputs}
-        outputs={$activeNodes[key].outputs}
+        component={$nodes[key].component}
+        inputs={$nodes[key].inputs}
+        outputs={$nodes[key].outputs}
         coordinates={{
-          x: $activeNodes[key].x,
-          y: $activeNodes[key].y,
+          x: $nodes[key].x,
+          y: $nodes[key].y,
         }}
-        color={$activeNodes[key].color}
-        selected={$selectedNodes.some((selectedNodeId) => key === selectedNodeId)}
-        on:contextmenu={(event) => {
-          event.stopPropagation();
-          if (onNodeContextMenu) onNodeContextMenu(event, $activeNodes[key]);
-        }}
+        color={$nodes[key].color}
+        selected={$selectedNodesIds.some((selectedNodeId) => key === selectedNodeId)}
+        {editor}
+        bind:store={$nodesState[key].store}
         on:mousedown={(event) => {
           if (event.button === 2) return;
+          if (!moveable) return;
+
           if (
             event.shiftKey
             && multiselect
-            && !$selectedNodes.some((selectedNodeId) => key === selectedNodeId)
+            && !$selectedNodesIds.some((selectedNodeId) => key === selectedNodeId)
           ) {
-            $selectedNodes = [...$selectedNodes, key];
+            $selectedNodesIds = [...$selectedNodesIds, key];
           } else {
-            $selectedNodes = [key];
+            $selectedNodesIds = [key];
           }
-
-          $lastSelectedNode = key;
           
-          $nodeMoving = true;
+          nodeMoving = true;
         }}
       />
-      <br />
-      <br />
     {/each}
   </div>
 </div>

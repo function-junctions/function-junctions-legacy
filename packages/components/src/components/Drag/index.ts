@@ -1,6 +1,7 @@
+
 import { get, Writable } from 'svelte/store';
 
-export type DragPoints = {
+export type Position = {
   originX: number;
   originY: number;
   translateX: number;
@@ -13,7 +14,7 @@ export type Drag = {
   minScale: number;
   maxScale: number;
   scaleSensitivity: number;
-  transformation: Writable<DragPoints>;
+  transformation: Writable<Position>;
 };
 
 export type HasPositionChanged = (position: { pos: number; prevPos: number }) => boolean;

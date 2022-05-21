@@ -1,6 +1,5 @@
 <script lang="ts">
-  import { nodesCoordinates, activeNodes } from '../Nodes/store';
-  import { createSocketConnection } from '.';
+  import { Editor } from '../Editor';
 
   import './Socket.scss';
 
@@ -11,24 +10,29 @@
   export let nodeId: string;
 
   export let color: string | undefined = undefined;
+  
+  export let editor: Editor;
 
   let ref: HTMLDivElement;
   let coordinates: DOMRect;
 
-  $: $activeNodes[nodeId], $nodesCoordinates, ref, (() => {
+  const { position, readonly } = editor;
+  const { current: nodes } = editor.nodes;
+
+  $: $nodes[nodeId], $position, ref, (() => {
     if (ref) {
       coordinates = ref.getBoundingClientRect();
-      const sockets = $activeNodes[nodeId][type === 'input' ? 'inputs' : 'outputs'];
+      const sockets = $nodes[nodeId][type === 'input' ? 'inputs' : 'outputs'];
       
-      const translateX = (coordinates.left - $nodesCoordinates.translateX);
-      const translateY = (coordinates.top - $nodesCoordinates.translateY);
+      const translateX = (coordinates.left - $position.translateX);
+      const translateY = (coordinates.top - $position.translateY);
 
-      const offsetX = ($nodesCoordinates.originX * $nodesCoordinates.scale) - $nodesCoordinates.originX;
-      const offsetY = ($nodesCoordinates.originY * $nodesCoordinates.scale) - $nodesCoordinates.originY;
+      const offsetX = ($position.originX * $position.scale) - $position.originX;
+      const offsetY = ($position.originY * $position.scale) - $position.originY;
       
       if (sockets) sockets[id].coordinates = {
-        x: ((translateX + offsetX) / $nodesCoordinates.scale),
-        y: (translateY + offsetY) / $nodesCoordinates.scale,
+        x: ((translateX + offsetX) / $position.scale),
+        y: (translateY + offsetY) / $position.scale,
       };
     }
   })();
@@ -42,7 +46,7 @@
     class="function-junction-socket-connection"
     style={color ? `background: ${color}` : ''}
     bind:this={ref}
-    on:click={() => createSocketConnection({ [type]: { nodeId, socketId: id } })}
+    on:click={() => !$readonly && editor.sockets.connect(type, { nodeId, socketId: id })}
   />
   {#if type === 'input'}
     <div class="function-junction-socket-title">{title}</div>

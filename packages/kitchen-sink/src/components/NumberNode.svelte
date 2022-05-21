@@ -1,5 +1,5 @@
 <script lang="ts">
-  import type { OutputSocket, OutputSockets } from '@function-junction/components/src/components';
+  import type { OutputSocket, OutputSockets } from '@function-junction/components/src/types';
   
   export let outputs: OutputSockets<{
     Number: OutputSocket<number>;

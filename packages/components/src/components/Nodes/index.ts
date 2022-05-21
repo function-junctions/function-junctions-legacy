@@ -1,96 +1,276 @@
-import { get } from 'svelte/store';
-import { DragInstance } from '../Drag';
-import { addNode, NodeState } from '../Node';
-import { InputSocketState, OutputSocketState } from '../Socket';
-import { activeNodes, nodesState } from './store';
+import { SvelteComponentDev, tick } from 'svelte/internal';
+import { get, Writable } from 'svelte/store';
+import { Point } from '../../types';
+import { Position } from '../Drag';
+import {
+  InputSocket,
+  InputSockets,
+  InputSocketState,
+  LiveConnection,
+  OutputSocket,
+  OutputSockets,
+  OutputSocketState,
+  SocketBlueprint,
+  Sockets,
+} from '../Sockets';
 
-export type NodesState = Record<string, NodeState>;
+export type NodeBlueprint<
+  I extends Record<string, SocketBlueprint> = Record<string, SocketBlueprint>,
+  O extends Record<string, SocketBlueprint> = Record<string, SocketBlueprint>
+> = {
+  inputs?: I;
+  outputs?: O;
+  color?: string;
+  component: typeof SvelteComponentDev;
+}
 
-export const onNodesWheel = (instance: DragInstance, event: WheelEvent): void => {
-  event.preventDefault();
-
-  const factor = 3.5;
-
-  instance.zoom({
-    deltaScale: Math.sign(event.deltaY) > 0 ? -factor : factor,
-    x: event.pageX,
-    y: event.pageY,
-  });
+export type Node<
+  I extends InputSockets<Record<string, InputSocket<any>>> = Record<string, InputSocket<any>>,
+  O extends OutputSockets<Record<string, OutputSocket<any>>> = Record<string, OutputSocket<any>>
+> = Point & {
+  inputs?: I;
+  outputs?: O;
+  component: typeof SvelteComponentDev;
+  type: string;
+  color?: string;
 };
 
-export const onNodesPan = (instance: DragInstance, event: MouseEvent): void => {
-  event.preventDefault();
+export type NodeState = Point & {
+  type: string;
+  inputs?: Record<string, InputSocketState>;
+  outputs?: Record<string, OutputSocketState>;
+  store?: Record<string, unknown>;
+}
 
-  instance.panBy({
-    originX: event.movementX,
-    originY: event.movementY,
-  });
-};
+export type CurrentNodes = {
+  registered: Writable<Record<string, NodeBlueprint>>;
+  current: Writable<Record<string, Node>>;
+  selected: Writable<string[]>;
+}
 
-export const restoreNodesState = (state: NodesState): void => Object.keys(state).forEach(
-  (id) => addNode(state[id].type, { x: 0, y: 0 }, { id: parseInt(id, 10), blueprint: state[id] }),
-);
+export type NodesState = {
+  nodes: Writable<Record<string, NodeState>>;
+  restored: Writable<boolean>;
+}
 
-export const updateNodesState = (): void => {
-  const nodes = get(activeNodes);
-  const state = get(nodesState);
+export class Nodes {
+  nodes: CurrentNodes;
+  state: NodesState;
+  connection: LiveConnection;
+  position: Writable<Position>;
+  readonly: Writable<boolean>;
 
-  let newState: NodesState = {};
-
-  Object.keys(nodes).forEach((id) => {
-    newState = {
-      ...newState,
-      [id]: {
-        ...state[id],
-        x: nodes[id].x,
-        y: nodes[id].y,
-        inputs: {
-          ...state[id].inputs,
-          ...(() => {
-            let inputs: Record<string, InputSocketState> = {};
-
-            Object.keys(nodes[id]?.inputs ?? {}).forEach((inputId) => {
-              const value = nodes[id].inputs?.[inputId].value;
-              const type = nodes[id].inputs?.[inputId].type ?? '';
-              const connection = nodes[id].inputs?.[inputId]?.connection;
+  sockets: Sockets;
   
-              inputs = {
-                ...inputs,
-                [inputId]: {
-                  type,
-                  value: value ? get(value) : undefined,
-                  connection: connection ? get(connection) : undefined,
-                },
-              };
-            });
+  constructor (
+    position: Writable<Position>,
+    nodes: CurrentNodes,
+    state: NodesState,
+    connection: LiveConnection,
+    readonly: Writable<boolean>,
+  ) {
+    this.position = position;
+    this.nodes = nodes;
+    this.state = state;
+    this.connection = connection;
+    this.readonly = readonly;
 
-            return inputs;
-          })(),
-        },
-        outputs: {
-          ...state[id].outputs,
-          ...(() => {
-            let outputs: Record<string, OutputSocketState> = {};
+    this.sockets = new Sockets(position, nodes.current, connection);
 
-            Object.keys(nodes[id]?.outputs ?? {}).forEach((outputId) => {
-              const value = nodes[id].outputs?.[outputId].value;
-              const type = nodes[id].outputs?.[outputId].type ?? '';
+    this.restoreState(get(this.state.nodes));
+  }
+
+  public addNode = (key: string, position?: Point, state?: { id?: number; blueprint: NodeState; }): void => {
+    const blueprint = get(this.nodes.registered)?.[key];
+    const nodes = get(this.nodes.current);
+    
+    const { scale } = get(this.position);
   
-              outputs = {
-                ...outputs,
-                [outputId]: {
-                  type,
-                  value: value ? get(value) : undefined,
-                },
-              };
-            });
-
-            return outputs;
-          })(),
-        },
-      },
+    const id = state?.id ?? Object.keys(nodes).length;
+  
+    const x = state?.blueprint.x ?? ((position?.x ?? 0) / scale);
+    const y = state?.blueprint.y ?? ((position?.y ?? 0) / scale);
+  
+    const newState: NodeState = {
+      type: key,
+      x,
+      y,
+      store: state?.blueprint?.store,
     };
-  });
+  
+    if (blueprint) {
+      // Add node to active nodes list
+      this.nodes.current.update((prevNodes) => ({
+        ...prevNodes,
+        [id]: {
+          inputs: (() => {
+            const inputs: InputSockets<Record<string, any>> = {};
+        
+            if (blueprint.inputs) {
+              Object.keys(blueprint.inputs ?? {}).map((inputKey) => {
+                const inputBlueprint = blueprint.inputs?.[inputKey];
+                const inputState = state?.blueprint.inputs?.[inputKey];
+  
+                if (inputBlueprint) {
+                  const type = inputBlueprint.type;
+                  const defaultValue = inputBlueprint?.defaultValue;
+                  const connection = state?.blueprint.inputs?.[inputKey].connection;
+  
+                  newState.inputs = {
+                    ...newState.inputs,
+                    [inputKey]: {
+                      type,
+                      value: defaultValue,
+                      connection,
+                    },
+                  };
+  
+                  inputs[inputKey] = this.sockets.createInput(
+                    type,
+                    defaultValue,
+                    {
+                      connection,
+                      value: inputState?.value,
+                    },
+                  );
+                }
+              });
+            }
+        
+            return Object.keys(inputs).length > 0 ? inputs : undefined;
+          })(),
+          outputs: (() => {
+            const outputs: OutputSockets<Record<string, any>> = {};
+            
+            if (blueprint.outputs) {
+              Object.keys(blueprint.outputs ?? {}).map((outputKey) => {
+                const outputBlueprint = blueprint.outputs?.[outputKey];
+                const outputState = state?.blueprint.outputs?.[outputKey];
+  
+                if (outputBlueprint) {
+                  const type = outputBlueprint.type;
+                  const defaultValue = outputState?.value ?? outputBlueprint?.defaultValue;
+  
+                  newState.outputs = {
+                    ...newState.outputs,
+                    [outputKey]: {
+                      type,
+                      value: defaultValue,
+                    },
+                  };
+  
+                  outputs[outputKey] = this.sockets.createOutput(type, defaultValue);
+                }
+              });
+            }
+            return Object.keys(outputs).length > 0 ? outputs : undefined;
+          })(),
+          type: key,
+          x,
+          y,
+          component: blueprint.component,
+          color: blueprint.color,
+        },
+      }));
+  
+      this.state.nodes.update((prevNodesState) => ({
+        ...prevNodesState,
+        [id]: newState,
+      }));
+    }
+  }
 
-  nodesState.set(newState);
-};
+  public deleteNode = (id: string): void => {
+    const nodes = Object.keys(get(this.nodes.current)).reduce((newNodes: Record<string, Node>, key) => {
+      if (key !== id) newNodes[key] = nodes[key];
+      return newNodes;
+    }, {});
+  
+    this.nodes.current.set(nodes);
+  }
+
+  public cloneNode = (id: string, position?: Point): void => {
+    const node = get(this.nodes.current)[id];
+    const state = get(this.state.nodes)[id];
+  
+    if (state) {
+      this.addNode(node.type, position, { blueprint: state });
+    } else {
+      throw new Error('Cannot clone node that does not exist');
+    }
+  }
+
+  private restoreState = (state: Record<string, NodeState>): void => {
+    Object.keys(state).forEach(
+      (id) => this.addNode(state[id].type, { x: 0, y: 0 }, { id: parseInt(id, 10), blueprint: state[id] }),
+    );
+
+    void tick().then(() => {
+      this.state.restored.set(true);
+    });
+  };
+
+  public updateState = (): void => {
+    const nodes = get(this.nodes.current);
+    const state = get(this.state.nodes);
+  
+    let newState: Record<string, NodeState> = {};
+  
+    Object.keys(nodes).forEach((id) => {
+      newState = {
+        ...newState,
+        [id]: {
+          ...state[id],
+          x: nodes[id].x,
+          y: nodes[id].y,
+          inputs: {
+            ...state[id].inputs,
+            ...(() => {
+              let inputs: Record<string, InputSocketState> = {};
+  
+              Object.keys(nodes[id]?.inputs ?? {}).forEach((inputId) => {
+                const value = nodes[id].inputs?.[inputId].value;
+                const type = nodes[id].inputs?.[inputId].type ?? '';
+                const connection = nodes[id].inputs?.[inputId]?.connection;
+    
+                inputs = {
+                  ...inputs,
+                  [inputId]: {
+                    type,
+                    value: value ? get(value) : undefined,
+                    connection: connection ? get(connection) : undefined,
+                  },
+                };
+              });
+  
+              return inputs;
+            })(),
+          },
+          outputs: {
+            ...state[id].outputs,
+            ...(() => {
+              let outputs: Record<string, OutputSocketState> = {};
+  
+              Object.keys(nodes[id]?.outputs ?? {}).forEach((outputId) => {
+                const value = nodes[id].outputs?.[outputId].value;
+                const type = nodes[id].outputs?.[outputId].type ?? '';
+    
+                outputs = {
+                  ...outputs,
+                  [outputId]: {
+                    type,
+                    value: value ? get(value) : undefined,
+                  },
+                };
+              });
+  
+              return outputs;
+            })(),
+          },
+        },
+      };
+    });
+  
+    this.state.nodes.set(newState);
+  }
+}

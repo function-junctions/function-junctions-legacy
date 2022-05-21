@@ -7,7 +7,7 @@
 
   let ref: SVGSVGElement;
 
-  export const createConnectionPath = (svg: SVGSVGElement, points: { p1: Point, p2: Point }, curvature = 0.4): void => {
+  const createConnectionPath = (svg: SVGSVGElement, points: { p1: Point, p2: Point }, curvature = 0.4): void => {
     const computeSVGPath = (points: { p1: Point, p2: Point }, curvature: number): string => {
       const { p1, p2 } = points;
       const { x: x1, y: y1 } = p1;

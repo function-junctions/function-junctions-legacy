@@ -1,15 +1,15 @@
 <script lang="ts">
-  import {
-    addNode,
+  import type {
+    EditorState,
     NodeBlueprint,
     SocketBlueprint,
-  } from '@function-junction/components/src/components';
-  import type { EditorState } from '@function-junction/components/src/components/Editor';
+    Editor as EditorType,
+  } from '@function-junction/components/src/types';
   import { App } from 'framework7-svelte';
 
   import './App.scss';
 
-  import Editor from '@function-junction/components/src/components/Editor/Editor.svelte';
+  import { Editor } from '@function-junction/components/src/components';
 
   import NumberNode from './components/NumberNode.svelte';
   import MathNode from './components/MathNode.svelte';
@@ -58,6 +58,8 @@
     Number: numberNode,
     Math: mathNode,
   };
+
+  let editor: EditorType;
 </script>
 
 <App {...{
@@ -68,11 +70,6 @@
   <Editor
     {nodes}
     bind:state
-    onEditorContextMenu={(event) => {
-      event.preventDefault();
-  
-      addNode('Math', { x: event.clientX, y: event.clientY });
-    }}
-    onNodeContextMenu={() => console.log('node contextmenu')}
+    bind:instance={editor}
   />
 </App>

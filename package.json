@@ -4,6 +4,7 @@
   "private": true,
   "workspaces": [
     "packages/components/**",
+    "packages/prototype/**",
     "packages/kitchen-sink/**"
   ],
   "engines": {

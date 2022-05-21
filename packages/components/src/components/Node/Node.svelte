@@ -1,14 +1,18 @@
 <script lang="ts">
   import { SvelteComponentDev } from 'svelte/internal';
   import { Point } from '../../types';
+  import { Editor } from '../Editor';
 
   import './Node.scss';
-
-  import { InputSocket, OutputSocket } from '../Socket';
-  import { InputSockets, OutputSockets } from '../Sockets';
+  
+  import {
+    InputSockets,
+    OutputSockets,
+    InputSocket,
+    OutputSocket,
+  } from '../Sockets';
 
   import Socket from '../Socket/Socket.svelte';
-import { nodesState } from '../Nodes/store';
   
   export let title: string;
   export let id: string;
@@ -22,9 +26,9 @@ import { nodesState } from '../Nodes/store';
 
   export let selected = false;
 
-  export let store: Record<string, unknown> | undefined = $nodesState[id].store;
+  export let store: Record<string, unknown> | undefined;
 
-  $: $nodesState[id].store = store;
+  export let editor: Editor;
 </script>
 
 <div
@@ -45,6 +49,7 @@ import { nodesState } from '../Nodes/store';
             id={key}
             nodeId={id}
             color={outputs[key].color}
+            {editor}
           />
         {/each}
       </div>
@@ -66,6 +71,7 @@ import { nodesState } from '../Nodes/store';
             id={key}
             nodeId={id}
             color={inputs[key].color}
+            {editor}
           />
         {/each}
       </div>
