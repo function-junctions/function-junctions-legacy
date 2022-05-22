@@ -18,7 +18,7 @@
   onMount(async () => {
     Framework7.use(Framework7Svelte);
     App = (await import('../kitchen-sink/App.svelte')).default;
-  })
+  });
 </script>
 
 <svelte:head>

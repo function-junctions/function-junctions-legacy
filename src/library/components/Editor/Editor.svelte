@@ -3,7 +3,7 @@
 </style>
 
 <script lang="ts">
-  import { type EditorState, Editor } from '.';
+  import { type EditorState, Editor as EditorClass } from '.';
 
   import type { NodeBlueprint } from '../Nodes';
   import Nodes from '../Nodes/Nodes.svelte';
@@ -23,7 +23,7 @@
   export let appearance: 'light' | 'dark' | 'auto' = 'auto';
   export let style = '';
 
-  export let instance = new Editor(nodes, state, !editable);
+  export let instance = new EditorClass(nodes, state, !editable);
 
   export let onReady: (() => void) | undefined = undefined;
   
