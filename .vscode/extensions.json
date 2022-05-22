@@ -1,7 +1,6 @@
 {
   "recommendations": [
     "svelte.svelte-vscode",
-    "graphql.vscode-graphql",
     "dbaeumer.vscode-eslint"
   ]
 }

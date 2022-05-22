@@ -1,21 +1,35 @@
 {
-  "name": "ultra",
-  "version": "0.1.0",
-  "private": true,
-  "workspaces": [
-    "packages/components/**",
-    "packages/prototype/**",
-    "packages/kitchen-sink/**"
-  ],
-  "engines": {
-    "yarn": "^1.22.10"
-  },
+  "name": "function-junctions",
+  "version": "0.0.1",
   "scripts": {
-    "components:build": "lerna run build --stream --scope @function-junction/components",
-    "kitchen-sink:start": "lerna run start --stream --scope @function-junction/kitchen-sink",
-    "kitchen-sink:build": "lerna run build --stream --scope @function-junction/kitchen-sink"
+    "start": "svelte-kit dev",
+    "build": "svelte-kit build",
+    "package": "svelte-kit package",
+    "preview": "svelte-kit preview",
+    "prepare": "svelte-kit sync",
+    "check": "svelte-check --tsconfig ./tsconfig.json",
+    "check:watch": "svelte-check --tsconfig ./tsconfig.json --watch",
+    "lint": "eslint ."
   },
   "devDependencies": {
-    "lerna": "^4.0.0"
-  }
+    "@sveltejs/adapter-auto": "next",
+    "@sveltejs/kit": "next",
+    "@typescript-eslint/eslint-plugin": "^5.10.1",
+    "@typescript-eslint/parser": "^5.10.1",
+    "eslint": "^8.12.0",
+    "eslint-plugin-autofix": "^1.1.0",
+    "eslint-plugin-import-newlines": "^1.2.2",
+    "eslint-plugin-svelte3": "^4.0.0",
+    "framework7": "^7.0.3",
+    "framework7-icons": "^5.0.5",
+    "framework7-svelte": "^7.0.3",
+    "sass": "^1.52.1",
+    "svelte": "^3.44.0",
+    "svelte-check": "^2.2.6",
+    "svelte-preprocess": "^4.10.6",
+    "svelte2tsx": "^0.5.10",
+    "tslib": "^2.3.1",
+    "typescript": "~4.6.2"
+  },
+  "type": "module"
 }

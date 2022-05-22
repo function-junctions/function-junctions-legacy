@@ -1,0 +1,42 @@
+.function-junctions-node {
+  background: white;
+  border-radius: 9px;
+  cursor: pointer;
+  display: inline-block;
+  height: auto;
+  padding-bottom: 6px;
+  box-sizing: content-box;
+  box-shadow: 4px 5px 9px rgb(142 142 147 / 50%);
+  min-width: 160px;
+  opacity: 0.7;
+  border: 1px solid rgb(99, 99, 102);
+
+  position: absolute;
+  touch-action: none;
+
+  .function-junctions-node-title {
+    color: white;
+    font-weight: 400;
+    font-family: inherit;
+    font-size: 12px;
+    border-radius: 9px 9px 0 0;
+    padding: 10px;
+    overflow: hidden;
+  }
+}
+
+.function-junctions-node:hover {
+  opacity: 1;
+}
+
+.function-junctions-node.function-junctions-node-selected {
+  opacity: 1;
+}
+
+.function-junctions-appearance-dark {
+  .function-junctions-node {
+    background: #232323;
+    border: 1px solid black;
+    box-shadow: 4px 5px 9px rgb(0 0 0 / 50%);
+  }
+}

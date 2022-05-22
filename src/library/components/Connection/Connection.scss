@@ -1,0 +1,22 @@
+.function-junctions-connection {
+  overflow: visible !important;
+  position: absolute;
+  pointer-events: none;
+  margin: 7px 3px 7px 7px;
+  transform-box: fill-box;
+
+  path {
+    fill: none;
+    stroke: rgb(199, 199, 204);
+    stroke-width: 2px;
+    pointer-events: none;
+  }
+}
+
+.function-junctions-appearance-dark {
+  .function-junctions-connection {
+    path {
+      stroke: white;
+    }
+  }
+}

@@ -8,22 +8,5 @@
     "editor.codeActionsOnSave": {
         "source.fixAll.eslint": true
     },
-    "vscode-graphql.useSchemaFileDefinitions": true,
-    "eslint.workingDirectories": [
-		{
-			"directory": "packages/**/*",
-			"changeProcessCWD": true
-		}
-    ],
-    "cSpell.words": [
-        "codegen",
-        "collapsable",
-        "comparables",
-        "deepmerge",
-        "icds",
-        "leftindust",
-        "multiselect",
-        "Pinnable",
-        "selectables"
-    ]
+    "vscode-graphql.useSchemaFileDefinitions": true
 }
