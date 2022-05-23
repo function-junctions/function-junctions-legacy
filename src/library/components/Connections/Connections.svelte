@@ -1,6 +1,6 @@
 <script lang="ts">
   import type { Point } from '../../types';
-  import { Editor } from '../Editor';
+  import type { Editor } from '../Editor';
   
   import { get } from 'svelte/store';
   import Connection from '../Connection/Connection.svelte';

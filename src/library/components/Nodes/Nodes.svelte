@@ -127,6 +127,8 @@
           y: $nodes[key].y,
         }}
         color={$nodes[key].color}
+        className={$nodes[key].className}
+        style={$nodes[key].style}
         selected={$selectedNodesIds.some((selectedNodeId) => key === selectedNodeId)}
         {editor}
         bind:store={$nodesState[key].store}

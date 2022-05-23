@@ -21,6 +21,8 @@ export type NodeBlueprint<
   inputs?: I;
   outputs?: O;
   color?: string;
+  className?: string;
+  style?: string;
   component: typeof SvelteComponentDev;
 }
 
@@ -33,6 +35,8 @@ export type Node<
   component: typeof SvelteComponentDev;
   type: string;
   color?: string;
+  className?: string;
+  style?: string;
 };
 
 export type NodeState = Point & {
@@ -170,6 +174,8 @@ export class Nodes {
           y,
           component: blueprint.component,
           color: blueprint.color,
+          className: blueprint.className,
+          style: blueprint.style,
         },
       }));
   

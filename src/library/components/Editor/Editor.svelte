@@ -3,6 +3,8 @@
 </style>
 
 <script lang="ts">
+  // Editor must be imported as EditorClass or svelte package fails to
+  // properly type props
   import { type EditorState, Editor as EditorClass } from '.';
 
   import type { NodeBlueprint } from '../Nodes';
@@ -21,7 +23,6 @@
   export let editable = true;
   
   export let appearance: 'light' | 'dark' | 'auto' = 'auto';
-  export let style = '';
 
   export let instance = new EditorClass(nodes, state, !editable);
 
@@ -34,7 +35,7 @@
   $: editable = $readonly;
 </script>
 
-<div class={`function-junctions-editor function-junctions-appearance-${$appearanceClassName}`} {style}>
+<div class={`function-junctions-editor function-junctions-appearance-${$appearanceClassName}`} {...$$restProps}>
   <Nodes
     editor={instance}
     {multiselect}

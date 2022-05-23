@@ -22,6 +22,8 @@
   export let inputs: InputSockets<Record<string, InputSocket<any>>> | undefined;
   export let outputs: OutputSockets<Record<string, OutputSocket<any>>> | undefined;
   export let color: string | undefined = undefined;
+  export let className: string | undefined = undefined;
+  export let style: string | undefined = undefined;
 
   export let component: typeof SvelteComponentDev;
   export let coordinates: Point;
@@ -34,8 +36,8 @@
 </script>
 
 <div
-  class={`function-junctions-node ${selected ? 'function-junctions-node-selected' : ''}`}
-  style={`transform: translate(${coordinates.x}px, ${coordinates.y}px)`}
+  class={`function-junctions-node ${selected ? 'function-junctions-node-selected' : ''} ${className ?? ''}`}
+  style={`${`${style};` ?? ''} transform: translate(${coordinates.x}px, ${coordinates.y}px)`}
   on:click
   on:mousedown
   on:contextmenu
