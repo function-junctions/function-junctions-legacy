@@ -129,14 +129,17 @@ export class Nodes {
                     },
                   };
   
-                  inputs[inputKey] = this.sockets.createInput(
-                    type,
-                    defaultValue,
-                    {
-                      connection,
-                      value: inputState?.value,
-                    },
-                  );
+                  inputs[inputKey] = {
+                    ...this.sockets.createInput(
+                      type,
+                      defaultValue,
+                      {
+                        connection,
+                        value: inputState?.value,
+                      },
+                    ),
+                    color: inputBlueprint.color,
+                  };
                 }
               });
             }
@@ -163,7 +166,10 @@ export class Nodes {
                     },
                   };
   
-                  outputs[outputKey] = this.sockets.createOutput(type, defaultValue);
+                  outputs[outputKey] = {
+                    ...this.sockets.createOutput(type, defaultValue),
+                    color: outputBlueprint.color,
+                  };
                 }
               });
             }
