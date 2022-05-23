@@ -21,7 +21,6 @@
   const numberSocket: SocketBlueprint<number> = {
     type: 'number',
     defaultValue: 0,
-    color: '#ff9500',
   };
   
   const numberNode: NodeBlueprint<Record<string, never>,
