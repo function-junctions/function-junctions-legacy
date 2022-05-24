@@ -160,10 +160,10 @@ export class Sockets {
     };
   };
 
-  public connect(type: 'input' | 'output', connection: { nodeId: string, socketId: string }): void {
+  public connect(type: 'input' | 'output', newConnection: { nodeId: string, socketId: string, socketType: string }): void {
     let socket: ConnectionSocket = {
       type,
-      ...connection,
+      ...newConnection,
     };
 
     const { nodeId, socketId } = socket;
@@ -175,6 +175,14 @@ export class Sockets {
 
       // Return if the socket is attempting to connect to the same node
       if (connection?.socket?.nodeId === nodeId) return;
+
+      // Return if socket is not of the same type
+      if (connection?.socket?.nodeId && connection?.socket?.socketId) {
+        const { nodeId: connectedNodeId, socketId: connectedSocketId } = connection.socket;
+        if (nodes[connectedNodeId]['outputs']?.[connectedSocketId].type !== newConnection.socketType) {
+          return;
+        }
+      }
 
       if (
         type === 'input'

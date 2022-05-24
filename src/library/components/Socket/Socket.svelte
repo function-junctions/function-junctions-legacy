@@ -12,6 +12,7 @@
 
   export let id: string;
   export let nodeId: string;
+  export let socketType: string;
 
   export let color: string | undefined = undefined;
   
@@ -50,7 +51,7 @@
     class="function-junctions-socket-connection"
     style={color ? `background: ${color}` : ''}
     bind:this={ref}
-    on:click={() => !$readonly && editor.sockets.connect(type, { nodeId, socketId: id })}
+    on:click={() => !$readonly && editor.sockets.connect(type, { nodeId, socketId: id, socketType })}
   />
   {#if type === 'input'}
     <div class="function-junctions-socket-title">{title}</div>

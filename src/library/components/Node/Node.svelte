@@ -53,6 +53,7 @@
             id={key}
             nodeId={id}
             color={outputs[key].color}
+            socketType={outputs[key].type}
             {editor}
           />
         {/each}
@@ -63,6 +64,8 @@
         this={component}
         {inputs}
         {outputs}
+        {title}
+        {id}
         bind:store
       />
     </div>
@@ -74,6 +77,7 @@
             type="input"
             id={key}
             nodeId={id}
+            socketType={inputs[key].type}
             color={inputs[key].color}
             {editor}
           />
