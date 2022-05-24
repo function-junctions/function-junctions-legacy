@@ -179,7 +179,9 @@ export class Sockets {
       // Return if socket is not of the same type
       if (connection?.socket?.nodeId && connection?.socket?.socketId) {
         const { nodeId: connectedNodeId, socketId: connectedSocketId } = connection.socket;
-        if (nodes[connectedNodeId]['outputs']?.[connectedSocketId].type !== newConnection.socketType) {
+        const oldConnectionType = nodes[connectedNodeId][socket.type === 'input' ? 'outputs' : 'inputs']
+          ?.[connectedSocketId].type;
+        if (oldConnectionType !== newConnection.socketType) {
           return;
         }
       }
