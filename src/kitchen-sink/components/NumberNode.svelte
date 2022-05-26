@@ -10,4 +10,3 @@
 
 <input type="number" bind:value={$value} />
 <br />
-<br />

@@ -21,6 +21,7 @@
   const numberSocket: SocketBlueprint<number> = {
     type: 'number',
     defaultValue: 0,
+    color: '#ff2d55',
   };
   
   const numberNode: NodeBlueprint<Record<string, never>,
@@ -58,43 +59,6 @@
     Math: mathNode,
   };
 
-  let ezState: EditorState = {
-    nodes: {
-      0: {
-        x: 40,
-        y: 107,
-        type: 'Number',
-        outputs: {
-          Number: {
-            type: 'number',
-            value: 2,
-          },
-        },
-      },
-      1: {
-        x: 300,
-        y: 127,
-        type: 'Math',
-        inputs: {
-          LHS: {
-            type: 'number',
-            connection: {
-              connectedNodeId: '0',
-              connectedSocketId: 'Number',
-            },
-          },
-          RHS: {
-            type: 'number',
-            connection: {
-              connectedNodeId: '0',
-              connectedSocketId: 'Number',
-            },
-          },
-        },
-      },
-    },
-  };
-
   let editor: EditorType;
 </script>
 
@@ -105,7 +69,7 @@
 }}>
   <Editor
     {nodes}
-    bind:state={ezState}
+    bind:state
     bind:instance={editor}
   />
 </App>
