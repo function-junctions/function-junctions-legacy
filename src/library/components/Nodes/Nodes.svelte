@@ -16,7 +16,7 @@
   export let pannable: boolean;
   export let moveable: boolean;
 
-  export let onReady: (() => void) | undefined = undefined;
+  export let onReady: ((editor: Editor) => void) | undefined = undefined;
 
   let ref: HTMLDivElement;
 
@@ -45,7 +45,7 @@
     position: $position,
   };
 
-  $: if (stateRestored) onReady && onReady();
+  $: if (stateRestored) onReady && onReady(editor);
 </script>
 
 <div

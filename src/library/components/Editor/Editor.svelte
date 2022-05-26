@@ -26,7 +26,7 @@
 
   export let instance = new EditorClass(nodes, state, !editable);
 
-  export let onReady: (() => void) | undefined = undefined;
+  export let onReady: ((editor: EditorClass) => void) | undefined = undefined;
   
   const appearanceClassName = getAppearance(appearance);
 

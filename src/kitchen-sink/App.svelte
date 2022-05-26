@@ -58,6 +58,43 @@
     Math: mathNode,
   };
 
+  let ezState: EditorState = {
+    nodes: {
+      0: {
+        x: 40,
+        y: 107,
+        type: 'Number',
+        outputs: {
+          Number: {
+            type: 'number',
+            value: 2,
+          },
+        },
+      },
+      1: {
+        x: 300,
+        y: 127,
+        type: 'Math',
+        inputs: {
+          LHS: {
+            type: 'number',
+            connection: {
+              connectedNodeId: '0',
+              connectedSocketId: 'Number',
+            },
+          },
+          RHS: {
+            type: 'number',
+            connection: {
+              connectedNodeId: '0',
+              connectedSocketId: 'Number',
+            },
+          },
+        },
+      },
+    },
+  };
+
   let editor: EditorType;
 </script>
 
@@ -68,7 +105,7 @@
 }}>
   <Editor
     {nodes}
-    bind:state
+    bind:state={ezState}
     bind:instance={editor}
   />
 </App>
