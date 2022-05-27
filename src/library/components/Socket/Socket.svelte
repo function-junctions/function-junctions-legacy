@@ -5,8 +5,6 @@
 <script lang="ts">
   import type { Editor } from '../Editor';
 
-  import './Socket.scss';
-
   export let title: string;
   export let type: 'input' | 'output';
 
