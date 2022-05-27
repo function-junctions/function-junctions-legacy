@@ -39,7 +39,6 @@ export type OutputSocket<T> = {
 
 export type InputSocketState = {
   type: string;
-  value: unknown;
   connection?: SocketConnection;
 };
 
@@ -98,7 +97,6 @@ export class Sockets {
     defaultValue?: T,
     state?: {
       connection?: SocketConnection;
-      value: T;
     },
   ): InputSocket<T> => {
     let valueUnsubscribe: Unsubscriber | undefined;
@@ -107,7 +105,7 @@ export class Sockets {
 
     const connection = writable<SocketConnection | undefined>(state?.connection);
 
-    const value = readable<T>(state?.value ?? defaultValue, (set) => {
+    const value = readable<T>(defaultValue, (set) => {
       connection.subscribe((connections) => {
         if (connections) {
           const { connectedNodeId, connectedSocketId } = connections;
@@ -122,7 +120,7 @@ export class Sockets {
               valueUnsubscribe = connectedSocket.value.subscribe((value) => {
                 this.update(connectedNodeId, connectedSocketId);
 
-                set(value);
+                set(value as T);
               });
               
               return;

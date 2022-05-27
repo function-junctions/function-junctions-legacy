@@ -11,7 +11,3 @@ it seamlessly handles reactivity and state with very little performance overhead
 <br />
 
 [To learn more visit our documentation...](https://function-junctions.io)
-
-<br />
-
-<h2>Examples</h2>

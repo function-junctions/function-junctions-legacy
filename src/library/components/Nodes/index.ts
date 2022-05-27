@@ -124,7 +124,6 @@ export class Nodes {
                     ...newState.inputs,
                     [inputKey]: {
                       type,
-                      value: defaultValue,
                       connection,
                     },
                   };
@@ -135,7 +134,6 @@ export class Nodes {
                       defaultValue,
                       {
                         connection,
-                        value: inputState?.value,
                       },
                     ),
                     color: inputBlueprint.color,
@@ -249,7 +247,6 @@ export class Nodes {
                   ...inputs,
                   [inputId]: {
                     type,
-                    value: value ? get(value) : undefined,
                     connection: connection ? get(connection) : undefined,
                   },
                 };
