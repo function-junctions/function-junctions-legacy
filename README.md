@@ -17,4 +17,5 @@ it seamlessly handles reactivity and state with very little performance overhead
 <h2>Examples</h2>
 
 [Basic example](https://stackblitz.com/edit/fjs-basic?file=src%2FApp.svelte)
+<br />
 [Example with serialized JSON](https://stackblitz.com/edit/fjs-json?file=src%2FApp.svelte)
