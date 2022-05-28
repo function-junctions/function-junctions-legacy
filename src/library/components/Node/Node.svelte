@@ -40,6 +40,7 @@
   style={`${style ? `${style};` : ''} transform: translate(${coordinates.x}px, ${coordinates.y}px)`}
   on:click
   on:mousedown
+  on:touchstart
   on:contextmenu
 >
   <div class="function-junctions-node-title" style={`background: ${color ?? 'linear-gradient(#228cfd, #007aff)'}`}>{title}</div>
