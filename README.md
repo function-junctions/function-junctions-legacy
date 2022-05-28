@@ -11,3 +11,10 @@ it seamlessly handles reactivity and state with very little performance overhead
 <br />
 
 [To learn more visit our documentation...](https://function-junctions.io)
+
+<br />
+
+<h2>Examples</h2>
+
+[Basic example](https://stackblitz.com/edit/fjs-basic?file=src%2FApp.svelte)
+[Example with serialized JSON](https://stackblitz.com/edit/fjs-json?file=src%2FApp.svelte)
