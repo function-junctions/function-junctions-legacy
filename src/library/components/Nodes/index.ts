@@ -225,6 +225,8 @@ export class Nodes {
     const state = get(this.state.nodes);
   
     let newState: Record<string, NodeState> = {};
+
+    this.connection.show.set(false);
   
     Object.keys(nodes).forEach((id) => {
       newState = {

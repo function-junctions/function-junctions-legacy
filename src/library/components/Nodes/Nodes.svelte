@@ -57,6 +57,8 @@
     };
   };
 
+  const hideLiveConnection = () => $liveConnectionState && ($showLiveConnection = false);
+
   const zoom = (event: WheelEvent) => {
     if (zoomable) {
       event.preventDefault();
@@ -80,11 +82,8 @@
       if (typeof previousDistance !== 'undefined') {
         const x = (x1 + x2) / 2;
         const y = (y1 + y2) / 2;
-        const factor = distance / 30;
-    
+        const factor = distance / 40;
         const delta = distance / previousDistance - 1;
-
-        console.log(x1, x2);
     
         dragger.zoom({
           deltaScale: Math.sign(delta) > 0 ? factor : -factor,
@@ -92,9 +91,8 @@
           y,
         });
       }
-      
+
       previousDistance = distance;
-  
     }
   };
 
@@ -200,15 +198,11 @@
   };
 
   $: if (stateRestored) onReady && onReady(editor);
-
-  document.ontouchstart = (event) => {
-    console.log(event.touches);
-  };
 </script>
 
 <div
   class="function-junctions-nodes"
-  on:click={() => $liveConnectionState && ($showLiveConnection = false)}
+  on:click={hideLiveConnection}
   on:wheel={zoom}
   on:mousedown={startDrag}
   on:mouseup={endDrag}

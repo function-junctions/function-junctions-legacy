@@ -22,6 +22,8 @@
   const { position, readonly } = editor;
   const { current: nodes } = editor.nodes;
 
+  const connect = () => !$readonly && editor.sockets.connect(type, { nodeId, socketId: id, socketType });
+
   $: $nodes[nodeId], $position, ref, (() => {
     if (ref) {
       coordinates = ref.getBoundingClientRect();
@@ -41,7 +43,10 @@
   })();
 </script>
 
-<div class={`function-junctions-socket function-junctions-socket-${type}`}>
+<div
+  class={`function-junctions-socket function-junctions-socket-${type}`}
+  on:touchstart={connect}
+>
   {#if type === 'output'}
     <div class="function-junctions-socket-title">{title}</div>
   {/if}
@@ -49,7 +54,7 @@
     class="function-junctions-socket-connection"
     style={color ? `background: ${color}` : ''}
     bind:this={ref}
-    on:click={() => !$readonly && editor.sockets.connect(type, { nodeId, socketId: id, socketType })}
+    on:click={connect}
   />
   {#if type === 'input'}
     <div class="function-junctions-socket-title">{title}</div>

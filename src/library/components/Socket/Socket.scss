@@ -1,4 +1,5 @@
 .function-junctions-socket {
+  display: flex;
   &.function-junctions-socket-output {
     text-align: right;
 
@@ -21,6 +22,7 @@
     font-size: 12px;
     margin: 4px;
     line-height: 24px;
+    width: 100%;
   }
 
   .function-junctions-socket-connection {
@@ -29,6 +31,8 @@
     border-radius: 8px;
     width: 14px;
     height: 14px;
+
+    flex-shrink: 0;
     
     vertical-align: middle;
     background: #007aff;

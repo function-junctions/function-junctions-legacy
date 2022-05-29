@@ -6,6 +6,7 @@
   // Editor must be imported as EditorClass or svelte package fails to
   // properly type props
   import { type EditorState, Editor as EditorClass } from '.';
+  import type { EditorContextMenuBlueprint, NodeContextMenuBlueprint } from '../ContextMenu';
 
   import type { NodeBlueprint } from '../Nodes';
   import Nodes from '../Nodes/Nodes.svelte';
@@ -22,6 +23,9 @@
   export let interactable = true;
   
   export let editable = true;
+
+  export let editorContextMenu: EditorContextMenuBlueprint | (() => void) | undefined = undefined;
+  export let nodeContextMenu: NodeContextMenuBlueprint | (() => void )| undefined = undefined;
   
   export let appearance: 'light' | 'dark' | 'auto' = 'auto';
 
