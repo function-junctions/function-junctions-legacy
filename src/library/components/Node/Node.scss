@@ -14,6 +14,10 @@
   position: absolute;
   touch-action: none;
 
+  &.function-junction-node-disabled {
+    pointer-events: none;
+  }
+
   .function-junctions-node-title {
     color: white;
     font-weight: 400;

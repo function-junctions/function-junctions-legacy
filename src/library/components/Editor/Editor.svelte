@@ -19,6 +19,7 @@
   export let zoomable = true;
   export let pannable = true;
   export let moveable = true;
+  export let interactable = true;
   
   export let editable = true;
   
@@ -42,6 +43,7 @@
     {zoomable}
     {pannable}
     {moveable}
+    {interactable}
     {onReady}
     bind:state
   />

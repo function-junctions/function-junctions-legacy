@@ -1,3 +1,7 @@
+<style lang="scss" global>
+  @import './Connections.scss';
+</style>
+
 <script lang="ts">
   import type { Point } from '../../types';
   import type { Editor } from '../Editor';

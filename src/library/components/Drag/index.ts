@@ -35,7 +35,7 @@ export type CanPan = (state: Drag) => {
   panTo: (positions: { originX: number, originY: number, scale: number }) => void;
 };
 export type CanZoom = (state: Drag) => {
-  zoom: (postions: { x: number, y: number, deltaScale: number }) => void;
+   zoom: (postions: { x: number, y: number, deltaScale: number }) => void;
 };
 export type DragInstance = ReturnType<CanZoom> & ReturnType<CanPan>;
 
