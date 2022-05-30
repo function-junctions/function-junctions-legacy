@@ -4,14 +4,14 @@
   position: absolute;
   z-index: 10000;
 
-  background: rgb(35, 35, 35);
+  background: white;
   box-shadow: 1px solid black;
-  border: 1px solid black;
+  border: 1px solid rgb(199, 199, 204);
   border-radius: 5px;
   cursor: pointer;
   height: auto;
   box-sizing: content-box;
-  box-shadow: 4px 5px 9px rgba(0,0,0,0.5);
+  box-shadow: 4px 5px 9px rgba(0,0,0,0.1);
   min-width: 160px;
 
   padding: 7px;
@@ -24,7 +24,7 @@
     list-style-type: none;
     margin: 0;
     padding: 0;
-    
+
     li {
       background-color: transparent;
       border-bottom: black;
@@ -35,5 +35,13 @@
         background-color: rgb(0, 125, 255);
       }
     }
+  }
+}
+
+.function-junctions-appearance-dark {
+  .function-junctions-context_menu {
+    background: rgb(35, 35, 35);
+    border: 1px solid black;
+    box-shadow: 4px 5px 9px rgba(0,0,0,0.5);
   }
 }
