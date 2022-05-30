@@ -8,6 +8,7 @@
   
   import { get } from 'svelte/store';
   import Connection from '../Connection/Connection.svelte';
+import { tick } from 'svelte';
 
   export let editor: Editor;
 
@@ -16,47 +17,49 @@
   const { restored } = editor.state;
   const { state: liveConnection, show: showLiveConnection } = editor.connection;
 
-  const getConnections = (): { p1: Point, p2: Point }[] => {
-    let connections: { p1: Point, p2: Point }[] = [];
+  const getConnections = () => {
+    let newConnections: { p1: Point, p2: Point }[] = [];
 
-    Object.keys($nodes).forEach((nodeId) => {
-      const inputs = $nodes[nodeId].inputs;
-      if (inputs) {
-        Object.keys(inputs).forEach((id) => {
-          const input = inputs?.[id];
-          if (input.connection) {
-            const connection = get(input.connection);
-
-            if (connection) {
-              const output = $nodes[connection.connectedNodeId].outputs?.[connection.connectedSocketId];
-
-              if (output) {
-                connections = [
-                  ...connections,
-                  {
-                    p1: {
-                      x: input.coordinates.x,
-                      y: input.coordinates.y,
+    void tick().then(() => {
+      Object.keys($nodes).forEach((nodeId) => {
+        const inputs = $nodes[nodeId].inputs;
+        if (inputs) {
+          Object.keys(inputs).forEach((id) => {
+            const input = inputs?.[id];
+            if (input.connection) {
+              const connection = get(input.connection);
+  
+              if (connection) {
+                const output = $nodes[connection.connectedNodeId]?.outputs?.[connection.connectedSocketId];
+  
+                if (output) {
+                  newConnections = [
+                    ...newConnections,
+                    {
+                      p1: {
+                        x: input.coordinates.x,
+                        y: input.coordinates.y,
+                      },
+                      p2: {
+                        x: output.coordinates?.x,
+                        y: output.coordinates?.y,
+                      },
                     },
-                    p2: {
-                      x: output.coordinates?.x,
-                      y: output.coordinates?.y,
-                    },
-                  },
-                ];
+                  ];
+                }
               }
             }
-          }
-        });
-      }
-    });
+          });
+        }
+      });
 
-    return connections;
+      connections = newConnections;
+    });
   };
 
-  let connections: { p1: Point, p2: Point }[];
+  let connections: { p1: Point, p2: Point }[] = [];
 
-  $: $restored, $nodes, $liveConnection, $position, (connections = getConnections());
+  $: $restored, $nodes, $liveConnection, $position, getConnections();
 </script>
 
 <div

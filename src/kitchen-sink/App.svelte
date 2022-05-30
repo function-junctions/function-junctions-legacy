@@ -16,7 +16,7 @@
 
   import serializedState from './state.json';
 
-  let state: EditorState = serializedState;
+  let state: EditorState;
 
   const numberSocket: SocketBlueprint<number> = {
     type: 'number',
@@ -68,6 +68,15 @@
 }}>
   <Editor
     {nodes}
+    editorContextMenu={{
+      nodes: true,
+    }}
+    nodeContextMenu={{
+      items: [
+        { type: 'delete' },
+        { type: 'clone' },
+      ],
+    }}
     bind:state
     bind:instance={editor}
   />

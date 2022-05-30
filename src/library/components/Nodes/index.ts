@@ -1,5 +1,5 @@
 import { SvelteComponentDev, tick } from 'svelte/internal';
-import { get, type Writable } from 'svelte/store';
+import { get, writable, type Writable } from 'svelte/store';
 import type { Point } from '../../types';
 import type { Position } from '../Drag';
 import {
@@ -84,16 +84,31 @@ export class Nodes {
     this.restoreState(get(this.state.nodes));
   }
 
-  public addNode = (key: string, position?: Point, state?: { id?: number; blueprint: NodeState; }): void => {
+  public addNode = (
+    key: string,
+    position?: Point,
+    state?: { id?: string; blueprint: NodeState; },
+  ): void => {
     const blueprint = get(this.nodes.registered)?.[key];
     const nodes = get(this.nodes.current);
-    
-    const { scale } = get(this.position);
   
-    const id = state?.id ?? Object.keys(nodes).length;
+    const id = state?.id ?? (() => {
+      let requestedId = Object.keys(nodes).length;
+      let checking = true;
+      
+      while (checking) {
+        if (requestedId.toString() in nodes) {
+          requestedId += 1;
+        } else {
+          checking = false;
+        }
+      }
+
+      return requestedId;
+    })();
   
-    const x = state?.blueprint.x ?? ((position?.x ?? 0) / scale);
-    const y = state?.blueprint.y ?? ((position?.y ?? 0) / scale);
+    const x = position?.x ?? state?.blueprint.x ?? 0;
+    const y = position?.y ?? state?.blueprint.y ?? 0;
   
     const newState: NodeState = {
       type: key,
@@ -113,7 +128,6 @@ export class Nodes {
             if (blueprint.inputs) {
               Object.keys(blueprint.inputs ?? {}).map((inputKey) => {
                 const inputBlueprint = blueprint.inputs?.[inputKey];
-                const inputState = state?.blueprint.inputs?.[inputKey];
   
                 if (inputBlueprint) {
                   const type = inputBlueprint.type;
@@ -191,12 +205,32 @@ export class Nodes {
   };
 
   public deleteNode = (id: string): void => {
-    const nodes = Object.keys(get(this.nodes.current)).reduce((newNodes: Record<string, Node>, key) => {
-      if (key !== id) newNodes[key] = nodes[key];
-      return newNodes;
-    }, {});
-  
-    this.nodes.current.set(nodes);
+    void tick().then(() => {      
+      const nodes = Object.keys(get(this.nodes.current)).reduce((newNodes: Record<string, Node>, key) => {
+        if (key !== id) {
+          const oldNode = get(this.nodes.current)[key];
+          
+          if (oldNode.inputs) {
+            Object.keys(oldNode.inputs).forEach((inputKey) => {
+              // typescript has brain damage
+              const connection = get(oldNode.inputs![inputKey].connection);
+              
+              if (connection?.connectedNodeId === id) {
+                oldNode.inputs![inputKey].connection.set(undefined);
+              }
+            });
+          }
+
+          newNodes[key] = oldNode;
+        }
+
+        return newNodes;
+      }, {});
+    
+      this.nodes.current.set(nodes);
+    });
+
+    this.updateState();
   };
 
   public cloneNode = (id: string, position?: Point): void => {
@@ -204,7 +238,16 @@ export class Nodes {
     const state = get(this.state.nodes)[id];
   
     if (state) {
-      this.addNode(node.type, position, { blueprint: state });
+      this.addNode(node.type, position, {
+        blueprint: {
+          inputs: state.inputs,
+          outputs: undefined,
+          store: state.store,
+          x: state.x,
+          y: state.y,
+          type: state.type,
+        },
+      });
     } else {
       throw new Error('Cannot clone node that does not exist');
     }
@@ -212,7 +255,7 @@ export class Nodes {
 
   private restoreState = (state: Record<string, NodeState>): void => {
     Object.keys(state).forEach(
-      (id) => this.addNode(state[id].type, { x: 0, y: 0 }, { id: parseInt(id, 10), blueprint: state[id] }),
+      (id) => this.addNode(state[id].type, { x: 0, y: 0 }, { id, blueprint: state[id] }),
     );
 
     void tick().then(() => {
@@ -225,8 +268,6 @@ export class Nodes {
     const state = get(this.state.nodes);
   
     let newState: Record<string, NodeState> = {};
-
-    this.connection.show.set(false);
   
     Object.keys(nodes).forEach((id) => {
       newState = {
@@ -241,7 +282,6 @@ export class Nodes {
               let inputs: Record<string, InputSocketState> = {};
   
               Object.keys(nodes[id]?.inputs ?? {}).forEach((inputId) => {
-                const value = nodes[id].inputs?.[inputId].value;
                 const type = nodes[id].inputs?.[inputId].type ?? '';
                 const connection = nodes[id].inputs?.[inputId]?.connection;
     

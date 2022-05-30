@@ -37,6 +37,7 @@ module.exports = {
     '@typescript-eslint/no-unsafe-assignment': 'off',
     '@typescript-eslint/no-unsafe-call': 'off',
     '@typescript-eslint/no-unsafe-return': 'off',
+    '@typescript-eslint/no-unsafe-argument': 'off',
     'max-len': ['error', { 'code': 125 }],
     'comma-dangle': ['error', 'always-multiline'],
     quotes: ['error', 'single'],

@@ -24,8 +24,8 @@
   
   export let editable = true;
 
-  export let editorContextMenu: EditorContextMenuBlueprint | (() => void) | undefined = undefined;
-  export let nodeContextMenu: NodeContextMenuBlueprint | (() => void )| undefined = undefined;
+  export let editorContextMenu: EditorContextMenuBlueprint | ((event: MouseEvent) => void) | undefined = undefined;
+  export let nodeContextMenu: NodeContextMenuBlueprint | ((ids: string[], event: MouseEvent) => void )| undefined = undefined;
   
   export let appearance: 'light' | 'dark' | 'auto' = 'auto';
 
@@ -48,6 +48,8 @@
     {pannable}
     {moveable}
     {interactable}
+    {editorContextMenu}
+    {nodeContextMenu}
     {onReady}
     bind:state
   />

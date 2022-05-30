@@ -19,6 +19,15 @@ export type Drag = {
 
 export type HasPositionChanged = (position: { pos: number; prevPos: number }) => boolean;
 export type ValueInRange = (scale: { minScale: number, maxScale: number, scale: number }) => boolean;
+export type GetTruePosition = (scale: {
+  x: number,
+  y: number,
+  scale: number,
+  translateX: number,
+  translateY: number,
+  originX: number,
+  originY: number,
+}) => { x: number, y: number };
 export type GetTranslate = (scale: { minScale: number, maxScale: number, scale: number })
   => (position: { pos: number, prevPos: number, translate: number }) => number;
 export type GetMatrix = (translate: { scale: number, translateX: number, translateY: number }) => string;
@@ -47,6 +56,19 @@ const getTranslate: GetTranslate = ({ minScale, maxScale, scale }) => ({ pos, pr
   valueInRange({ minScale, maxScale, scale }) && hasPositionChanged({ pos, prevPos })
     ? translate + (pos - prevPos * scale) * (1 - 1 / scale)
     : translate;
+
+export const getTruePosition: GetTruePosition = ({ x, y, scale, translateX, translateY, originX, originY }) => {
+  const xRelativeToTranslation = x - translateX;
+  const yRelativeToTranslation = y - translateY;
+
+  const offsetX = (originX * scale) - originX;
+  const offsetY = (originY * scale) - originY;
+
+  return {
+    x: (xRelativeToTranslation + offsetX) / scale,
+    y: (yRelativeToTranslation + offsetY) / scale,
+  };
+};
 
 export const getMatrix: GetMatrix = ({ scale, translateX, translateY }) =>
   `matrix(${scale}, 0, 0, ${scale}, ${translateX}, ${translateY})`;

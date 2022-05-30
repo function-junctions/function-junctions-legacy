@@ -3,6 +3,8 @@
 </style>
 
 <script lang="ts">
+  import { getTruePosition } from '../Drag';
+
   import type { Editor } from '../Editor';
 
   export let title: string;
@@ -13,7 +15,7 @@
   export let socketType: string;
 
   export let color: string | undefined = undefined;
-  
+    
   export let editor: Editor;
 
   let ref: HTMLDivElement;
@@ -27,18 +29,19 @@
   $: $nodes[nodeId], $position, ref, (() => {
     if (ref) {
       coordinates = ref.getBoundingClientRect();
-      const sockets = $nodes[nodeId][type === 'input' ? 'inputs' : 'outputs'];
+      const sockets = $nodes[nodeId]?.[type === 'input' ? 'inputs' : 'outputs'];
       
-      const translateX = (coordinates.left - $position.translateX);
-      const translateY = (coordinates.top - $position.translateY);
+      const { x, y } = getTruePosition({
+        x: coordinates.left,
+        y: coordinates.top,
+        translateX: $position.translateX,
+        translateY: $position.translateY,
+        originX: $position.originX,
+        originY: $position.originY,
+        scale: $position.scale,
+      });
 
-      const offsetX = ($position.originX * $position.scale) - $position.originX;
-      const offsetY = ($position.originY * $position.scale) - $position.originY;
-      
-      if (sockets) sockets[id].coordinates = {
-        x: ((translateX + offsetX) / $position.scale),
-        y: (translateY + offsetY) / $position.scale,
-      };
+      if (sockets) sockets[id].coordinates = { x, y };
     }
   })();
 </script>
