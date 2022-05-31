@@ -277,40 +277,42 @@ import NodeContextMenu from '../ContextMenu/NodeContextMenu.svelte';
   >
     <Connections {editor} />
     {#each Object.keys($nodes) as key}
-      <Node
-        title={$nodes[key].type}
-        id={key}
-        component={$nodes[key].component}
-        inputs={$nodes[key].inputs}
-        outputs={$nodes[key].outputs}
-        coordinates={{
-          x: $nodes[key].x,
-          y: $nodes[key].y,
-        }}
-        color={$nodes[key].color}
-        className={`${$nodes[key].className ?? ''} ${!interactable ? 'function-junction-node-disabled' : ''}`}
-        style={$nodes[key].style ?? ''}
-        selected={$selectedNodesIds.some((selectedNodeId) => key === selectedNodeId)}
-        {editor}
-        bind:store={$nodesState[key].store}
-        on:mousedown={(event) => dragNode(event, key)}
-        on:touchstart={(event) => dragNode(event, key)}
-        on:contextmenu={(event) => {
-          editorContextMenuInstance?.close();
+      {#if $nodes[key] && $nodesState[key]}
+        <Node
+          title={$nodes[key].type}
+          id={key}
+          component={$nodes[key].component}
+          inputs={$nodes[key].inputs}
+          outputs={$nodes[key].outputs}
+          coordinates={{
+            x: $nodes[key].x,
+            y: $nodes[key].y,
+          }}
+          color={$nodes[key].color}
+          className={`${$nodes[key].className ?? ''} ${!interactable ? 'function-junction-node-disabled' : ''}`}
+          style={$nodes[key].style ?? ''}
+          selected={$selectedNodesIds.some((selectedNodeId) => key === selectedNodeId)}
+          {editor}
+          bind:store={$nodesState[key].store}
+          on:mousedown={(event) => dragNode(event, key)}
+          on:touchstart={(event) => dragNode(event, key)}
+          on:contextmenu={(event) => {
+            editorContextMenuInstance?.close();
 
-          $selectedNodesIds = [key];
-          if (nodeContextMenu) {
-            event.preventDefault();
-            event.stopPropagation();
-            
-            if (typeof nodeContextMenu === 'function') {
-              nodeContextMenu($selectedNodesIds, event);
-            } else {
-              nodeContextMenuInstance.open(event);
+            $selectedNodesIds = [key];
+            if (nodeContextMenu) {
+              event.preventDefault();
+              event.stopPropagation();
+              
+              if (typeof nodeContextMenu === 'function') {
+                nodeContextMenu($selectedNodesIds, event);
+              } else {
+                nodeContextMenuInstance.open(event);
+              }
             }
-          }
-        }}
-      />
+          }}
+        />
+      {/if}
     {/each}
   </div>
 </div>

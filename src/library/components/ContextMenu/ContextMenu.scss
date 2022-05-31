@@ -5,6 +5,7 @@
   z-index: 10000;
 
   background: white;
+  color: black;
   box-shadow: 1px solid black;
   border: 1px solid rgb(199, 199, 204);
   border-radius: 5px;
@@ -33,6 +34,7 @@
   
       &:hover {
         background-color: rgb(0, 125, 255);
+        color: white;
       }
     }
   }
@@ -40,6 +42,7 @@
 
 .function-junctions-appearance-dark {
   .function-junctions-context_menu {
+    color: white;
     background: rgb(35, 35, 35);
     border: 1px solid black;
     box-shadow: 4px 5px 9px rgba(0,0,0,0.5);

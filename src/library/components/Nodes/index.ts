@@ -146,9 +146,7 @@ export class Nodes {
                     ...this.sockets.createInput(
                       type,
                       defaultValue,
-                      {
-                        connection,
-                      },
+                      { connection },
                     ),
                     color: inputBlueprint.color,
                   };
@@ -205,32 +203,26 @@ export class Nodes {
   };
 
   public deleteNode = (id: string): void => {
-    void tick().then(() => {      
-      const nodes = Object.keys(get(this.nodes.current)).reduce((newNodes: Record<string, Node>, key) => {
-        if (key !== id) {
-          const oldNode = get(this.nodes.current)[key];
-          
-          if (oldNode.inputs) {
-            Object.keys(oldNode.inputs).forEach((inputKey) => {
-              // typescript has brain damage
-              const connection = get(oldNode.inputs![inputKey].connection);
-              
-              if (connection?.connectedNodeId === id) {
-                oldNode.inputs![inputKey].connection.set(undefined);
-              }
-            });
+    const currentNodes = get(this.nodes.current);
+
+    this.nodes.current.update(() => Object.keys(currentNodes).reduce((newNodes: Record<string, Node>, key) => {
+      const oldNode = currentNodes[key];
+
+      if (oldNode.inputs) {
+        Object.keys(oldNode.inputs).forEach((inputKey) => {
+          // typescript has brain damage
+          const connection = get(oldNode.inputs![inputKey].connection);
+            
+          if (connection?.connectedSocketId && connection?.connectedNodeId === id) {
+              oldNode.inputs![inputKey].connection.update(() => undefined);
           }
+        });
+      }
 
-          newNodes[key] = oldNode;
-        }
+      if (key !== id) newNodes[key] = oldNode;
 
-        return newNodes;
-      }, {});
-    
-      this.nodes.current.set(nodes);
-    });
-
-    this.updateState();
+      return newNodes;
+    }, {}));
   };
 
   public cloneNode = (id: string, position?: Point): void => {
@@ -270,56 +262,59 @@ export class Nodes {
     let newState: Record<string, NodeState> = {};
   
     Object.keys(nodes).forEach((id) => {
-      newState = {
-        ...newState,
-        [id]: {
-          ...state[id],
-          x: nodes[id].x,
-          y: nodes[id].y,
-          inputs: {
-            ...state[id].inputs,
-            ...(() => {
-              let inputs: Record<string, InputSocketState> = {};
-  
-              Object.keys(nodes[id]?.inputs ?? {}).forEach((inputId) => {
-                const type = nodes[id].inputs?.[inputId].type ?? '';
-                const connection = nodes[id].inputs?.[inputId]?.connection;
+      if (state[id]) {
+        
+        newState = {
+          ...newState,
+          [id]: {
+            ...state[id],
+            x: nodes[id].x,
+            y: nodes[id].y,
+            inputs: {
+              ...state[id].inputs,
+              ...(() => {
+                let inputs: Record<string, InputSocketState> = {};
     
-                inputs = {
-                  ...inputs,
-                  [inputId]: {
-                    type,
-                    connection: connection ? get(connection) : undefined,
-                  },
-                };
-              });
-  
-              return inputs;
-            })(),
-          },
-          outputs: {
-            ...state[id].outputs,
-            ...(() => {
-              let outputs: Record<string, OutputSocketState> = {};
-  
-              Object.keys(nodes[id]?.outputs ?? {}).forEach((outputId) => {
-                const value = nodes[id].outputs?.[outputId].value;
-                const type = nodes[id].outputs?.[outputId].type ?? '';
+                Object.keys(nodes[id]?.inputs ?? {}).forEach((inputId) => {
+                  const type = nodes[id].inputs?.[inputId].type ?? '';
+                  const connection = nodes[id].inputs?.[inputId]?.connection;
+      
+                  inputs = {
+                    ...inputs,
+                    [inputId]: {
+                      type,
+                      connection: connection ? get(connection) : undefined,
+                    },
+                  };
+                });
     
-                outputs = {
-                  ...outputs,
-                  [outputId]: {
-                    type,
-                    value: value ? get(value) : undefined,
-                  },
-                };
-              });
-  
-              return outputs;
-            })(),
+                return inputs;
+              })(),
+            },
+            outputs: {
+              ...state[id].outputs,
+              ...(() => {
+                let outputs: Record<string, OutputSocketState> = {};
+    
+                Object.keys(nodes[id]?.outputs ?? {}).forEach((outputId) => {
+                  const value = nodes[id].outputs?.[outputId].value;
+                  const type = nodes[id].outputs?.[outputId].type ?? '';
+      
+                  outputs = {
+                    ...outputs,
+                    [outputId]: {
+                      type,
+                      value: value ? get(value) : undefined,
+                    },
+                  };
+                });
+    
+                return outputs;
+              })(),
+            },
           },
-        },
-      };
+        };
+      }
     });
   
     this.state.nodes.set(newState);
