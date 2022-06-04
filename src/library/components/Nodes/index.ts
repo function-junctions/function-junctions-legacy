@@ -207,14 +207,14 @@ export class Nodes {
 
     this.nodes.current.update(() => Object.keys(currentNodes).reduce((newNodes: Record<string, Node>, key) => {
       const oldNode = currentNodes[key];
+      const inputs = oldNode.inputs;
 
-      if (oldNode.inputs) {
-        Object.keys(oldNode.inputs).forEach((inputKey) => {
-          // typescript has brain damage
-          const connection = get(oldNode.inputs![inputKey].connection);
+      if (inputs) {
+        Object.keys(inputs).forEach((inputKey) => {
+          const connection = get(inputs[inputKey].connection);
             
           if (connection?.connectedSocketId && connection?.connectedNodeId === id) {
-              oldNode.inputs![inputKey].connection.update(() => undefined);
+            inputs[inputKey].connection.update(() => undefined);
           }
         });
       }
