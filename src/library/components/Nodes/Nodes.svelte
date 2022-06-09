@@ -11,7 +11,7 @@
   import type { EditorContextMenuBlueprint, NodeContextMenuBlueprint } from '../ContextMenu';
   import type { ContextMenu } from '../ContextMenu';
   import EditorContextMenu from '../ContextMenu/EditorContextMenu.svelte';
-import NodeContextMenu from '../ContextMenu/NodeContextMenu.svelte';
+  import NodeContextMenu from '../ContextMenu/NodeContextMenu.svelte';
   
   export let editor: Editor;
   export let state: EditorState | undefined;

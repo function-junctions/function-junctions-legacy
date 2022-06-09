@@ -14,13 +14,11 @@
   import NumberNode from './components/NumberNode.svelte';
   import MathNode from './components/MathNode.svelte';
 
-  import serializedState from './state.json';
-
   let state: EditorState;
 
   const numberSocket: SocketBlueprint<number> = {
     type: 'number',
-    defaultValue: 0,
+    defaultValue: 0, 
   };
   
   const numberNode: NodeBlueprint<Record<string, never>,
@@ -59,6 +57,8 @@
   };
 
   let editor: EditorType;
+
+  $: console.log(state);
 </script>
 
 <App {...{

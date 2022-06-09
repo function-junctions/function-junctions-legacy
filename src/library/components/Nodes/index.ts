@@ -1,5 +1,5 @@
 import { SvelteComponentDev, tick } from 'svelte/internal';
-import { get, writable, type Writable } from 'svelte/store';
+import { get, type Writable } from 'svelte/store';
 import type { Point } from '../../types';
 import type { Position } from '../Drag';
 import {
@@ -63,6 +63,9 @@ export class Nodes {
   connection: LiveConnection;
   position: Writable<Position>;
   readonly: Writable<boolean>;
+
+  inputs?: Record<string, SocketBlueprint>;
+  outputs?: Record<string, SocketBlueprint>;
 
   sockets: Sockets;
   

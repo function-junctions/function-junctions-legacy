@@ -67,6 +67,7 @@
         {outputs}
         {title}
         {id}
+        {editor}
         bind:store
       />
     </div>

@@ -3,36 +3,42 @@
 </style>
 
 <script lang="ts">
+  import { writable } from 'svelte/store';
+
   // Editor must be imported as EditorClass or svelte package fails to
   // properly type props
   import { type EditorState, Editor as EditorClass } from '.';
   import type { EditorContextMenuBlueprint, NodeContextMenuBlueprint } from '../ContextMenu';
 
   import type { NodeBlueprint } from '../Nodes';
+  import type { SocketBlueprint } from '../Sockets';
   import Nodes from '../Nodes/Nodes.svelte';
-  
+    
   import { getAppearance } from '../Theme';
-  
+    
   export let nodes: Record<string, NodeBlueprint>;
+  export let sockets: Record<string, SocketBlueprint> | undefined = undefined;
   export let state: EditorState | undefined = undefined;
-  
+
+  export let module = false;
+    
   export let multiselect = true;
   export let zoomable = true;
   export let pannable = true;
   export let moveable = true;
   export let interactable = true;
-  
+    
   export let editable = true;
 
   export let editorContextMenu: EditorContextMenuBlueprint | ((event: MouseEvent) => void) | undefined = undefined;
   export let nodeContextMenu: NodeContextMenuBlueprint | ((ids: string[], event: MouseEvent) => void )| undefined = undefined;
-  
+    
   export let appearance: 'light' | 'dark' | 'auto' = 'auto';
 
-  export let instance = new EditorClass(nodes, state, !editable);
+  export let instance = new EditorClass(writable(nodes), state, !editable);
 
   export let onReady: ((editor: EditorClass) => void) | undefined = undefined;
-  
+    
   const appearanceClassName = getAppearance(appearance);
 
   const { readonly } = instance;
