@@ -19,8 +19,6 @@
   export let nodes: Record<string, NodeBlueprint>;
   export let sockets: Record<string, SocketBlueprint> | undefined = undefined;
   export let state: EditorState | undefined = undefined;
-
-  export let module = false;
     
   export let multiselect = true;
   export let zoomable = true;

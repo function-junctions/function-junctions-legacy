@@ -123,6 +123,36 @@
     containerMoving = false;
   };
 
+  const editorContextMenuHandler = (event: MouseEvent) => {
+    nodeContextMenuInstance?.close();
+
+    if (editorContextMenu) {
+      event.preventDefault();
+
+      if (typeof editorContextMenu === 'function') {
+        editorContextMenu(event);
+      } else {
+        editorContextMenuInstance.open(event);
+      }
+    }
+  };
+
+  const nodeContextMenuHandler = (event: MouseEvent, key: string) => {
+    editorContextMenuInstance?.close();
+
+    $selectedNodesIds = [key];
+    if (nodeContextMenu) {
+      event.preventDefault();
+      event.stopPropagation();
+      
+      if (typeof nodeContextMenu === 'function') {
+        nodeContextMenu($selectedNodesIds, event);
+      } else {
+        nodeContextMenuInstance.open(event);
+      }
+    }
+  };
+
   const drag = (event: MouseEvent | TouchEvent) => {
     event.preventDefault();
     const { pageX, pageY } = getCoordinates(event);
@@ -227,19 +257,7 @@
   on:touchstart={startDrag}
   on:touchend={endDrag}
   on:touchmove={touch}
-  on:contextmenu={(event) => {
-    nodeContextMenuInstance?.close();
-
-    if (editorContextMenu) {
-      event.preventDefault();
-
-      if (typeof editorContextMenu === 'function') {
-        editorContextMenu(event);
-      } else {
-        editorContextMenuInstance.open(event);
-      }
-    }
-  }}
+  on:contextmenu={editorContextMenuHandler}
 >
   {#if editorContextMenu && typeof editorContextMenu !== 'function'}
     <EditorContextMenu
@@ -296,21 +314,7 @@
           bind:store={$nodesState[key].store}
           on:mousedown={(event) => dragNode(event, key)}
           on:touchstart={(event) => dragNode(event, key)}
-          on:contextmenu={(event) => {
-            editorContextMenuInstance?.close();
-
-            $selectedNodesIds = [key];
-            if (nodeContextMenu) {
-              event.preventDefault();
-              event.stopPropagation();
-              
-              if (typeof nodeContextMenu === 'function') {
-                nodeContextMenu($selectedNodesIds, event);
-              } else {
-                nodeContextMenuInstance.open(event);
-              }
-            }
-          }}
+          on:contextmenu={(event) => nodeContextMenuHandler(event, key)}
         />
       {/if}
     {/each}
