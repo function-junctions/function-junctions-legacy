@@ -3,7 +3,7 @@
 </style>
 
 <script lang="ts">
-  import { writable } from 'svelte/store';
+  import { writable, type Writable } from 'svelte/store';
 
   // Editor must be imported as EditorClass or svelte package fails to
   // properly type props
@@ -11,14 +11,15 @@
   import type { EditorContextMenuBlueprint, NodeContextMenuBlueprint } from '../ContextMenu';
 
   import type { NodeBlueprint } from '../Nodes';
-  import type { SocketBlueprint } from '../Sockets';
   import Nodes from '../Nodes/Nodes.svelte';
     
   import { getAppearance } from '../Theme';
     
   export let nodes: Record<string, NodeBlueprint>;
-  export let sockets: Record<string, SocketBlueprint> | undefined = undefined;
   export let state: EditorState | undefined = undefined;
+
+  export let inputs: Record<string, Writable<unknown>> | undefined = undefined;
+  export let outputs: Record<string, Writable<unknown>> | undefined = undefined;
     
   export let multiselect = true;
   export let zoomable = true;
@@ -33,7 +34,7 @@
     
   export let appearance: 'light' | 'dark' | 'auto' = 'auto';
 
-  export let instance = new EditorClass(writable(nodes), state, !editable);
+  export let instance = new EditorClass(writable(nodes), state, !editable, inputs, outputs);
 
   export let onReady: ((editor: EditorClass) => void) | undefined = undefined;
     

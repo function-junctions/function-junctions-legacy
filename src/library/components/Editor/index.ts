@@ -11,6 +11,8 @@ export class Editor extends Nodes {
     blueprint: Writable<Record<string, NodeBlueprint>>,
     state?: EditorState,
     readonly?: boolean,
+    inputs?: Record<string, Writable<unknown>>,
+    outputs?: Record<string, Writable<unknown>>,
   ) {
     super(
       writable(state?.position ?? {
@@ -34,6 +36,8 @@ export class Editor extends Nodes {
         state: writable(),
       },
       writable(readonly ?? false),
+      inputs,
+      outputs,
     );
   }
 }

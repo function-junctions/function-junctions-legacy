@@ -64,8 +64,8 @@ export class Nodes {
   position: Writable<Position>;
   readonly: Writable<boolean>;
 
-  inputs?: Record<string, SocketBlueprint>;
-  outputs?: Record<string, SocketBlueprint>;
+  inputs?: Record<string, Writable<unknown>>;
+  outputs?: Record<string, Writable<unknown>>;
 
   sockets: Sockets;
   
@@ -75,12 +75,17 @@ export class Nodes {
     state: NodesState,
     connection: LiveConnection,
     readonly: Writable<boolean>,
+    inputs?: Record<string, Writable<unknown>>,
+    outputs?: Record<string, Writable<unknown>>,
   ) {
     this.position = position;
     this.nodes = nodes;
     this.state = state;
     this.connection = connection;
     this.readonly = readonly;
+
+    this.inputs = inputs;
+    this.outputs = outputs;
 
     this.sockets = new Sockets(position, nodes.current, connection);
 
