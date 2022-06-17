@@ -2,6 +2,7 @@ import { SvelteComponentDev, tick } from 'svelte/internal';
 import { get, type Writable } from 'svelte/store';
 import type { Point } from '../../types';
 import type { Position } from '../Drag';
+import { inputNode } from '../Node';
 import {
   type InputSocket,
   type InputSockets,
@@ -64,8 +65,8 @@ export class Nodes {
   position: Writable<Position>;
   readonly: Writable<boolean>;
 
-  inputs?: Record<string, Writable<unknown>>;
-  outputs?: Record<string, Writable<unknown>>;
+  inputs?: Record<string, Record<string, Writable<unknown>>>;
+  outputs?: Record<string, Record<string, Writable<unknown>>>;
 
   sockets: Sockets;
   
@@ -75,8 +76,8 @@ export class Nodes {
     state: NodesState,
     connection: LiveConnection,
     readonly: Writable<boolean>,
-    inputs?: Record<string, Writable<unknown>>,
-    outputs?: Record<string, Writable<unknown>>,
+    inputs?: Record<string, Record<string, Writable<unknown>>>,
+    outputs?: Record<string, Record<string, Writable<unknown>>>,
   ) {
     this.position = position;
     this.nodes = nodes;
@@ -88,6 +89,17 @@ export class Nodes {
     this.outputs = outputs;
 
     this.sockets = new Sockets(position, nodes.current, connection);
+
+    this.nodes.registered.update((prevNodes) => {
+      let newNodes = prevNodes;
+
+      if (this.inputs) newNodes = {
+        ...newNodes,
+        Input: inputNode,
+      };
+
+      return newNodes;
+    });
 
     this.restoreState(get(this.state.nodes));
   }

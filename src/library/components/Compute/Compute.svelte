@@ -6,12 +6,15 @@
   import type { NodeBlueprint } from '../Nodes';
   import { Editor, type EditorState } from '../Editor';
   import RawNode from '../Node/RawNode.svelte';
-  import { writable } from 'svelte/store';
+  import { writable, type Writable } from 'svelte/store';
 
   export let nodes: Record<string, NodeBlueprint>;
   export let state: EditorState;
 
-  export let instance = new Editor(writable(nodes), state);
+  export let inputs: Record<string, Record<string, Writable<unknown>>> = {};
+  export let outputs: Record<string, Record<string, Writable<unknown>>> = {};
+
+  export let instance = new Editor(writable(nodes), state, true, inputs, outputs);
 
   const { current: currentNodes } = instance.nodes;
   const { nodes: nodesState } = instance.state;

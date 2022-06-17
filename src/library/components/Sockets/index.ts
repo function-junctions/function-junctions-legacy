@@ -28,6 +28,7 @@ export type InputSocket<T> = {
   color?: string;
   connection: Writable<SocketConnection | undefined>;
   coordinates: Point;
+  disabled?: boolean;
 };
 
 export type OutputSocket<T> = {
@@ -36,6 +37,7 @@ export type OutputSocket<T> = {
   color?: string;
   coordinates: Point;
   trigger?: boolean;
+  disabled?: boolean;
 };
 
 export type InputSocketState = {

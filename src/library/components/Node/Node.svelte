@@ -55,6 +55,7 @@
             nodeId={id}
             color={outputs[key].color}
             socketType={outputs[key].type}
+            disabled={outputs[key].disabled}
             {editor}
           />
         {/each}
@@ -63,12 +64,12 @@
     <div class="function-junctions-node-content">
       <svelte:component
         this={component}
-        {inputs}
-        {outputs}
         {title}
         {id}
         {editor}
         bind:store
+        bind:inputs
+        bind:outputs
       />
     </div>
     {#if inputs}
@@ -81,6 +82,7 @@
             nodeId={id}
             socketType={inputs[key].type}
             color={inputs[key].color}
+            disabled={inputs[key].disabled}
             {editor}
           />
         {/each}

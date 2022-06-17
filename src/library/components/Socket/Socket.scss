@@ -1,5 +1,6 @@
 .function-junctions-socket {
   display: flex;
+
   &.function-junctions-socket-output {
     text-align: right;
 
@@ -39,6 +40,11 @@
     position: relative;
     z-index: 2;
     border: 1px solid black;
+
+    &.function-junctions-socket-connection-disabled {
+      opacity: 0.55 !important;
+      pointer-events: none !important;
+    }
   }
 }
 
