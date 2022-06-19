@@ -3,7 +3,7 @@
   
   import type { Writable } from 'svelte/store';
   import type { Editor } from '../../../Editor';
-import Dropdown from '$lib/components/Dropdown/Dropdown.svelte';
+  import Dropdown from '$lib/components/Dropdown/Dropdown.svelte';
 
   export let editor: Editor;
   
