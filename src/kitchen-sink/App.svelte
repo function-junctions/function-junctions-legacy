@@ -12,8 +12,8 @@
   import { Editor } from '../library';
 
   import NumberNode from './components/NumberNode.svelte';
+  import { writable } from 'svelte/store';
   import MathNode from './components/MathNode.svelte';
-import { writable } from 'svelte/store';
 
   let state: EditorState;
 
@@ -58,6 +58,10 @@ import { writable } from 'svelte/store';
   };
 
   let editor: EditorType;
+
+  const value = writable();
+
+  $: console.log($value);
 </script>
 
 <App {...{
@@ -70,7 +74,11 @@ import { writable } from 'svelte/store';
     inputs={{
       number: {
         Test: writable(2),
-        Katana: writable(20),
+      },
+    }}
+    outputs={{
+      number: {
+        Value: value,
       },
     }}
     editorContextMenu={{

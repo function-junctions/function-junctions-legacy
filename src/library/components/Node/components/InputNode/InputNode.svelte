@@ -13,13 +13,11 @@ import Dropdown from '$lib/components/Dropdown/Dropdown.svelte';
 
   const { value: Value } = outputs.Value;
   const { registered } = editor.nodes;
-  const { inputs } = editor;
   
   let name = '';
   let type = '';
   let value: Writable<unknown> | undefined;
 
-  let availableInputs: string[] = [];
   let sockets: SocketBlueprint[] = [];
 
   $: name, type, (() => {
@@ -40,14 +38,12 @@ import Dropdown from '$lib/components/Dropdown/Dropdown.svelte';
     sockets = [
       ...sockets,
       ...Object.keys(io).map((key) => io[key]),
-    ].filter((value, index, self) =>
+    ].filter((socket, index, self) =>
       index === self.findIndex((t) => (
-        t.type === value.type
+        t.type === socket.type
       )),
-    ).filter((value) => !!value.type);
+    ).filter((socket) => !!socket.type);
   });
-
-  $: availableInputs = Object.keys(inputs?.[type] ?? {}).map((key) => key);
 
   $: {
     outputs.Value.type = type;
@@ -56,7 +52,6 @@ import Dropdown from '$lib/components/Dropdown/Dropdown.svelte';
   }
 
   $: if (!type) type = sockets[0].type;
-  $: if (!name) name = availableInputs[0];
 </script>
 
 <Dropdown title="Socket">
@@ -66,12 +61,8 @@ import Dropdown from '$lib/components/Dropdown/Dropdown.svelte';
     {/each}
   </select>
 </Dropdown>
-
-<Dropdown title="Input">
-  <select bind:value={name}>
-    {#each availableInputs as input}
-      <option value={input}>{input}</option>
-    {/each}
-  </select>
-</Dropdown>
+<p />
+<div style="padding: 0 15px">
+  <input type="text" placeholder="Name" bind:value={name} />
+</div>
 <p />

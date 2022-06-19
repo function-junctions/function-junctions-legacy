@@ -2,7 +2,7 @@ import { SvelteComponentDev, tick } from 'svelte/internal';
 import { get, type Writable } from 'svelte/store';
 import type { Point } from '../../types';
 import type { Position } from '../Drag';
-import { inputNode } from '../Node';
+import { inputNode, outputNode } from '../Node';
 import {
   type InputSocket,
   type InputSockets,
@@ -96,6 +96,11 @@ export class Nodes {
       if (this.inputs) newNodes = {
         ...newNodes,
         Input: inputNode,
+      };
+
+      if (this.outputs) newNodes = {
+        ...newNodes,
+        Output: outputNode,
       };
 
       return newNodes;

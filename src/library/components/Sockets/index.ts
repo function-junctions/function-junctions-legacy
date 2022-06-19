@@ -121,8 +121,8 @@ export class Sockets {
               prevConnectedSocketId = connectedSocketId;
               
               const connectedSocket = nodes[connectedNodeId]?.outputs?.[connectedSocketId];
-      
-              if (connectedSocket && connectedSocket.type === type) {
+
+              if (connectedSocket) {
                 valueUnsubscribe = connectedSocket.value.subscribe((value) => {
                   this.update(connectedNodeId, connectedSocketId);
   
