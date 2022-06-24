@@ -247,8 +247,8 @@
   on:click={(event) => {
     hideLiveConnection();
     
-    editorContextMenuInstance.evaluate(event);
-    nodeContextMenuInstance.evaluate(event);
+    editorContextMenuInstance?.evaluate(event);
+    nodeContextMenuInstance?.evaluate(event);
   }}
   on:wheel={zoom}
   on:mousedown={startDrag}
