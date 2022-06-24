@@ -21,7 +21,7 @@
   let sockets: SocketBlueprint[] = [];
 
   $: name, type, (() => {
-    const store = editor.inputs?.[type]?.[name];
+    const store = editor.inputs?.[name]?.value;
     value = store;
   })();
 

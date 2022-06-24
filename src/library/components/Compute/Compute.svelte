@@ -11,8 +11,8 @@
   export let nodes: Record<string, NodeBlueprint>;
   export let state: EditorState;
 
-  export let inputs: Record<string, Record<string, Writable<unknown>>> = {};
-  export let outputs: Record<string, Record<string, Writable<unknown>>> = {};
+  export let inputs:Record<string, { type: string; value: Writable<unknown> }> = {};
+  export let outputs:Record<string, { type: string; value: Writable<unknown> }> = {};
 
   export let instance = new Editor(writable(nodes), state, true, inputs, outputs);
 

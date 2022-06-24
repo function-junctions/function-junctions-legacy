@@ -65,8 +65,8 @@ export class Nodes {
   position: Writable<Position>;
   readonly: Writable<boolean>;
 
-  inputs?: Record<string, Record<string, Writable<unknown>>>;
-  outputs?: Record<string, Record<string, Writable<unknown>>>;
+  inputs?:Record<string, { type: string; value: Writable<unknown> }>;
+  outputs?:Record<string, { type: string; value: Writable<unknown> }>;
 
   sockets: Sockets;
   
@@ -76,8 +76,8 @@ export class Nodes {
     state: NodesState,
     connection: LiveConnection,
     readonly: Writable<boolean>,
-    inputs?: Record<string, Record<string, Writable<unknown>>>,
-    outputs?: Record<string, Record<string, Writable<unknown>>>,
+    inputs?:Record<string, { type: string; value: Writable<unknown> }>,
+    outputs?:Record<string, { type: string; value: Writable<unknown> }>,
   ) {
     this.position = position;
     this.nodes = nodes;

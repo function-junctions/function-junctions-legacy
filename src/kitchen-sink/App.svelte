@@ -60,8 +60,7 @@
   let editor: EditorType;
 
   const value = writable();
-
-  $: console.log($value);
+  const Test = writable(2);
 </script>
 
 <App {...{
@@ -72,13 +71,15 @@
   <Editor
     {nodes}
     inputs={{
-      number: {
-        Test: writable(2),
+      Test: {
+        type: 'number',
+        value: Test,
       },
     }}
     outputs={{
-      number: {
-        Value: value,
+      value: {
+        type: 'number',
+        value,
       },
     }}
     editorContextMenu={{

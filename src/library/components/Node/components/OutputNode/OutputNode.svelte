@@ -25,7 +25,7 @@
     if (store && Value) $store = $Value;
   })();
 
-  $: store = editor.outputs?.[type]?.[name];
+  $: store = editor.outputs?.[name]?.value;
 
   $: Object.keys($registered).forEach((key) => {
     let io = {

@@ -18,8 +18,8 @@
   export let nodes: Record<string, NodeBlueprint>;
   export let state: EditorState | undefined = undefined;
 
-  export let inputs: Record<string, Record<string, Writable<unknown>>> | undefined = undefined;
-  export let outputs: Record<string, Record<string, Writable<unknown>>> | undefined = undefined;
+  export let inputs:Record<string, { type: string; value: Writable<unknown> }> | undefined = undefined;
+  export let outputs:Record<string, { type: string; value: Writable<unknown> }> | undefined = undefined;
     
   export let multiselect = true;
   export let zoomable = true;
