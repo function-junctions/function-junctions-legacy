@@ -270,13 +270,27 @@ export class Nodes {
     }
   };
 
-  public restoreState = (state: Record<string, NodeState>): void => {
+  public clear = (): void => {
+    this.nodes.current.update(() => ({}));
+    this.state.nodes.update(() => ({}));
+  };
+
+  private restoreState = (state: Record<string, NodeState>): void => {
     Object.keys(state).forEach(
       (id) => this.addNode(state[id].type, { x: 0, y: 0 }, { id, blueprint: state[id] }),
     );
 
     void tick().then(() => {
       this.state.restored.set(true);
+    });
+  };
+
+  public reset = (state: Record<string, NodeState>): void => {
+    this.clear();
+    this.state.restored.set(false);
+
+    void tick().then(() => {
+      this.restoreState(state);
     });
   };
 
@@ -288,7 +302,6 @@ export class Nodes {
   
     Object.keys(nodes).forEach((id) => {
       if (state[id]) {
-        
         newState = {
           ...newState,
           [id]: {
