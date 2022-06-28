@@ -270,7 +270,7 @@ export class Nodes {
     }
   };
 
-  private restoreState = (state: Record<string, NodeState>): void => {
+  public restoreState = (state: Record<string, NodeState>): void => {
     Object.keys(state).forEach(
       (id) => this.addNode(state[id].type, { x: 0, y: 0 }, { id, blueprint: state[id] }),
     );
