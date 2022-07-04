@@ -136,8 +136,8 @@ export class Nodes {
       return requestedId;
     })();
   
-    const x = position?.x ?? state?.blueprint.x ?? 0;
-    const y = position?.y ?? state?.blueprint.y ?? 0;
+    const x = state?.blueprint.x ?? position?.x ?? 0;
+    const y = state?.blueprint.y ?? position?.y ?? 0;
   
     const newState: NodeState = {
       type: key,
