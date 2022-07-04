@@ -9,6 +9,7 @@
   // properly type props
   import { type EditorState, Editor as EditorClass } from '.';
   import type { EditorContextMenuBlueprint, NodeContextMenuBlueprint } from '../ContextMenu';
+  import type { NodeControlButtons } from '../Node';
 
   import type { NodeBlueprint } from '../Nodes';
   import Nodes from '../Nodes/Nodes.svelte';
@@ -26,11 +27,15 @@
   export let pannable = true;
   export let moveable = true;
   export let interactable = true;
-    
-  export let editable = true;
 
+  export let editable = true;
+  
   export let editorContextMenu: EditorContextMenuBlueprint | ((event: MouseEvent) => void) | undefined = undefined;
   export let nodeContextMenu: NodeContextMenuBlueprint | ((ids: string[], event: MouseEvent) => void )| undefined = undefined;
+  export let nodeControlButtons: NodeControlButtons | boolean = {
+    delete: true,
+    clone: true,
+  };
     
   export let appearance: 'light' | 'dark' | 'auto' = 'auto';
 
@@ -58,6 +63,7 @@
     {interactable}
     {editorContextMenu}
     {nodeContextMenu}
+    {nodeControlButtons}
     {onReady}
     bind:state
   />

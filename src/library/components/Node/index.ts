@@ -1,6 +1,11 @@
 import InputNode from './components/InputNode/InputNode.svelte';
 import OutputNode from './components/OutputNode/OutputNode.svelte';
 
+export type NodeControlButtons = {
+  clone: boolean;
+  delete: boolean;
+}
+
 export const inputNode = {
   outputs: {
     Value: {

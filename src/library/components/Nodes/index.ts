@@ -25,6 +25,8 @@ export type NodeBlueprint<
   className?: string;
   style?: string;
   component: typeof SvelteComponentDev;
+  deletable?: boolean;
+  cloneable?: boolean;
 }
 
 export type Node<
@@ -38,6 +40,8 @@ export type Node<
   color?: string;
   className?: string;
   style?: string;
+  deletable?: boolean;
+  cloneable?: boolean;
 };
 
 export type NodeState = Point & {
@@ -65,8 +69,8 @@ export class Nodes {
   position: Writable<Position>;
   readonly: Writable<boolean>;
 
-  inputs?:Record<string, { type: string; value: Writable<unknown> }>;
-  outputs?:Record<string, { type: string; value: Writable<unknown> }>;
+  inputs?: Record<string, { type: string; value: Writable<unknown> }>;
+  outputs?: Record<string, { type: string; value: Writable<unknown> }>;
 
   sockets: Sockets;
   
@@ -76,8 +80,8 @@ export class Nodes {
     state: NodesState,
     connection: LiveConnection,
     readonly: Writable<boolean>,
-    inputs?:Record<string, { type: string; value: Writable<unknown> }>,
-    outputs?:Record<string, { type: string; value: Writable<unknown> }>,
+    inputs?: Record<string, { type: string; value: Writable<unknown> }>,
+    outputs?: Record<string, { type: string; value: Writable<unknown> }>,
   ) {
     this.position = position;
     this.nodes = nodes;
@@ -132,8 +136,8 @@ export class Nodes {
       return requestedId;
     })();
   
-    const x = state?.blueprint.x ?? position?.x ?? 0;
-    const y = state?.blueprint.y ?? position?.y ?? 0;
+    const x = position?.x ?? state?.blueprint.x ?? 0;
+    const y = position?.y ?? state?.blueprint.y ?? 0;
   
     const newState: NodeState = {
       type: key,
@@ -217,6 +221,8 @@ export class Nodes {
           color: blueprint.color,
           className: blueprint.className,
           style: blueprint.style,
+          deletable: blueprint.deletable,
+          cloneable: blueprint.cloneable,
         },
       }));
   

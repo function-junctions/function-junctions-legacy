@@ -61,6 +61,8 @@
 
   const value = writable();
   const Test = writable(2);
+
+  $: console.log($value);
 </script>
 
 <App {...{

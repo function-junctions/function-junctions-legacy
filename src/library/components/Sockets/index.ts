@@ -265,8 +265,8 @@ export class Sockets {
           const offsetX = (position.originX * position.scale) - position.originX;
           const offsetY = (position.originY * position.scale) - position.originY;
 
-          const mouseX = ((event.clientX - position.translateX) + offsetX) / (position.scale);
-          const mouseY = ((event.clientY - position.translateY) + offsetY) / (position.scale);
+          const mouseX = ((event.pageX - position.translateX) + offsetX) / (position.scale);
+          const mouseY = ((event.pageY - position.translateY) + offsetY) / (position.scale);
 
 
           this.liveConnection.state.set({

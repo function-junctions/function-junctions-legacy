@@ -4,6 +4,7 @@
 
 <script lang="ts">
   import type { Editor, EditorState } from '../Editor';
+  import type { NodeControlButtons } from '../Node';
   import Drag, { getMatrix } from '../Drag';
   import Node from '../Node/Node.svelte';
   import Connections from '../Connections/Connections.svelte';
@@ -21,6 +22,8 @@
   export let pannable: boolean;
   export let moveable: boolean;
   export let interactable: boolean;
+
+  export let nodeControlButtons: NodeControlButtons | boolean;
 
   export let editorContextMenu: EditorContextMenuBlueprint | ((event: MouseEvent) => void) | undefined;
   export let nodeContextMenu: NodeContextMenuBlueprint | ((ids: string[], event: MouseEvent) => void )| undefined;
@@ -310,6 +313,9 @@
           className={`${$nodes[key].className ?? ''} ${!interactable ? 'function-junction-node-disabled' : ''}`}
           style={$nodes[key].style ?? ''}
           selected={$selectedNodesIds.some((selectedNodeId) => key === selectedNodeId)}
+          cloneable={$nodes[key].cloneable}
+          deletable={$nodes[key].deletable}
+          {nodeControlButtons}
           {editor}
           bind:store={$nodesState[key].store}
           on:mousedown={(event) => dragNode(event, key)}
