@@ -266,8 +266,8 @@ export class Nodes {
           inputs: state.inputs,
           outputs: undefined,
           store: state.store,
-          x: state.x,
-          y: state.y,
+          x: position?.x ?? state.x,
+          y: position?.y ?? state.y,
           type: state.type,
         },
       });
