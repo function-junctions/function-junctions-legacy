@@ -262,14 +262,14 @@ export class Nodes {
   
     if (state) {
       this.addNode(node.type, position, {
-        blueprint: {
+        blueprint: JSON.parse(JSON.stringify({
           inputs: state.inputs,
           outputs: undefined,
           store: state.store,
           x: position?.x ?? state.x,
           y: position?.y ?? state.y,
           type: state.type,
-        },
+        })),
       });
     } else {
       throw new Error('Cannot clone node that does not exist');
