@@ -14,8 +14,11 @@
   import NumberNode from './components/NumberNode.svelte';
   import { writable } from 'svelte/store';
   import MathNode from './components/MathNode.svelte';
+  import SqrtNode from './components/SqrtNode.svelte';
 
-  let state: EditorState;
+  import tree from './state.json';
+
+  let state: EditorState = tree;
 
   const numberSocket: SocketBlueprint<number> = {
     type: 'number',
@@ -36,25 +39,41 @@
   const mathNode: NodeBlueprint<{
     LHS: SocketBlueprint<number>
     RHS: SocketBlueprint<number>
-  },
-    {
-      Number: SocketBlueprint<number>
-    }
-    > = {
-      inputs: {
-        LHS: numberSocket,
-        RHS: numberSocket,
-      },
-      outputs: {
-        Number: numberSocket,
-      },
-      component: MathNode,
-      color: 'linear-gradient(#ff5776, #ff2d55)',
-    };
+  }, {
+    Number: SocketBlueprint<number>
+  }> = {
+    inputs: {
+      LHS: numberSocket,
+      RHS: numberSocket,
+    },
+    outputs: {
+      Number: numberSocket,
+    },
+    component: MathNode,
+    color: 'linear-gradient(#ff5776, #ff2d55)',
+  };
+
+  const sqrtNode: NodeBlueprint<{
+    BASE: SocketBlueprint<number>
+    POWER: SocketBlueprint<number>
+  }, {
+    Number: SocketBlueprint<number>
+  }> = {
+    inputs: {
+      BASE: numberSocket,
+      POWER: numberSocket,
+    },
+    outputs: {
+      Number: numberSocket,
+    },
+    component: SqrtNode,
+    color: 'linear-gradient(#ff5776, #ff2d55)',
+  };
 
   const nodes = {
     Number: numberNode,
     Math: mathNode,
+    Sqrt: sqrtNode,
   };
 
   let editor: EditorType;
