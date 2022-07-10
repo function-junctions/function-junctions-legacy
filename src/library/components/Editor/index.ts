@@ -11,8 +11,8 @@ export class Editor extends Nodes {
     blueprint: Writable<Record<string, NodeBlueprint>>,
     state?: EditorState,
     readonly?: boolean,
-    inputs?:Record<string, { type: string; value: Writable<unknown> }>,
-    outputs?:Record<string, { type: string; value: Writable<unknown> }>,
+    inputs?: Record<string, { type: string; value: Writable<unknown> }>,
+    outputs?: Record<string, { type: string; value: Writable<unknown> }>,
   ) {
     super(
       writable(state?.position ?? {

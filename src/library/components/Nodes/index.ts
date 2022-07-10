@@ -98,13 +98,13 @@ export class Nodes {
       let newNodes = prevNodes;
 
       if (this.inputs) newNodes = {
-        ...newNodes,
         Input: inputNode,
+        ...newNodes,
       };
 
       if (this.outputs) newNodes = {
-        ...newNodes,
         Output: outputNode,
+        ...newNodes,
       };
 
       return newNodes;
