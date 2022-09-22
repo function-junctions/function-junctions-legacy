@@ -1,37 +1,20 @@
 {
-  "name": "function-junctions",
-  "version": "0.0.27",
-  "license": "Apache-2.0",
+  "name": "root",
+  "private": true,
+  "workspaces": [
+    "packages/*"
+  ],
   "scripts": {
-    "start": "svelte-kit dev",
-    "build": "svelte-kit build",
-    "package": "svelte-kit package",
-    "preview": "svelte-kit preview",
-    "prepare": "svelte-kit sync",
-    "publish": "npm publish ./package --access public",
-    "check": "svelte-check --tsconfig ./tsconfig.json",
-    "check:watch": "svelte-check --tsconfig ./tsconfig.json --watch",
-    "lint": "eslint ."
+    "dev:core": "lerna run dev --stream --scope @function-junctions/core",
+    "dev:react": "lerna run dev --stream --scope @function-junctions/react",
+    "dev:svelte": "lerna run dev --stream --scope @function-junctions/svelte",
+
+    "build": "lerna run build"
   },
   "devDependencies": {
-    "@sveltejs/adapter-auto": "next",
-    "@sveltejs/kit": "next",
-    "@typescript-eslint/eslint-plugin": "^5.10.1",
-    "@typescript-eslint/parser": "^5.10.1",
-    "eslint": "^8.12.0",
-    "eslint-plugin-autofix": "^1.1.0",
-    "eslint-plugin-import-newlines": "^1.2.2",
-    "eslint-plugin-svelte3": "^4.0.0",
-    "framework7": "^7.0.3",
+    "framework7": "^7.0.8",
     "framework7-icons": "^5.0.5",
-    "framework7-svelte": "^7.0.3",
-    "sass": "^1.52.1",
-    "svelte": "^3.44.0",
-    "svelte-check": "^2.2.6",
-    "svelte-preprocess": "^4.10.6",
-    "svelte2tsx": "^0.5.10",
-    "tslib": "^2.3.1",
-    "typescript": "~4.6.2"
-  },
-  "type": "module"
+    "framework7-svelte": "^7.0.8",
+    "lerna": "^5.5.2"
+  }
 }
