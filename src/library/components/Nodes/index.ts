@@ -1,7 +1,8 @@
 import { SvelteComponentDev, tick } from 'svelte/internal';
-import { get, writable, type Writable } from 'svelte/store';
+import { get, type Writable } from 'svelte/store';
 import type { Point } from '../../types';
 import type { Position } from '../Drag';
+import { inputNode, outputNode } from '../Node';
 import {
   type InputSocket,
   type InputSockets,
@@ -24,6 +25,8 @@ export type NodeBlueprint<
   className?: string;
   style?: string;
   component: typeof SvelteComponentDev;
+  deletable?: boolean;
+  cloneable?: boolean;
 }
 
 export type Node<
@@ -37,6 +40,8 @@ export type Node<
   color?: string;
   className?: string;
   style?: string;
+  deletable?: boolean;
+  cloneable?: boolean;
 };
 
 export type NodeState = Point & {
@@ -64,6 +69,9 @@ export class Nodes {
   position: Writable<Position>;
   readonly: Writable<boolean>;
 
+  inputs?: Record<string, { type: string; value: Writable<unknown> }>;
+  outputs?: Record<string, { type: string; value: Writable<unknown> }>;
+
   sockets: Sockets;
   
   constructor (
@@ -72,6 +80,8 @@ export class Nodes {
     state: NodesState,
     connection: LiveConnection,
     readonly: Writable<boolean>,
+    inputs?: Record<string, { type: string; value: Writable<unknown> }>,
+    outputs?: Record<string, { type: string; value: Writable<unknown> }>,
   ) {
     this.position = position;
     this.nodes = nodes;
@@ -79,7 +89,26 @@ export class Nodes {
     this.connection = connection;
     this.readonly = readonly;
 
+    this.inputs = inputs;
+    this.outputs = outputs;
+
     this.sockets = new Sockets(position, nodes.current, connection);
+
+    this.nodes.registered.update((prevNodes) => {
+      let newNodes = prevNodes;
+
+      if (this.inputs) newNodes = {
+        Input: inputNode,
+        ...newNodes,
+      };
+
+      if (this.outputs) newNodes = {
+        Output: outputNode,
+        ...newNodes,
+      };
+
+      return newNodes;
+    });
 
     this.restoreState(get(this.state.nodes));
   }
@@ -107,8 +136,8 @@ export class Nodes {
       return requestedId;
     })();
   
-    const x = position?.x ?? state?.blueprint.x ?? 0;
-    const y = position?.y ?? state?.blueprint.y ?? 0;
+    const x = state?.blueprint.x ?? position?.x ?? 0;
+    const y = state?.blueprint.y ?? position?.y ?? 0;
   
     const newState: NodeState = {
       type: key,
@@ -192,6 +221,8 @@ export class Nodes {
           color: blueprint.color,
           className: blueprint.className,
           style: blueprint.style,
+          deletable: blueprint.deletable,
+          cloneable: blueprint.cloneable,
         },
       }));
   
@@ -231,18 +262,23 @@ export class Nodes {
   
     if (state) {
       this.addNode(node.type, position, {
-        blueprint: {
+        blueprint: JSON.parse(JSON.stringify({
           inputs: state.inputs,
           outputs: undefined,
           store: state.store,
-          x: state.x,
-          y: state.y,
+          x: position?.x ?? state.x,
+          y: position?.y ?? state.y,
           type: state.type,
-        },
+        })),
       });
     } else {
       throw new Error('Cannot clone node that does not exist');
     }
+  };
+
+  public clear = (): void => {
+    this.nodes.current.update(() => ({}));
+    this.state.nodes.update(() => ({}));
   };
 
   private restoreState = (state: Record<string, NodeState>): void => {
@@ -255,6 +291,15 @@ export class Nodes {
     });
   };
 
+  public reset = (state: Record<string, NodeState>): void => {
+    this.clear();
+    this.state.restored.set(false);
+
+    void tick().then(() => {
+      this.restoreState(state);
+    });
+  };
+
   public updateState = (): void => {
     const nodes = get(this.nodes.current);
     const state = get(this.state.nodes);
@@ -263,7 +308,6 @@ export class Nodes {
   
     Object.keys(nodes).forEach((id) => {
       if (state[id]) {
-        
         newState = {
           ...newState,
           [id]: {

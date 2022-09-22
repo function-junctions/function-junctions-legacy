@@ -8,7 +8,7 @@
   
   import { get } from 'svelte/store';
   import Connection from '../Connection/Connection.svelte';
-import { tick } from 'svelte';
+  import { tick } from 'svelte';
 
   export let editor: Editor;
 

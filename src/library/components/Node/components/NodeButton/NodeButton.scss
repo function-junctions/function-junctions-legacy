@@ -1,0 +1,37 @@
+.function-junctions-node_button {
+  text-decoration: none;
+  text-align: center;
+  display: flex;
+  -webkit-appearance: none;
+  appearance: none;
+  background: none;
+  margin: 0;
+  white-space: nowrap;
+  text-overflow: ellipsis;
+  position: relative;
+  overflow: hidden;
+  font-family: inherit;
+  cursor: pointer;
+  outline: 0;
+  box-sizing: border-box;
+  vertical-align: middle;
+  justify-content: center;
+  align-items: center;
+  font-size: 11px;
+  height: 22px;
+  padding: 0 12px;
+  border-radius: 20px;
+  border: 1px solid rgb(142, 142, 147);
+  background: white;
+  box-shadow: 4px 5px 9px rgb(142 142 147 / 50%);
+  font-weight: 500;
+}
+
+.function-junctions-appearance-dark {
+  .function-junctions-node_button {
+    background: #232323;
+    color: white;
+    border: 1px solid black;
+    box-shadow: 4px 5px 9px rgb(0 0 0 / 50%);
+  }
+}

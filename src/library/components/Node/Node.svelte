@@ -13,7 +13,9 @@
     InputSocket,
     OutputSocket,
   } from '../Sockets';
+  import type { NodeControlButtons } from '.';
 
+  import NodeButton from './components/NodeButton/NodeButton.svelte';
   import Socket from '../Socket/Socket.svelte';
   
   export let title: string;
@@ -27,6 +29,11 @@
 
   export let component: typeof SvelteComponentDev;
   export let coordinates: Point;
+
+  export let nodeControlButtons: NodeControlButtons | boolean;
+
+  export let deletable: boolean | undefined = undefined;
+  export let cloneable: boolean | undefined = undefined;
 
   export let selected = false;
 
@@ -43,6 +50,16 @@
   on:touchstart
   on:contextmenu
 >
+  {#if cloneable ?? ((typeof nodeControlButtons === 'boolean' && nodeControlButtons)
+    || (typeof nodeControlButtons === 'object' && nodeControlButtons.clone))
+  }
+    <div class="function-junctions-node-header">
+      <NodeButton
+        text="Clone"
+        on:click={() => editor.cloneNode(id, { x: coordinates.x + 50, y: coordinates.y + 50 })}
+      />
+    </div>
+  {/if}
   <div class="function-junctions-node-title" style={`background: ${color ?? 'linear-gradient(#228cfd, #007aff)'}`}>{title}</div>
   <div class="function-junctions-node-content">
     {#if outputs}
@@ -55,6 +72,7 @@
             nodeId={id}
             color={outputs[key].color}
             socketType={outputs[key].type}
+            disabled={outputs[key].disabled}
             {editor}
           />
         {/each}
@@ -63,11 +81,12 @@
     <div class="function-junctions-node-content">
       <svelte:component
         this={component}
-        {inputs}
-        {outputs}
         {title}
         {id}
+        {editor}
         bind:store
+        bind:inputs
+        bind:outputs
       />
     </div>
     {#if inputs}
@@ -80,10 +99,22 @@
             nodeId={id}
             socketType={inputs[key].type}
             color={inputs[key].color}
+            disabled={inputs[key].disabled}
             {editor}
           />
         {/each}
       </div>
     {/if}
   </div>
+  {#if deletable ?? ((typeof nodeControlButtons === 'boolean' && nodeControlButtons)
+    || (typeof nodeControlButtons === 'object' && nodeControlButtons.delete))
+  }
+    <div class="function-junctions-node-footer">
+      <NodeButton
+        text="Delete"
+        color="rgb(255, 59, 48)"
+        on:click={() => editor.deleteNode(id)}
+      />
+    </div>
+  {/if}
 </div>

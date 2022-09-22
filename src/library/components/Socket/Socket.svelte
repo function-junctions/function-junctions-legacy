@@ -14,6 +14,8 @@
   export let nodeId: string;
   export let socketType: string;
 
+  export let disabled: boolean | undefined = undefined;
+
   export let color: string | undefined = undefined;
     
   export let editor: Editor;
@@ -54,7 +56,7 @@
     <div class="function-junctions-socket-title">{title}</div>
   {/if}
   <div
-    class="function-junctions-socket-connection"
+    class={`function-junctions-socket-connection ${disabled ? 'function-junctions-socket-connection-disabled' : undefined}`}
     style={color ? `background: ${color}` : ''}
     bind:this={ref}
     on:click={connect}

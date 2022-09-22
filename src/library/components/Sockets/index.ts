@@ -28,6 +28,7 @@ export type InputSocket<T> = {
   color?: string;
   connection: Writable<SocketConnection | undefined>;
   coordinates: Point;
+  disabled?: boolean;
 };
 
 export type OutputSocket<T> = {
@@ -36,6 +37,7 @@ export type OutputSocket<T> = {
   color?: string;
   coordinates: Point;
   trigger?: boolean;
+  disabled?: boolean;
 };
 
 export type InputSocketState = {
@@ -119,8 +121,8 @@ export class Sockets {
               prevConnectedSocketId = connectedSocketId;
               
               const connectedSocket = nodes[connectedNodeId]?.outputs?.[connectedSocketId];
-      
-              if (connectedSocket && connectedSocket.type === type) {
+
+              if (connectedSocket) {
                 valueUnsubscribe = connectedSocket.value.subscribe((value) => {
                   this.update(connectedNodeId, connectedSocketId);
   
@@ -263,8 +265,8 @@ export class Sockets {
           const offsetX = (position.originX * position.scale) - position.originX;
           const offsetY = (position.originY * position.scale) - position.originY;
 
-          const mouseX = ((event.clientX - position.translateX) + offsetX) / (position.scale);
-          const mouseY = ((event.clientY - position.translateY) + offsetY) / (position.scale);
+          const mouseX = ((event.pageX - position.translateX) + offsetX) / (position.scale);
+          const mouseY = ((event.pageY - position.translateY) + offsetY) / (position.scale);
 
 
           this.liveConnection.state.set({

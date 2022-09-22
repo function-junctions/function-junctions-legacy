@@ -27,6 +27,20 @@
     padding: 10px;
     overflow: hidden;
   }
+
+  .function-junctions-node-footer {
+    position: absolute;
+    bottom: -30px;
+    left: 0px;
+    display: flex;
+  }
+
+  .function-junctions-node-header {
+    position: absolute;
+    top: -30px;
+    right: 0px;
+    display: flex;
+  }
 }
 
 .function-junctions-node:hover {

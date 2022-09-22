@@ -4,6 +4,7 @@
 
 <script lang="ts">
   import type { Editor, EditorState } from '../Editor';
+  import type { NodeControlButtons } from '../Node';
   import Drag, { getMatrix } from '../Drag';
   import Node from '../Node/Node.svelte';
   import Connections from '../Connections/Connections.svelte';
@@ -11,7 +12,7 @@
   import type { EditorContextMenuBlueprint, NodeContextMenuBlueprint } from '../ContextMenu';
   import type { ContextMenu } from '../ContextMenu';
   import EditorContextMenu from '../ContextMenu/EditorContextMenu.svelte';
-import NodeContextMenu from '../ContextMenu/NodeContextMenu.svelte';
+  import NodeContextMenu from '../ContextMenu/NodeContextMenu.svelte';
   
   export let editor: Editor;
   export let state: EditorState | undefined;
@@ -21,6 +22,8 @@ import NodeContextMenu from '../ContextMenu/NodeContextMenu.svelte';
   export let pannable: boolean;
   export let moveable: boolean;
   export let interactable: boolean;
+
+  export let nodeControlButtons: NodeControlButtons | boolean;
 
   export let editorContextMenu: EditorContextMenuBlueprint | ((event: MouseEvent) => void) | undefined;
   export let nodeContextMenu: NodeContextMenuBlueprint | ((ids: string[], event: MouseEvent) => void )| undefined;
@@ -123,6 +126,36 @@ import NodeContextMenu from '../ContextMenu/NodeContextMenu.svelte';
     containerMoving = false;
   };
 
+  const editorContextMenuHandler = (event: MouseEvent) => {
+    nodeContextMenuInstance?.close();
+
+    if (editorContextMenu) {
+      event.preventDefault();
+
+      if (typeof editorContextMenu === 'function') {
+        editorContextMenu(event);
+      } else {
+        editorContextMenuInstance.open(event);
+      }
+    }
+  };
+
+  const nodeContextMenuHandler = (event: MouseEvent, key: string) => {
+    editorContextMenuInstance?.close();
+
+    $selectedNodesIds = [key];
+    if (nodeContextMenu) {
+      event.preventDefault();
+      event.stopPropagation();
+      
+      if (typeof nodeContextMenu === 'function') {
+        nodeContextMenu($selectedNodesIds, event);
+      } else {
+        nodeContextMenuInstance.open(event);
+      }
+    }
+  };
+
   const drag = (event: MouseEvent | TouchEvent) => {
     event.preventDefault();
     const { pageX, pageY } = getCoordinates(event);
@@ -217,8 +250,8 @@ import NodeContextMenu from '../ContextMenu/NodeContextMenu.svelte';
   on:click={(event) => {
     hideLiveConnection();
     
-    editorContextMenuInstance.evaluate(event);
-    nodeContextMenuInstance.evaluate(event);
+    editorContextMenuInstance?.evaluate(event);
+    nodeContextMenuInstance?.evaluate(event);
   }}
   on:wheel={zoom}
   on:mousedown={startDrag}
@@ -227,19 +260,7 @@ import NodeContextMenu from '../ContextMenu/NodeContextMenu.svelte';
   on:touchstart={startDrag}
   on:touchend={endDrag}
   on:touchmove={touch}
-  on:contextmenu={(event) => {
-    nodeContextMenuInstance?.close();
-
-    if (editorContextMenu) {
-      event.preventDefault();
-
-      if (typeof editorContextMenu === 'function') {
-        editorContextMenu(event);
-      } else {
-        editorContextMenuInstance.open(event);
-      }
-    }
-  }}
+  on:contextmenu={editorContextMenuHandler}
 >
   {#if editorContextMenu && typeof editorContextMenu !== 'function'}
     <EditorContextMenu
@@ -292,25 +313,14 @@ import NodeContextMenu from '../ContextMenu/NodeContextMenu.svelte';
           className={`${$nodes[key].className ?? ''} ${!interactable ? 'function-junction-node-disabled' : ''}`}
           style={$nodes[key].style ?? ''}
           selected={$selectedNodesIds.some((selectedNodeId) => key === selectedNodeId)}
+          cloneable={$nodes[key].cloneable}
+          deletable={$nodes[key].deletable}
+          {nodeControlButtons}
           {editor}
           bind:store={$nodesState[key].store}
           on:mousedown={(event) => dragNode(event, key)}
           on:touchstart={(event) => dragNode(event, key)}
-          on:contextmenu={(event) => {
-            editorContextMenuInstance?.close();
-
-            $selectedNodesIds = [key];
-            if (nodeContextMenu) {
-              event.preventDefault();
-              event.stopPropagation();
-              
-              if (typeof nodeContextMenu === 'function') {
-                nodeContextMenu($selectedNodesIds, event);
-              } else {
-                nodeContextMenuInstance.open(event);
-              }
-            }
-          }}
+          on:contextmenu={(event) => nodeContextMenuHandler(event, key)}
         />
       {/if}
     {/each}
