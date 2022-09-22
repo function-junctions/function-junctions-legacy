@@ -19,8 +19,8 @@
     $liveConnection,
     $position,
     getConnections($nodes)
-      .then((newConnection) => {
-        connections = newConnection;
+      .then((newConnections) => {
+        connections = newConnections;
       })
       .catch(() => console.error('Failed to get connections'));
 </script>
