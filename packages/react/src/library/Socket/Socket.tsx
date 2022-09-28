@@ -2,8 +2,19 @@ import React from 'react';
 
 import { getTruePosition } from 'core/components/Drag';
 
-import { SocketProps } from 'core/components/Socket';
 import { useReadable } from '../Hooks';
+import { Editor } from 'core/types';
+
+export type SocketProps = {
+  title: string;
+  type: 'input' | 'output';
+  id: string;
+  nodeId: string;
+  socketType: string;
+  disabled?: boolean;
+  color?: string;
+  editor: Editor;
+};
 
 const Socket = ({ title, type, id, nodeId, socketType, disabled, color, editor }: SocketProps) => {
   const [coordinates, setCoordinates] = React.useState<DOMRect>();

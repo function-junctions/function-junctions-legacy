@@ -1,14 +1,14 @@
 import React from 'react';
 import { NodeControlButtons } from 'core/components/NodeButton';
-import { Editor, InputSocket, InputSockets, OutputSocket, OutputSockets, Point } from 'core/types';
+import { Editor, InputSocket, OutputSocket, Point } from 'core/types';
 import NodeButton from '../NodeButton/NodeButton';
 import Socket from '../Socket/Socket';
 
 export type NodeProps = {
   title: string;
   id: string;
-  inputs: InputSockets<Record<string, InputSocket<any>>> | undefined;
-  outputs: OutputSockets<Record<string, OutputSocket<any>>> | undefined;
+  inputs: Record<string, InputSocket<any>> | undefined;
+  outputs: Record<string, OutputSocket<any>> | undefined;
   store?: Record<string, unknown>;
   editor: Editor;
 };
@@ -16,8 +16,8 @@ export type NodeProps = {
 export type NodeContainerProps = {
   title: string;
   id: string;
-  inputs: InputSockets<Record<string, InputSocket<any>>> | undefined;
-  outputs: OutputSockets<Record<string, OutputSocket<any>>> | undefined;
+  inputs: Record<string, InputSocket<any>> | undefined;
+  outputs: Record<string, OutputSocket<any>> | undefined;
   color?: string;
   className?: string;
   style?: React.CSSProperties;

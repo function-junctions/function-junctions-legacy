@@ -1,5 +1,10 @@
 import React from 'react';
-import { ConnectionProps, createConnectionPath } from 'core/components/Connection';
+import { createConnectionPath } from 'core/components/Connection';
+import { Point } from 'core/types';
+
+export type ConnectionProps = {
+  connection: { p1: Point; p2: Point };
+};
 
 const Connection = ({ connection }: ConnectionProps) => {
   const ref = React.useRef<SVGSVGElement>(null);

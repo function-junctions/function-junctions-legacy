@@ -1,9 +1,9 @@
 <script lang="ts">
-  import type { OutputSocket, OutputSockets } from 'core/types';
+  import type { OutputSocket } from 'core/types';
 
-  export let outputs: OutputSockets<{
+  export let outputs: {
     Number: OutputSocket<number>;
-  }>;
+  };
 
   const { value } = outputs.Number;
 </script>

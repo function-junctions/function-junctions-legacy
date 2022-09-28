@@ -1,9 +1,22 @@
-import { EditorContextMenuProps } from 'core/components/ContextMenu';
+import {
+  EditorContextMenuBlueprint,
+  ContextMenu as ContextMenuClass,
+} from 'core/components/ContextMenu';
 import { getTruePosition } from 'core/components/Drag';
+import { Editor } from 'core/types';
 import React from 'react';
 import { useReadable } from '../Hooks';
 import ContextMenu from './ContextMenu';
 import ContextMenuItem from './ContextMenuItem';
+
+export type EditorContextMenuProps = {
+  editorInstance: Editor;
+  instance: ContextMenuClass;
+  contextMenu: EditorContextMenuBlueprint;
+  containerRef: React.RefObject<HTMLDivElement>;
+  setInstance: React.Dispatch<React.SetStateAction<ContextMenuClass>>;
+  setOpened: React.Dispatch<React.SetStateAction<boolean>>;
+};
 
 const EditorContextMenu = ({
   editorInstance,

@@ -3,20 +3,18 @@ import { get, type Writable } from 'svelte/store';
 import type { Point } from '../../types';
 import type { Position } from '../Drag';
 import {
-  type InputSocket,
-  type InputSockets,
   type InputSocketState,
   type LiveConnection,
-  type OutputSocket,
-  type OutputSockets,
   type OutputSocketState,
   type SocketBlueprint,
   Sockets,
+  InputSocket,
+  OutputSocket,
 } from '../Sockets';
 
 export type NodeBlueprint<
-  I extends Record<string, SocketBlueprint> = Record<string, SocketBlueprint>,
-  O extends Record<string, SocketBlueprint> = Record<string, SocketBlueprint>
+  I = Record<string, SocketBlueprint>,
+  O = Record<string, SocketBlueprint>
 > = {
   inputs?: I;
   outputs?: O;
@@ -29,8 +27,8 @@ export type NodeBlueprint<
 };
 
 export type Node<
-  I extends InputSockets<Record<string, InputSocket<any>>> = Record<string, InputSocket<any>>,
-  O extends OutputSockets<Record<string, OutputSocket<any>>> = Record<string, OutputSocket<any>>
+  I = Record<string, InputSocket<any>>,
+  O = Record<string, OutputSocket<any>>
 > = Point & {
   inputs?: I;
   outputs?: O;
@@ -137,7 +135,7 @@ export class Nodes {
         ...prevNodes,
         [id]: {
           inputs: (() => {
-            const inputs: InputSockets<Record<string, any>> = {};
+            const inputs: Record<string, InputSocket<any>> = {};
 
             if (blueprint.inputs) {
               Object.keys(blueprint.inputs ?? {}).map((inputKey) => {
@@ -167,7 +165,7 @@ export class Nodes {
             return Object.keys(inputs).length > 0 ? inputs : undefined;
           })(),
           outputs: (() => {
-            const outputs: OutputSockets<Record<string, any>> = {};
+            const outputs: Record<string, OutputSocket<any>> = {};
 
             if (blueprint.outputs) {
               Object.keys(blueprint.outputs ?? {}).map((outputKey) => {

@@ -1,8 +1,12 @@
 import React from 'react';
-import { ConnectionsProps, getConnections } from 'core/components/Connections';
-import { Point } from 'core/types';
+import { getConnections } from 'core/components/Connections';
+import { Editor, Point } from 'core/types';
 import { useReadable } from '../Hooks';
 import Connection from '../Connection/Connection';
+
+export type ConnectionsProps = {
+  editor: Editor;
+};
 
 const Connections = ({ editor }: ConnectionsProps) => {
   const { position: positionStore } = editor;

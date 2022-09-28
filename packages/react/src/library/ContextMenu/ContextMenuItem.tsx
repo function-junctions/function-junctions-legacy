@@ -1,7 +1,15 @@
-import type { ContextMenuItemProps } from 'core/components/ContextMenu';
+import { GenericContextMenuTypes, ContextMenuItem, ContextMenu } from 'core/components/ContextMenu';
 import { getTruePosition } from 'core/components/Drag';
+import { Editor } from 'core/types';
 import React from 'react';
 import { useReadable } from '../Hooks';
+
+export type ContextMenuItemProps = {
+  ids?: string[];
+  item: ContextMenuItem<'delete' | 'clone' | GenericContextMenuTypes>;
+  contextMenu: ContextMenu;
+  editor: Editor;
+};
 
 const ContextMenuItem = ({ ids, item, contextMenu, editor }: ContextMenuItemProps) => {
   const { position: editorPositionStore } = editor;

@@ -1,5 +1,11 @@
 import React from 'react';
-import { NodeButtonProps } from 'core/components/NodeButton';
+
+export type NodeButtonProps = {
+  text: string;
+  color?: string;
+  background?: string;
+  onClick?: () => void;
+};
 
 const NodeButton = ({ text, color, background, onClick }: NodeButtonProps) => (
   <button

@@ -1,8 +1,22 @@
 import React from 'react';
 
-import { NodeContextMenuProps } from 'core/components/ContextMenu';
+import {
+  NodeContextMenuBlueprint,
+  ContextMenu as ContextMenuClass,
+} from 'core/components/ContextMenu';
 import ContextMenuItem from './ContextMenuItem';
 import ContextMenu from './ContextMenu';
+import { Editor } from 'core/types';
+
+export type NodeContextMenuProps = {
+  ids: string[];
+  editorInstance: Editor;
+  instance: ContextMenuClass;
+  contextMenu: NodeContextMenuBlueprint;
+  containerRef: React.RefObject<HTMLDivElement>;
+  setInstance: React.Dispatch<React.SetStateAction<ContextMenuClass>>;
+  setOpened: React.Dispatch<React.SetStateAction<boolean>>;
+};
 
 const NodeContextMenu = ({
   ids,

@@ -1,39 +1,4 @@
 import { writable } from 'svelte/store';
-import { Editor } from '../Editor';
-
-export type ContextMenuProps = {
-  containerRef: React.RefObject<HTMLDivElement>;
-  instance: ContextMenu;
-  setInstance: React.Dispatch<React.SetStateAction<ContextMenu>>;
-  setOpened: React.Dispatch<React.SetStateAction<boolean>>;
-  children: React.ReactNode;
-};
-
-export type ContextMenuItemProps = {
-  ids?: string[];
-  item: ContextMenuItem<'delete' | 'clone' | GenericContextMenuTypes>;
-  contextMenu: ContextMenu;
-  editor: Editor;
-};
-
-export type EditorContextMenuProps = {
-  editorInstance: Editor;
-  instance: ContextMenu;
-  contextMenu: EditorContextMenuBlueprint;
-  containerRef: React.RefObject<HTMLDivElement>;
-  setInstance: React.Dispatch<React.SetStateAction<ContextMenu>>;
-  setOpened: React.Dispatch<React.SetStateAction<boolean>>;
-};
-
-export type NodeContextMenuProps = {
-  ids: string[];
-  editorInstance: Editor;
-  instance: ContextMenu;
-  contextMenu: NodeContextMenuBlueprint;
-  containerRef: React.RefObject<HTMLDivElement>;
-  setInstance: React.Dispatch<React.SetStateAction<ContextMenu>>;
-  setOpened: React.Dispatch<React.SetStateAction<boolean>>;
-};
 
 export type ContextMenuItem<T> = {
   type: T;

@@ -1,13 +1,13 @@
 import React from 'react';
 
-import { Editor, InputSocket, InputSockets, OutputSocket, OutputSockets } from 'core/types';
+import { Editor, InputSocket, OutputSocket } from 'core/types';
 import { NodeProps } from './Node';
 
 export type RawNodeProps = {
   title: string;
   id: string;
-  inputs: InputSockets<Record<string, InputSocket<any>>> | undefined;
-  outputs: OutputSockets<Record<string, OutputSocket<any>>> | undefined;
+  inputs: Record<string, InputSocket<any>> | undefined;
+  outputs: Record<string, OutputSocket<any>> | undefined;
   component: React.ComponentClass<NodeProps>;
   store?: Record<string, unknown>;
   editor: Editor;

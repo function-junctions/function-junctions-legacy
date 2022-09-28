@@ -1,16 +1,16 @@
 <script lang="ts">
-  import type { InputSockets, InputSocket, OutputSocket, OutputSockets } from 'core/types';
+  import type { InputSocket, OutputSocket } from 'core/types';
 
   import { List, ListInput } from 'framework7-svelte';
 
-  export let inputs: InputSockets<{
+  export let inputs: {
     LHS: InputSocket<number>;
     RHS: InputSocket<number>;
-  }>;
+  };
 
-  export let outputs: OutputSockets<{
+  export let outputs: {
     Number: OutputSocket<number>;
-  }>;
+  };
 
   export let store: {
     type: 'addition' | 'subtraction' | 'multiplication' | 'division';

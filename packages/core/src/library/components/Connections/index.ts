@@ -1,11 +1,7 @@
 import { tick } from 'svelte';
 import { get } from 'svelte/store';
-import { Editor, Point } from '../../types';
+import { Point } from '../../types';
 import { Node } from '../Nodes';
-
-export type ConnectionsProps = {
-  editor: Editor;
-};
 
 export const getConnections = (nodes: Record<string, Node>): Promise<{ p1: Point; p2: Point }[]> =>
   new Promise((resolve) => {
