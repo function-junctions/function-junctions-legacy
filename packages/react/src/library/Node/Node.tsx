@@ -1,17 +1,10 @@
 import React from 'react';
 import { NodeControlButtons } from 'core/components/NodeButton';
-import { Editor, InputSocket, OutputSocket, Point } from 'core/types';
+import { InputSocket, OutputSocket, Point } from 'core/types';
 import NodeButton from '../NodeButton/NodeButton';
 import Socket from '../Socket/Socket';
-
-export type NodeProps = {
-  title: string;
-  id: string;
-  inputs: Record<string, InputSocket<any>> | undefined;
-  outputs: Record<string, OutputSocket<any>> | undefined;
-  store?: Record<string, unknown>;
-  editor: Editor;
-};
+import { NodeProps } from 'core/components/Node';
+import { ReactEditor } from '../Editor';
 
 export type NodeContainerProps = {
   title: string;
@@ -21,14 +14,14 @@ export type NodeContainerProps = {
   color?: string;
   className?: string;
   style?: React.CSSProperties;
-  component: React.ComponentClass<NodeProps>;
+  component: React.ComponentClass<NodeProps<React.ComponentClass<NodeProps<React.ComponentClass>>>>;
   coordinates: Point;
   nodeControlButtons: NodeControlButtons | boolean;
   deletable?: boolean;
   cloneable?: boolean;
   selected?: boolean;
   store?: Record<string, unknown>;
-  editor: Editor;
+  editor: ReactEditor;
   onClick?: () => void;
   onMouseDown?: () => void;
   onTouchStart?: () => void;

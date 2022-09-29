@@ -5,12 +5,13 @@ import {
 import { getTruePosition } from 'core/components/Drag';
 import { Editor } from 'core/types';
 import React from 'react';
+import { ReactEditor } from '../Editor';
 import { useReadable } from '../Hooks';
 import ContextMenu from './ContextMenu';
 import ContextMenuItem from './ContextMenuItem';
 
 export type EditorContextMenuProps = {
-  editorInstance: Editor;
+  editorInstance: ReactEditor;
   instance: ContextMenuClass;
   contextMenu: EditorContextMenuBlueprint;
   containerRef: React.RefObject<HTMLDivElement>;

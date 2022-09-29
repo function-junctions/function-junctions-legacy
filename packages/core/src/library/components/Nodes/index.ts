@@ -1,4 +1,4 @@
-import { SvelteComponentDev, tick } from 'svelte/internal';
+import { tick } from 'svelte/internal';
 import { get, type Writable } from 'svelte/store';
 import type { Point } from '../../types';
 import type { Position } from '../Drag';
@@ -12,7 +12,8 @@ import {
   OutputSocket,
 } from '../Sockets';
 
-export type NodeBlueprint<
+export type InternalNodeBlueprint<
+  C,
   I = Record<string, SocketBlueprint>,
   O = Record<string, SocketBlueprint>
 > = {
@@ -21,25 +22,19 @@ export type NodeBlueprint<
   color?: string;
   className?: string;
   style?: string;
-  component: typeof SvelteComponentDev;
+  component: C;
   deletable?: boolean;
   cloneable?: boolean;
 };
 
-export type Node<
+export type InternalNode<
+  C,
   I = Record<string, InputSocket<any>>,
   O = Record<string, OutputSocket<any>>
-> = Point & {
-  inputs?: I;
-  outputs?: O;
-  component: typeof SvelteComponentDev;
-  type: string;
-  color?: string;
-  className?: string;
-  style?: string;
-  deletable?: boolean;
-  cloneable?: boolean;
-};
+> = Point &
+  InternalNodeBlueprint<C, I, O> & {
+    type: string;
+  };
 
 export type NodeState = Point & {
   type: string;
@@ -48,9 +43,9 @@ export type NodeState = Point & {
   store?: Record<string, unknown>;
 };
 
-export type CurrentNodes = {
-  registered: Writable<Record<string, NodeBlueprint>>;
-  current: Writable<Record<string, Node>>;
+export type CurrentNodes<C> = {
+  registered: Writable<Record<string, InternalNodeBlueprint<C>>>;
+  current: Writable<Record<string, InternalNode<C>>>;
   selected: Writable<string[]>;
 };
 
@@ -59,8 +54,8 @@ export type NodesState = {
   restored: Writable<boolean>;
 };
 
-export class Nodes {
-  nodes: CurrentNodes;
+export class Nodes<C> {
+  nodes: CurrentNodes<C>;
   state: NodesState;
   connection: LiveConnection;
   position: Writable<Position>;
@@ -73,7 +68,7 @@ export class Nodes {
 
   constructor(
     position: Writable<Position>,
-    nodes: CurrentNodes,
+    nodes: CurrentNodes<C>,
     state: NodesState,
     connection: LiveConnection,
     readonly: Writable<boolean>,
@@ -216,7 +211,7 @@ export class Nodes {
     const currentNodes = get(this.nodes.current);
 
     this.nodes.current.update(() =>
-      Object.keys(currentNodes).reduce((newNodes: Record<string, Node>, key) => {
+      Object.keys(currentNodes).reduce((newNodes: Record<string, InternalNode<C>>, key) => {
         const oldNode = currentNodes[key];
         const inputs = oldNode.inputs;
 

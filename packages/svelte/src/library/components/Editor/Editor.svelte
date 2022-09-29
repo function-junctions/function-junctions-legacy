@@ -10,10 +10,11 @@
   } from 'core/components/ContextMenu';
   import type { NodeControlButtons } from 'core/components/NodeButton';
 
-  import type { NodeBlueprint } from 'core/components/Nodes';
+  import type { NodeBlueprint } from '@/library';
   import Nodes from '../Nodes/Nodes.svelte';
 
   import { getAppearance } from 'core/components/Theme';
+  import type { SvelteEditor } from '.';
 
   export let nodes: Record<string, NodeBlueprint>;
   export let state: EditorState | undefined = undefined;
@@ -46,9 +47,15 @@
 
   export let appearance: 'light' | 'dark' | 'auto' = 'auto';
 
-  export let instance = new EditorClass(writable(nodes), state, !editable, inputs, outputs);
+  export let instance: SvelteEditor = new EditorClass(
+    writable(nodes),
+    state,
+    !editable,
+    inputs,
+    outputs,
+  );
 
-  export let onReady: ((editor: EditorClass) => void) | undefined = undefined;
+  export let onReady: ((editor: SvelteEditor) => void) | undefined = undefined;
 
   const appearanceClassName = getAppearance(appearance);
 

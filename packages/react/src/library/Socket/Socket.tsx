@@ -3,7 +3,7 @@ import React from 'react';
 import { getTruePosition } from 'core/components/Drag';
 
 import { useReadable } from '../Hooks';
-import { Editor } from 'core/types';
+import { ReactEditor } from '../Editor';
 
 export type SocketProps = {
   title: string;
@@ -13,7 +13,7 @@ export type SocketProps = {
   socketType: string;
   disabled?: boolean;
   color?: string;
-  editor: Editor;
+  editor: ReactEditor;
 };
 
 const Socket = ({ title, type, id, nodeId, socketType, disabled, color, editor }: SocketProps) => {

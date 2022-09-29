@@ -1,15 +1,15 @@
 import { writable, type Writable } from 'svelte/store';
 import type { Position } from '../Drag';
-import { type NodeBlueprint, Nodes, type NodeState } from '../Nodes';
+import { type InternalNodeBlueprint, Nodes, type NodeState } from '../Nodes';
 
 export type EditorState = Partial<{
   nodes: Record<string, NodeState>;
   position: Position;
 }>;
 
-export class Editor extends Nodes {
+export class Editor<C> extends Nodes<C> {
   constructor(
-    blueprint: Writable<Record<string, NodeBlueprint>>,
+    blueprint: Writable<Record<string, InternalNodeBlueprint<C>>>,
     state?: EditorState,
     readonly?: boolean,
     inputs?: Record<string, { type: string; value: Writable<unknown> }>,

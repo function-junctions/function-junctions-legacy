@@ -1,16 +1,17 @@
 import React from 'react';
 
-import { Editor, InputSocket, OutputSocket } from 'core/types';
-import { NodeProps } from './Node';
+import { InputSocket, OutputSocket } from 'core/types';
+import { NodeProps } from 'core/components/Node';
+import { ReactEditor } from '../Editor';
 
 export type RawNodeProps = {
   title: string;
   id: string;
   inputs: Record<string, InputSocket<any>> | undefined;
   outputs: Record<string, OutputSocket<any>> | undefined;
-  component: React.ComponentClass<NodeProps>;
+  component: React.ComponentClass<NodeProps<React.ComponentClass<NodeProps<React.ComponentClass>>>>;
   store?: Record<string, unknown>;
-  editor: Editor;
+  editor: ReactEditor;
 };
 
 const RawNode = ({

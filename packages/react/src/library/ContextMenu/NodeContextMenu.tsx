@@ -6,11 +6,11 @@ import {
 } from 'core/components/ContextMenu';
 import ContextMenuItem from './ContextMenuItem';
 import ContextMenu from './ContextMenu';
-import { Editor } from 'core/types';
+import { ReactEditor } from '../Editor';
 
 export type NodeContextMenuProps = {
   ids: string[];
-  editorInstance: Editor;
+  editorInstance: ReactEditor;
   instance: ContextMenuClass;
   contextMenu: NodeContextMenuBlueprint;
   containerRef: React.RefObject<HTMLDivElement>;

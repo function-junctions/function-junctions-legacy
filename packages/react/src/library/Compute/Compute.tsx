@@ -1,8 +1,10 @@
-import { Editor, EditorState, NodeBlueprint } from 'core/types';
+import { Editor, EditorState } from 'core/types';
 import React from 'react';
 import { Writable, writable } from 'svelte/store';
+import { ReactEditor } from '../Editor';
 import { useReadable } from '../Hooks';
 import RawNode from '../Node/RawNode';
+import { NodeBlueprint } from '../Nodes';
 
 export type ComputeProps = {
   nodes: Record<string, NodeBlueprint>;
@@ -12,7 +14,9 @@ export type ComputeProps = {
 };
 
 const Compute = ({ nodes, state, inputs = {}, outputs = {} }: ComputeProps) => {
-  const [instance] = React.useState(new Editor(writable(nodes), state, true, inputs, outputs));
+  const [instance] = React.useState<ReactEditor>(
+    new Editor(writable(nodes), state, true, inputs, outputs)
+  );
 
   const { current: currentNodesStore } = instance.nodes;
   const { nodes: nodesStateStore } = instance.state;
