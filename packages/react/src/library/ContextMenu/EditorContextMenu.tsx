@@ -29,10 +29,12 @@ const EditorContextMenu = ({
   const { registered: nodesStore } = editorInstance.nodes;
   const { position: editorPositionStore } = editorInstance;
 
-  React.useEffect(() => console.log(contextMenu));
-
   const nodes = useReadable(nodesStore);
   const editorPosition = useReadable(editorPositionStore);
+
+  React.useEffect(() => {
+    console.log(nodes);
+  }, [nodes]);
 
   return (
     <ContextMenu
@@ -45,23 +47,26 @@ const EditorContextMenu = ({
         {contextMenu.nodes && (
           <>
             {Object.keys(nodes).map((key) => {
-              <li
-                onClick={() => {
-                  const { x, y } = getTruePosition({
-                    x: instance?.x ?? 0,
-                    y: instance?.y ?? 0,
-                    translateX: editorPosition.translateX,
-                    translateY: editorPosition.translateY,
-                    originX: editorPosition.originX,
-                    originY: editorPosition.originY,
-                    scale: editorPosition.scale,
-                  });
+              return (
+                <li
+                  key={key}
+                  onClick={() => {
+                    const { x, y } = getTruePosition({
+                      x: instance?.x ?? 0,
+                      y: instance?.y ?? 0,
+                      translateX: editorPosition.translateX,
+                      translateY: editorPosition.translateY,
+                      originX: editorPosition.originX,
+                      originY: editorPosition.originY,
+                      scale: editorPosition.scale,
+                    });
 
-                  editorInstance.addNode(key, { x, y });
-                }}
-              >
-                {key}
-              </li>;
+                    editorInstance.addNode(key, { x, y });
+                  }}
+                >
+                  {key}
+                </li>
+              );
             })}
           </>
         )}

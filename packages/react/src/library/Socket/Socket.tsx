@@ -29,7 +29,7 @@ const Socket = ({ title, type, id, nodeId, socketType, disabled, color, editor }
 
   const connect = React.useCallback(
     () => !readonly && editor.sockets.connect(type, { nodeId, socketId: id, socketType }),
-    [readonly, editor, type, nodeId, id, socketType]
+    [readonly, editor, type, nodeId, id, socketType],
   );
 
   React.useEffect(() => {

@@ -51,10 +51,43 @@ const Node = ({
   onTouchStart,
   onContextMenu,
 }: NodeContainerProps) => {
-  const [reactInputs, setReactInputs] = React.useState<Record<string, unknown>>({});
-  const [reactOutputs, setReactOutputs] = React.useState<
-    Record<string, [unknown, Setter<unknown>, Updater<unknown>]>
-  >({});
+  const [reactInputs, setReactInputs] = React.useState<Record<string, unknown>>();
+  const [reactOutputs, setReactOutputs] =
+    React.useState<Record<string, [unknown, Setter<unknown>, Updater<unknown>]>>();
+
+  const computedReactInputs = React.useMemo(() => {
+    if (reactInputs) {
+      const newInputs: ReactNodeProps['inputs'] = {};
+
+      Object.keys(inputs).forEach((key) => {
+        newInputs[key] = {
+          ...(inputs[key] ?? {}),
+          value: reactInputs?.[key],
+        };
+      });
+
+      return newInputs;
+    }
+
+    return;
+  }, [inputs, reactInputs]);
+
+  const computedReactOutputs = React.useMemo(() => {
+    if (reactOutputs) {
+      const newOutputs: ReactNodeProps['outputs'] = {};
+
+      Object.keys(outputs).forEach((key) => {
+        newOutputs[key] = {
+          ...(outputs[key] ?? {}),
+          value: reactOutputs[key]?.[0],
+          setValue: reactOutputs[key]?.[1],
+        };
+      });
+
+      return newOutputs;
+    }
+    return;
+  }, [outputs, reactOutputs]);
 
   return (
     <>
@@ -134,41 +167,16 @@ const Node = ({
                 />
               ))}
 
-            <Component
-              title={title}
-              id={id}
-              editor={editor}
-              store={store}
-              inputs={{
-                ...(() => {
-                  const newInputs: ReactNodeProps['inputs'] = {};
-
-                  Object.keys(inputs).forEach((key) => {
-                    return {
-                      ...((inputs ??= {})[key] ?? {}),
-                      value: reactInputs[key],
-                    };
-                  });
-
-                  return newInputs;
-                })(),
-              }}
-              outputs={{
-                ...(() => {
-                  const newOutputs: ReactNodeProps['outputs'] = {};
-
-                  Object.keys(outputs).forEach((key) => {
-                    return {
-                      ...((outputs ??= {})[key] ?? {}),
-                      value: reactOutputs[key][0],
-                      setValue: reactOutputs[key][1],
-                    };
-                  });
-
-                  return newOutputs;
-                })(),
-              }}
-            />
+            {computedReactInputs && computedReactOutputs && (
+              <Component
+                title={title}
+                id={id}
+                editor={editor}
+                store={store}
+                inputs={computedReactInputs}
+                outputs={computedReactOutputs}
+              />
+            )}
           </div>
           {inputs ? (
             <div className="function-junctions-node-inputs">
