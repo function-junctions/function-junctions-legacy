@@ -9,7 +9,7 @@ import {
 } from 'svelte/store';
 import type { Point } from '../../types';
 import type { Position } from '../Drag';
-import type { Node } from '../Nodes';
+import type { InternalNode } from '../Nodes';
 
 export type SocketConnection = {
   connectedNodeId: string;
@@ -68,14 +68,14 @@ export type LiveConnection = {
 };
 
 export class Sockets {
-  nodes: Writable<Record<string, Node>>;
+  nodes: Writable<Record<string, InternalNode<unknown>>>;
   editorPosition: Writable<Position>;
   liveConnection: LiveConnection;
 
   constructor(
     editorPosition: Writable<Position>,
-    nodes: Writable<Record<string, Node>>,
-    liveConnection: LiveConnection
+    nodes: Writable<Record<string, InternalNode<unknown>>>,
+    liveConnection: LiveConnection,
   ) {
     this.nodes = nodes;
     this.editorPosition = editorPosition;
@@ -104,7 +104,7 @@ export class Sockets {
     defaultValue?: T,
     state?: {
       connection?: SocketConnection;
-    }
+    },
   ): InputSocket<T> => {
     let valueUnsubscribe: Unsubscriber | undefined;
     let prevConnectedNodeId: string;
@@ -180,7 +180,7 @@ export class Sockets {
 
   public connect(
     type: 'input' | 'output',
-    newConnection: { nodeId: string; socketId: string; socketType: string }
+    newConnection: { nodeId: string; socketId: string; socketType: string },
   ): void {
     let socket: ConnectionSocket = {
       type,

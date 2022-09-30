@@ -14,11 +14,11 @@ export const computeSVGPath = (points: { p1: Point; p2: Point }, curvature: numb
 export const createConnectionPath = (
   svg: SVGSVGElement,
   points: { p1: Point; p2: Point },
-  curvature = 0.4
+  curvature = 0.4,
 ): void => {
   if (svg) {
     let path: SVGPathElement | undefined = svg.getElementsByClassName(
-      'main-path'
+      'main-path',
     )?.[0] as SVGPathElement;
 
     if (!path) {

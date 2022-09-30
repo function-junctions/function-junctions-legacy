@@ -1,4 +1,8 @@
 import { NodeProps } from 'core/components/Node';
 import type { Editor } from 'core/types';
+import React from 'react';
+import { ReactNodeProps } from '../Node';
 
-export type ReactEditor = Editor<React.ComponentClass<NodeProps<React.ComponentClass>>>;
+export type ReactComponent = (props: ReactNodeProps) => JSX.Element;
+
+export type ReactEditor = Editor<ReactComponent, React.CSSProperties>;

@@ -1,11 +1,11 @@
 <script lang="ts">
   import type { Point } from 'core/types';
-  import type { Editor } from 'core/components/Editor';
   import { getConnections } from 'core/components/connections';
 
   import Connection from '../Connection/Connection.svelte';
+  import type { SvelteEditor } from '../Editor';
 
-  export let editor: Editor;
+  export let editor: SvelteEditor;
 
   const { position } = editor;
   const { current: nodes } = editor.nodes;

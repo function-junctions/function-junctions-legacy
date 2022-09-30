@@ -4,15 +4,15 @@
     GenericContextMenuTypes,
     ContextMenu,
   } from 'core/components/ContextMenu';
-  import type { Editor } from 'core/components/Editor';
   import { getTruePosition } from 'core/components/Drag';
+  import type { SvelteEditor } from '../Editor';
 
   export let ids: string[] | undefined = undefined;
   export let item: ContextMenuItem<'delete' | 'clone' | GenericContextMenuTypes>;
 
   export let contextMenu: ContextMenu;
 
-  export let editor: Editor;
+  export let editor: SvelteEditor;
 
   const { position: editorPosition } = editor;
 </script>

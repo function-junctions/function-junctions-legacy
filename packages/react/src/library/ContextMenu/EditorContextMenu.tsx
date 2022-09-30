@@ -3,7 +3,6 @@ import {
   ContextMenu as ContextMenuClass,
 } from 'core/components/ContextMenu';
 import { getTruePosition } from 'core/components/Drag';
-import { Editor } from 'core/types';
 import React from 'react';
 import { ReactEditor } from '../Editor';
 import { useReadable } from '../Hooks';
@@ -12,11 +11,11 @@ import ContextMenuItem from './ContextMenuItem';
 
 export type EditorContextMenuProps = {
   editorInstance: ReactEditor;
-  instance: ContextMenuClass;
+  instance: ContextMenuClass | undefined;
   contextMenu: EditorContextMenuBlueprint;
   containerRef: React.RefObject<HTMLDivElement>;
-  setInstance: React.Dispatch<React.SetStateAction<ContextMenuClass>>;
-  setOpened: React.Dispatch<React.SetStateAction<boolean>>;
+  setInstance: React.Dispatch<React.SetStateAction<ContextMenuClass | undefined>>;
+  onOpened: (opened: boolean) => void;
 };
 
 const EditorContextMenu = ({
@@ -25,10 +24,12 @@ const EditorContextMenu = ({
   contextMenu,
   containerRef,
   setInstance,
-  setOpened,
+  onOpened,
 }: EditorContextMenuProps) => {
   const { registered: nodesStore } = editorInstance.nodes;
   const { position: editorPositionStore } = editorInstance;
+
+  React.useEffect(() => console.log(contextMenu));
 
   const nodes = useReadable(nodesStore);
   const editorPosition = useReadable(editorPositionStore);
@@ -38,7 +39,7 @@ const EditorContextMenu = ({
       containerRef={containerRef}
       instance={instance}
       setInstance={setInstance}
-      setOpened={setOpened}
+      onOpened={onOpened}
     >
       <ul onClick={() => instance?.close()}>
         {contextMenu.nodes && (

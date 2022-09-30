@@ -9,7 +9,7 @@
     "allowSyntheticDefaultImports": true,
     "strict": true,
     "paths": {
-      "@/*": ["src/*"],
+      "@/*": ["./src/*"],
       "core/*": ["../core/src/library/*"]
     },
     "forceConsistentCasingInFileNames": true,
@@ -20,6 +20,6 @@
     "noEmit": true,
     "jsx": "react-jsx"
   },
-  "include": ["src"],
+  "include": ["src", "../svelte/src/library/components/Node/index.ts"],
   "references": [{ "path": "./tsconfig.node.json" }]
 }

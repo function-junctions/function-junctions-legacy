@@ -140,7 +140,7 @@ const canPan: CanPan = (state: Drag) => ({
   },
 });
 
-const canZoom: CanZoom = state => ({
+const canZoom: CanZoom = (state) => ({
   zoom: ({ x, y, deltaScale }) => {
     const transformation = get(state.transformation);
     const { left, top } = state.element.getBoundingClientRect();

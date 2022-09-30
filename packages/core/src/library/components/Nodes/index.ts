@@ -14,14 +14,15 @@ import {
 
 export type InternalNodeBlueprint<
   C,
+  S,
   I = Record<string, SocketBlueprint>,
-  O = Record<string, SocketBlueprint>
+  O = Record<string, SocketBlueprint>,
 > = {
   inputs?: I;
   outputs?: O;
   color?: string;
   className?: string;
-  style?: string;
+  style?: S;
   component: C;
   deletable?: boolean;
   cloneable?: boolean;
@@ -29,10 +30,11 @@ export type InternalNodeBlueprint<
 
 export type InternalNode<
   C,
+  S = string,
   I = Record<string, InputSocket<any>>,
-  O = Record<string, OutputSocket<any>>
+  O = Record<string, OutputSocket<any>>,
 > = Point &
-  InternalNodeBlueprint<C, I, O> & {
+  InternalNodeBlueprint<C, S, I, O> & {
     type: string;
   };
 
@@ -43,10 +45,9 @@ export type NodeState = Point & {
   store?: Record<string, unknown>;
 };
 
-export type CurrentNodes<C> = {
-  registered: Writable<Record<string, InternalNodeBlueprint<C>>>;
-  current: Writable<Record<string, InternalNode<C>>>;
-  selected: Writable<string[]>;
+export type CurrentNodes<C, S> = {
+  registered: Writable<Record<string, InternalNodeBlueprint<C, S>>>;
+  current: Writable<Record<string, InternalNode<C, S>>>;
 };
 
 export type NodesState = {
@@ -54,8 +55,8 @@ export type NodesState = {
   restored: Writable<boolean>;
 };
 
-export class Nodes<C> {
-  nodes: CurrentNodes<C>;
+export class Nodes<C, S> {
+  nodes: CurrentNodes<C, S>;
   state: NodesState;
   connection: LiveConnection;
   position: Writable<Position>;
@@ -68,12 +69,12 @@ export class Nodes<C> {
 
   constructor(
     position: Writable<Position>,
-    nodes: CurrentNodes<C>,
+    nodes: CurrentNodes<C, S>,
     state: NodesState,
     connection: LiveConnection,
     readonly: Writable<boolean>,
     inputs?: Record<string, { type: string; value: Writable<unknown> }>,
-    outputs?: Record<string, { type: string; value: Writable<unknown> }>
+    outputs?: Record<string, { type: string; value: Writable<unknown> }>,
   ) {
     this.position = position;
     this.nodes = nodes;
@@ -92,7 +93,7 @@ export class Nodes<C> {
   public addNode = (
     key: string,
     position?: Point,
-    state?: { id?: string; blueprint: NodeState }
+    state?: { id?: string; blueprint: NodeState },
   ): void => {
     const blueprint = get(this.nodes.registered)?.[key];
     const nodes = get(this.nodes.current);
@@ -211,7 +212,7 @@ export class Nodes<C> {
     const currentNodes = get(this.nodes.current);
 
     this.nodes.current.update(() =>
-      Object.keys(currentNodes).reduce((newNodes: Record<string, InternalNode<C>>, key) => {
+      Object.keys(currentNodes).reduce((newNodes: Record<string, InternalNode<C, S>>, key) => {
         const oldNode = currentNodes[key];
         const inputs = oldNode.inputs;
 
@@ -228,7 +229,7 @@ export class Nodes<C> {
         if (key !== id) newNodes[key] = oldNode;
 
         return newNodes;
-      }, {})
+      }, {}),
     );
   };
 
@@ -246,7 +247,7 @@ export class Nodes<C> {
             x: position?.x ?? state.x,
             y: position?.y ?? state.y,
             type: state.type,
-          })
+          }),
         ),
       });
     } else {
@@ -261,7 +262,7 @@ export class Nodes<C> {
 
   private restoreState = (state: Record<string, NodeState>): void => {
     Object.keys(state).forEach((id) =>
-      this.addNode(state[id].type, { x: 0, y: 0 }, { id, blueprint: state[id] })
+      this.addNode(state[id].type, { x: 0, y: 0 }, { id, blueprint: state[id] }),
     );
 
     void tick().then(() => {

@@ -1,7 +1,7 @@
 <script lang="ts">
   import { getTruePosition } from 'core/components/Drag';
 
-  import type { Editor } from 'core/components/Editor';
+  import type { SvelteEditor } from '../Editor';
 
   export let title: string;
   export let type: 'input' | 'output';
@@ -14,7 +14,7 @@
 
   export let color: string | undefined = undefined;
 
-  export let editor: Editor;
+  export let editor: SvelteEditor;
 
   let ref: HTMLDivElement;
   let coordinates: DOMRect;

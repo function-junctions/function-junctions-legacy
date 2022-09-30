@@ -1,19 +1,19 @@
 <script lang="ts">
-  import type { Editor, EditorState } from 'core/components/Editor';
+  import type { EditorState } from 'core/components/Editor';
   import type { NodeControlButtons } from 'core/components/NodeButton';
   import Drag, { getMatrix } from 'core/components/Drag';
   import Node from '../Node/Node.svelte';
   import Connections from '../Connections/Connections.svelte';
-  import type { Point } from 'core/types';
-  import type {
-    EditorContextMenuBlueprint,
-    NodeContextMenuBlueprint,
-  } from 'core/components/ContextMenu';
+
+  import type { EditorContextMenuProp, NodeContextMenuProp } from 'core/components/ContextMenu';
   import type { ContextMenu } from 'core/components/ContextMenu';
   import EditorContextMenu from '../ContextMenu/EditorContextMenu.svelte';
   import NodeContextMenu from '../ContextMenu/NodeContextMenu.svelte';
+  import type { SvelteEditor } from '../Editor';
+  import { Interaction } from 'core/components/Interaction';
+  import { onMount } from 'svelte';
 
-  export let editor: Editor;
+  export let editor: SvelteEditor;
   export let state: EditorState | undefined;
 
   export let multiselect: boolean;
@@ -24,219 +24,29 @@
 
   export let nodeControlButtons: NodeControlButtons | boolean;
 
-  export let editorContextMenu:
-    | EditorContextMenuBlueprint
-    | ((event: MouseEvent) => void)
-    | undefined;
-  export let nodeContextMenu:
-    | NodeContextMenuBlueprint
-    | ((ids: string[], event: MouseEvent) => void)
-    | undefined;
+  export let editorContextMenu: EditorContextMenuProp;
+  export let nodeContextMenu: NodeContextMenuProp;
 
-  export let onReady: ((editor: Editor) => void) | undefined = undefined;
+  export let onReady: ((editor: SvelteEditor) => void) | undefined = undefined;
 
   let ref: HTMLDivElement;
 
   const { position } = editor;
-  const { current: nodes, selected: selectedNodesIds } = editor.nodes;
+  const { current: nodes } = editor.nodes;
   const { restored: stateRestored, nodes: nodesState } = editor.state;
   const { show: showLiveConnection, state: liveConnectionState } = editor.connection;
-
-  let nodeMoving = false;
-  let containerMoving = false;
-  let contextMenuOpen = false;
-
-  let previousCoordinates: Point = {
-    x: 0,
-    y: 0,
-  };
-  let previousDistance: number;
 
   let editorContextMenuInstance: ContextMenu;
   let nodeContextMenuInstance: ContextMenu;
 
-  const getCoordinates = (event: MouseEvent | TouchEvent) => {
-    let pageX: number;
-    let pageY: number;
-
-    if ('touches' in event) {
-      const touch = event.touches[0];
-
-      pageX = touch.pageX;
-      pageY = touch.pageY;
-    } else {
-      pageX = event.pageX;
-      pageY = event.pageY;
-    }
-
-    return {
-      pageX,
-      pageY,
-    };
-  };
+  const interaction = new Interaction(nodes, position, undefined, {
+    multiselect,
+    zoomable,
+    pannable,
+    moveable,
+  });
 
   const hideLiveConnection = () => $liveConnectionState && ($showLiveConnection = false);
-
-  const zoom = (event: WheelEvent) => {
-    if (zoomable) {
-      event.preventDefault();
-
-      const factor = 3.5;
-      dragger.zoom({
-        deltaScale: Math.sign(event.deltaY) > 0 ? -factor : factor,
-        x: event.pageX,
-        y: event.pageY,
-      });
-    }
-  };
-
-  const pinch = (event: TouchEvent) => {
-    if (zoomable) {
-      const [x1, y1] = [event.touches[0].pageX, event.touches[0].pageY];
-      const [x2, y2] = [event.touches[1].pageX, event.touches[1].pageY];
-
-      const distance = Math.hypot(x1 - x2, y1 - y2);
-
-      if (typeof previousDistance !== 'undefined') {
-        const x = (x1 + x2) / 2;
-        const y = (y1 + y2) / 2;
-        const factor = distance / 40;
-        const delta = distance / previousDistance - 1;
-
-        dragger.zoom({
-          deltaScale: Math.sign(delta) > 0 ? factor : -factor,
-          x,
-          y,
-        });
-      }
-
-      previousDistance = distance;
-    }
-  };
-
-  const startDrag = (event: MouseEvent | TouchEvent) => {
-    if ('button' in event && event.button === 2) return;
-    if (contextMenuOpen) return;
-
-    const { pageX, pageY } = getCoordinates(event);
-
-    previousCoordinates.x = pageX;
-    previousCoordinates.y = pageY;
-
-    containerMoving = true;
-  };
-
-  const endDrag = () => {
-    nodeMoving = false;
-    containerMoving = false;
-  };
-
-  const editorContextMenuHandler = (event: MouseEvent) => {
-    nodeContextMenuInstance?.close();
-
-    if (editorContextMenu) {
-      event.preventDefault();
-
-      if (typeof editorContextMenu === 'function') {
-        editorContextMenu(event);
-      } else {
-        editorContextMenuInstance.open(event);
-      }
-    }
-  };
-
-  const nodeContextMenuHandler = (event: MouseEvent, key: string) => {
-    editorContextMenuInstance?.close();
-
-    $selectedNodesIds = [key];
-    if (nodeContextMenu) {
-      event.preventDefault();
-      event.stopPropagation();
-
-      if (typeof nodeContextMenu === 'function') {
-        nodeContextMenu($selectedNodesIds, event);
-      } else {
-        nodeContextMenuInstance.open(event);
-      }
-    }
-  };
-
-  const drag = (event: MouseEvent | TouchEvent) => {
-    event.preventDefault();
-    const { pageX, pageY } = getCoordinates(event);
-
-    const movementX = pageX - (previousCoordinates?.x ?? 0);
-    const movementY = pageY - (previousCoordinates?.y ?? 0);
-
-    if (containerMoving && !nodeMoving && pannable) {
-      dragger.panBy({
-        originX: movementX,
-        originY: movementY,
-      });
-    } else if (containerMoving && nodeMoving && $selectedNodesIds && moveable) {
-      $selectedNodesIds.forEach((id) => {
-        if ($selectedNodesIds.some((selectedNodeId) => id === selectedNodeId)) {
-          const node = $nodes[id];
-
-          // Get z coordinate to determine scale so nodes travel faster with scale
-          const { scale } = $position;
-
-          if (node) {
-            nodes.update((prevNode) => ({
-              ...prevNode,
-              [id]: {
-                ...node,
-                x: node.x + movementX / scale,
-                y: node.y + movementY / scale,
-              },
-            }));
-          }
-        }
-      });
-    }
-
-    previousCoordinates.x = pageX;
-    previousCoordinates.y = pageY;
-  };
-
-  const touch = (event: TouchEvent) => {
-    event.preventDefault();
-
-    if (event.touches.length === 2) {
-      pinch(event);
-    } else if (event.touches.length === 1) {
-      drag(event);
-    }
-  };
-
-  const dragNode = (event: MouseEvent | TouchEvent, key: string) => {
-    if ('button' in event && event.button === 2) return;
-    if ('touches' in event && event.touches.length > 1) return;
-
-    if (!moveable) return;
-    if (containerMoving) return;
-    if (contextMenuOpen) return;
-
-    if (
-      event.shiftKey &&
-      multiselect &&
-      !$selectedNodesIds.some((selectedNodeId) => key === selectedNodeId)
-    ) {
-      $selectedNodesIds = [...$selectedNodesIds, key];
-    } else {
-      $selectedNodesIds = [key];
-    }
-
-    nodeMoving = true;
-  };
-
-  $: dragger = Drag({
-    scaleSensitivity: 100,
-    minScale: 0.1,
-    maxScale: 30,
-    element: ref,
-    transformation: position,
-  });
 
   $: $nodes,
     (() => {
@@ -251,6 +61,38 @@
     });
 
   $: if (stateRestored && onReady) onReady(editor);
+
+  onMount(() => {
+    interaction.dragger = Drag({
+      scaleSensitivity: 100,
+      minScale: 0.1,
+      maxScale: 30,
+      element: ref,
+      transformation: position,
+    });
+  });
+
+  $: {
+    interaction.editorContextMenu = (() => {
+      if (typeof editorContextMenu === 'function')
+        return { type: 'callback', callback: editorContextMenu };
+      return {
+        type: 'instance',
+        instance: editorContextMenuInstance,
+        blueprint: editorContextMenu,
+      };
+    })();
+
+    interaction.nodeContextMenu = (() => {
+      if (typeof nodeContextMenu === 'function')
+        return { type: 'callback', callback: nodeContextMenu };
+      return {
+        type: 'instance',
+        instance: nodeContextMenuInstance,
+        blueprint: nodeContextMenu,
+      };
+    })();
+  }
 </script>
 
 <div
@@ -261,14 +103,14 @@
     editorContextMenuInstance?.evaluate(event);
     nodeContextMenuInstance?.evaluate(event);
   }}
-  on:wheel={zoom}
-  on:mousedown={startDrag}
-  on:mouseup={endDrag}
-  on:mousemove={drag}
-  on:touchstart={startDrag}
-  on:touchend={endDrag}
-  on:touchmove={touch}
-  on:contextmenu={editorContextMenuHandler}
+  on:wheel={interaction.zoom}
+  on:mousedown={interaction.startDrag}
+  on:mouseup={interaction.endDrag}
+  on:mousemove={interaction.drag}
+  on:touchstart={interaction.startDrag}
+  on:touchend={interaction.endDrag}
+  on:touchmove={interaction.touch}
+  on:contextmenu={interaction.openEditorContextMenu}
 >
   {#if editorContextMenu && typeof editorContextMenu !== 'function'}
     <EditorContextMenu
@@ -276,7 +118,7 @@
       contextMenu={editorContextMenu}
       bind:instance={editorContextMenuInstance}
       bind:editorInstance={editor}
-      bind:opened={contextMenuOpen}
+      bind:opened={interaction.contextMenuOpen}
     />
   {/if}
 
@@ -284,10 +126,10 @@
     <NodeContextMenu
       containerRef={ref}
       contextMenu={nodeContextMenu}
-      ids={$selectedNodesIds}
+      ids={interaction.selectedNodesIds}
       bind:instance={nodeContextMenuInstance}
       bind:editorInstance={editor}
-      bind:opened={contextMenuOpen}
+      bind:opened={interaction.contextMenuOpen}
     />
   {/if}
 
@@ -322,15 +164,15 @@
             !interactable ? 'function-junction-node-disabled' : ''
           }`}
           style={$nodes[key].style ?? ''}
-          selected={$selectedNodesIds.some((selectedNodeId) => key === selectedNodeId)}
+          selected={interaction.selectedNodesIds.some((selectedNodeId) => key === selectedNodeId)}
           cloneable={$nodes[key].cloneable}
           deletable={$nodes[key].deletable}
           {nodeControlButtons}
           {editor}
           bind:store={$nodesState[key].store}
-          on:mousedown={(event) => dragNode(event, key)}
-          on:touchstart={(event) => dragNode(event, key)}
-          on:contextmenu={(event) => nodeContextMenuHandler(event, key)}
+          on:mousedown={(event) => interaction.dragNode(event, key)}
+          on:touchstart={(event) => interaction.dragNode(event, key)}
+          on:contextmenu={(event) => interaction.openNodeContextMenu(event, key)}
         />
       {/if}
     {/each}

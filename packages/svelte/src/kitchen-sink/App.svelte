@@ -1,15 +1,10 @@
 <script lang="ts">
-  import type {
-    EditorState,
-    NodeBlueprint,
-    SocketBlueprint,
-    Editor as EditorType,
-  } from 'core/types';
+  import type { EditorState, SocketBlueprint } from 'core/types';
   import { App } from 'framework7-svelte';
 
   import './App.scss';
 
-  import { Editor } from '../library';
+  import { Editor, type NodeBlueprint } from '../library';
 
   import NumberNode from './components/NumberNode.svelte';
   import { writable } from 'svelte/store';
@@ -17,6 +12,7 @@
   import SqrtNode from './components/SqrtNode.svelte';
 
   import tree from './state.json';
+  import type { SvelteEditor } from '@/library/components/Editor';
 
   let state: EditorState = tree;
 
@@ -84,13 +80,12 @@
     Sqrt: sqrtNode,
   };
 
-  let editor: EditorType;
+  let editor: SvelteEditor;
 
   const value = writable();
   const Test = writable(2);
 
   $: console.log($value);
-  $: console.log(state);
 </script>
 
 <App

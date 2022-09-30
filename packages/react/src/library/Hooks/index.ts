@@ -1,18 +1,21 @@
-import { useEffect, useState } from 'react';
+import React from 'react';
 import { get, Readable, Writable } from 'svelte/store';
 
-export const useReadable = <T = unknown>(store: Readable<T>) => {
-  const [value, set] = useState<T>();
+export type Setter<T> = (v: T) => void;
+export type UpdateFn<T> = (v: T) => T;
+export type Updater<T> = (u: UpdateFn<T>) => void;
 
-  useEffect(() => store.subscribe(set), [store]);
+const unset: any = Symbol();
 
-  return value == undefined ? get(store) : value;
-};
+export function useReadable<T>(store: Readable<T>): T {
+  const [value, set] = React.useState<T>(unset as unknown as T);
 
-export function useWritable<T = unknown>(store: Writable<T>) {
-  const [value, set] = useState<T>();
+  React.useEffect(() => store.subscribe(set), [store]);
 
-  useEffect(() => store.subscribe(set), [store]);
+  return value === unset ? get(store) : value;
+}
 
-  return [value == undefined ? get(store) : value, store.set, store.update];
+export function useWritable<T>(store: Writable<T>): [T, Setter<T>, Updater<T>] {
+  const value = useReadable(store);
+  return [value, store.set, store.update];
 }

@@ -16,12 +16,16 @@
 
   $: (() => {
     if (ref) {
-      instance = new ContextMenu(ref, containerRef);
-      const { opened: value } = instance;
+      if (!instance) {
+        instance = new ContextMenu(ref, containerRef);
+        const { opened: value } = instance;
 
-      unsubscribe = value.subscribe((isOpened) => {
-        opened = isOpened;
-      });
+        unsubscribe = value.subscribe((isOpened) => {
+          opened = isOpened;
+        });
+      } else {
+        instance.scope = containerRef;
+      }
     }
   })();
 

@@ -11,11 +11,11 @@ import { ReactEditor } from '../Editor';
 export type NodeContextMenuProps = {
   ids: string[];
   editorInstance: ReactEditor;
-  instance: ContextMenuClass;
+  instance: ContextMenuClass | undefined;
   contextMenu: NodeContextMenuBlueprint;
   containerRef: React.RefObject<HTMLDivElement>;
-  setInstance: React.Dispatch<React.SetStateAction<ContextMenuClass>>;
-  setOpened: React.Dispatch<React.SetStateAction<boolean>>;
+  setInstance: React.Dispatch<React.SetStateAction<ContextMenuClass | undefined>>;
+  onOpened: (opened: boolean) => void;
 };
 
 const NodeContextMenu = ({
@@ -25,17 +25,17 @@ const NodeContextMenu = ({
   contextMenu,
   containerRef,
   setInstance,
-  setOpened,
+  onOpened,
 }: NodeContextMenuProps) => {
   return (
     <ContextMenu
       containerRef={containerRef}
       instance={instance}
       setInstance={setInstance}
-      setOpened={setOpened}
+      onOpened={onOpened}
     >
       <ul onClick={() => instance?.close()}>
-        {contextMenu.items && (
+        {contextMenu.items && instance && (
           <>
             {contextMenu.items.map((item) => {
               <ContextMenuItem

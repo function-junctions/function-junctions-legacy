@@ -20,6 +20,15 @@ export type NodeContextMenuBlueprint = {
   items: NodeContextMenuItem[];
 };
 
+export type EditorContextMenuProp =
+  | EditorContextMenuBlueprint
+  | ((event: MouseEvent) => void)
+  | undefined;
+export type NodeContextMenuProp =
+  | NodeContextMenuBlueprint
+  | ((ids: string[], event: MouseEvent) => void)
+  | undefined;
+
 export class ContextMenu {
   element: HTMLElement;
   scope: HTMLElement;

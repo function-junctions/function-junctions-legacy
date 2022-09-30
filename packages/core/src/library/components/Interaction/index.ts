@@ -1,139 +1,259 @@
-const getCoordinates = (event: MouseEvent | TouchEvent) => {
-  let pageX: number;
-  let pageY: number;
+// TODO: make all these functions pure
 
-  if ('touches' in event) {
-    const touch = event.touches[0];
+import { get, Writable } from 'svelte/store';
+import { InternalNode, Point } from '../../types';
+import { ContextMenu, EditorContextMenuBlueprint, NodeContextMenuBlueprint } from '../ContextMenu';
+import Drag, { Position } from '../Drag';
 
-    pageX = touch.pageX;
-    pageY = touch.pageY;
-  } else {
-    pageX = event.pageX;
-    pageY = event.pageY;
-  }
+export type InteractionContextMenu<T, C> =
+  | { type: 'instance'; instance: ContextMenu; blueprint: T }
+  | { type: 'callback'; callback: C };
 
-  return {
-    pageX,
-    pageY,
+export class Interaction {
+  nodes: Writable<Record<string, InternalNode<unknown>>>;
+  selectedNodesIds: string[] = [];
+
+  position: Writable<Position>;
+
+  options: {
+    multiselect?: boolean;
+    zoomable?: boolean;
+    pannable?: boolean;
+    moveable?: boolean;
+  } = {
+    multiselect: true,
+    zoomable: true,
+    pannable: true,
+    moveable: true,
   };
-};
-const zoom = (event: WheelEvent) => {
-  if (zoomable) {
-    event.preventDefault();
 
-    const factor = 3.5;
-    dragger.zoom({
-      deltaScale: Math.sign(event.deltaY) > 0 ? -factor : factor,
-      x: event.pageX,
-      y: event.pageY,
-    });
+  nodeMoving = false;
+  containerMoving = false;
+
+  previousCoordinates: Point = { x: 0, y: 0 };
+  previousDistance?: number;
+
+  dragger?: ReturnType<typeof Drag>;
+
+  contextMenuOpen = false;
+  editorContextMenu?: InteractionContextMenu<
+    EditorContextMenuBlueprint,
+    (event: MouseEvent) => void
+  >;
+  nodeContextMenu?: InteractionContextMenu<
+    NodeContextMenuBlueprint,
+    (ids: string[], event: MouseEvent) => void
+  >;
+
+  constructor(
+    nodes: Writable<Record<string, InternalNode<unknown, any>>>,
+    position: Writable<Position>,
+    dragger?: ReturnType<typeof Drag>,
+    options?: {
+      multiselect?: boolean;
+      zoomable?: boolean;
+      pannable?: boolean;
+      moveable?: boolean;
+    },
+    contextMenuOptions?: {
+      editorContextMenu?: InteractionContextMenu<
+        EditorContextMenuBlueprint,
+        (event: MouseEvent) => void
+      >;
+      nodeContextMenu?: InteractionContextMenu<
+        NodeContextMenuBlueprint,
+        (ids: string[], event: MouseEvent) => void
+      >;
+    },
+  ) {
+    this.nodes = nodes;
+    this.position = position;
+    this.dragger = dragger;
+
+    if (options) this.options = options;
+
+    if (contextMenuOptions) {
+      if (contextMenuOptions.editorContextMenu)
+        this.editorContextMenu = contextMenuOptions.editorContextMenu;
+      if (contextMenuOptions.nodeContextMenu)
+        this.nodeContextMenu = contextMenuOptions.nodeContextMenu;
+    }
   }
-};
 
-const pinch = (event: TouchEvent) => {
-  if (zoomable) {
-    const [x1, y1] = [event.touches[0].pageX, event.touches[0].pageY];
-    const [x2, y2] = [event.touches[1].pageX, event.touches[1].pageY];
+  private getCoordinates = (event: MouseEvent | TouchEvent) => {
+    let pageX: number;
+    let pageY: number;
 
-    const distance = Math.hypot(x1 - x2, y1 - y2);
+    if ('touches' in event) {
+      const touch = event.touches[0];
 
-    if (typeof previousDistance !== 'undefined') {
-      const x = (x1 + x2) / 2;
-      const y = (y1 + y2) / 2;
-      const factor = distance / 40;
-      const delta = distance / previousDistance - 1;
+      pageX = touch.pageX;
+      pageY = touch.pageY;
+    } else {
+      pageX = event.pageX;
+      pageY = event.pageY;
+    }
 
-      dragger.zoom({
-        deltaScale: Math.sign(delta) > 0 ? factor : -factor,
-        x,
-        y,
+    return {
+      pageX,
+      pageY,
+    };
+  };
+
+  public zoom = (event: WheelEvent) => {
+    if (this.options.zoomable) {
+      event.preventDefault();
+
+      const factor = 3.5;
+      this.dragger?.zoom({
+        deltaScale: Math.sign(event.deltaY) > 0 ? -factor : factor,
+        x: event.pageX,
+        y: event.pageY,
+      });
+    }
+  };
+
+  public pinch = (event: TouchEvent): number | void => {
+    if (this.options.zoomable) {
+      const [x1, y1] = [event.touches[0].pageX, event.touches[0].pageY];
+      const [x2, y2] = [event.touches[1].pageX, event.touches[1].pageY];
+
+      const distance = Math.hypot(x1 - x2, y1 - y2);
+
+      if (this.previousDistance != null) {
+        const x = (x1 + x2) / 2;
+        const y = (y1 + y2) / 2;
+        const factor = distance / 40;
+        const delta = distance / this.previousDistance - 1;
+
+        this.dragger?.zoom({
+          deltaScale: Math.sign(delta) > 0 ? factor : -factor,
+          x,
+          y,
+        });
+      }
+
+      this.previousDistance = distance;
+    }
+  };
+
+  public startDrag = (event: MouseEvent | TouchEvent, contextMenuOpen?: boolean): Point | void => {
+    if ('button' in event && event.button === 2) return;
+    if (contextMenuOpen) return;
+
+    const { pageX, pageY } = this.getCoordinates(event);
+
+    this.previousCoordinates = { x: pageX, y: pageY };
+    this.containerMoving = true;
+  };
+
+  public drag = (event: MouseEvent | TouchEvent): Point | void => {
+    event.preventDefault();
+    const { pageX, pageY } = this.getCoordinates(event);
+
+    const movementX = pageX - (this.previousCoordinates.x ?? 0);
+    const movementY = pageY - (this.previousCoordinates.y ?? 0);
+
+    if (this.containerMoving && !this.nodeMoving && this.options.pannable) {
+      this.dragger?.panBy({
+        originX: movementX,
+        originY: movementY,
+      });
+    } else if (
+      this.containerMoving &&
+      this.nodeMoving &&
+      this.selectedNodesIds &&
+      this.options.moveable
+    ) {
+      this.selectedNodesIds.forEach((id) => {
+        if (this.selectedNodesIds.some((selectedNodeId) => id === selectedNodeId)) {
+          const node = get(this.nodes)[id];
+
+          // Get z coordinate to determine scale so nodes travel faster with scale
+          const { scale } = get(this.position);
+
+          if (node) {
+            this.nodes.update((prevNode) => ({
+              ...prevNode,
+              [id]: {
+                ...node,
+                x: node.x + movementX / scale,
+                y: node.y + movementY / scale,
+              },
+            }));
+          }
+        }
       });
     }
 
-    previousDistance = distance;
-  }
-};
-const startDrag = (event: MouseEvent | TouchEvent) => {
-  if ('button' in event && event.button === 2) return;
-  if (contextMenuOpen) return;
+    this.previousCoordinates = { x: pageX, y: pageY };
+  };
 
-  const { pageX, pageY } = getCoordinates(event);
+  public touch = (event: TouchEvent) => {
+    event.preventDefault();
 
-  previousCoordinates.x = pageX;
-  previousCoordinates.y = pageY;
+    if (event.touches.length === 2) {
+      this.pinch(event);
+    } else if (event.touches.length === 1) {
+      this.drag(event);
+    }
+  };
 
-  containerMoving = true;
-};
+  public dragNode = (event: MouseEvent | TouchEvent, key: string) => {
+    if ('button' in event && event.button === 2) return;
+    if ('touches' in event && event.touches.length > 1) return;
 
-const endDrag = () => {
-  nodeMoving = false;
-  containerMoving = false;
-};
-const drag = (event: MouseEvent | TouchEvent) => {
-  event.preventDefault();
-  const { pageX, pageY } = getCoordinates(event);
+    if (!this.options.moveable) return;
+    if (this.containerMoving) return;
+    if (this.contextMenuOpen) return;
 
-  const movementX = pageX - (previousCoordinates?.x ?? 0);
-  const movementY = pageY - (previousCoordinates?.y ?? 0);
+    if (
+      event.shiftKey &&
+      this.options.multiselect &&
+      !this.selectedNodesIds.some((selectedNodeId) => key === selectedNodeId)
+    ) {
+      this.selectedNodesIds = [...this.selectedNodesIds, key];
+    } else {
+      this.selectedNodesIds = [key];
+    }
 
-  if (containerMoving && !nodeMoving && pannable) {
-    dragger.panBy({
-      originX: movementX,
-      originY: movementY,
-    });
-  } else if (containerMoving && nodeMoving && $selectedNodesIds && moveable) {
-    $selectedNodesIds.forEach((id) => {
-      if ($selectedNodesIds.some((selectedNodeId) => id === selectedNodeId)) {
-        const node = $nodes[id];
+    this.nodeMoving = true;
+  };
 
-        // Get z coordinate to determine scale so nodes travel faster with scale
-        const { scale } = $position;
+  public endDrag = () => {
+    this.nodeMoving = false;
+    this.containerMoving = false;
+  };
 
-        if (node) {
-          nodes.update((prevNode) => ({
-            ...prevNode,
-            [id]: {
-              ...node,
-              x: node.x + movementX / scale,
-              y: node.y + movementY / scale,
-            },
-          }));
-        }
+  public openEditorContextMenu = (event: MouseEvent) => {
+    if (this.nodeContextMenu && this.nodeContextMenu.type === 'instance')
+      this.nodeContextMenu.instance.close();
+
+    if (this.editorContextMenu) {
+      event.preventDefault();
+
+      if (this.editorContextMenu.type === 'instance') {
+        console.log(this.editorContextMenu.instance.x);
+        this.editorContextMenu.instance.open(event);
+      } else if (this.editorContextMenu.type === 'callback') {
+        this.editorContextMenu.callback(event);
       }
-    });
-  }
+    }
+  };
 
-  previousCoordinates.x = pageX;
-  previousCoordinates.y = pageY;
-};
+  public openNodeContextMenu = (event: MouseEvent, key: string) => {
+    if (this.nodeContextMenu) {
+      this.selectedNodesIds = [key];
 
-const touch = (event: TouchEvent) => {
-  event.preventDefault();
+      event.preventDefault();
+      event.stopPropagation();
 
-  if (event.touches.length === 2) {
-    pinch(event);
-  } else if (event.touches.length === 1) {
-    drag(event);
-  }
-};
-
-const dragNode = (event: MouseEvent | TouchEvent, key: string) => {
-  if ('button' in event && event.button === 2) return;
-  if ('touches' in event && event.touches.length > 1) return;
-
-  if (!moveable) return;
-  if (containerMoving) return;
-  if (contextMenuOpen) return;
-
-  if (
-    event.shiftKey &&
-    multiselect &&
-    !$selectedNodesIds.some((selectedNodeId) => key === selectedNodeId)
-  ) {
-    $selectedNodesIds = [...$selectedNodesIds, key];
-  } else {
-    $selectedNodesIds = [key];
-  }
-
-  nodeMoving = true;
-};
+      if (this.nodeContextMenu.type === 'instance') {
+        this.nodeContextMenu.instance.close();
+        this.nodeContextMenu.instance.open(event);
+      } else if (this.nodeContextMenu.type === 'callback') {
+        this.nodeContextMenu.callback(this.selectedNodesIds, event);
+      }
+    }
+  };
+}

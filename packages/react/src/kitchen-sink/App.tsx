@@ -1,26 +1,44 @@
+import { NodeBlueprint } from '@/library/Node';
+import { SocketBlueprint } from 'core/types';
 import React from 'react';
-import { useState } from 'react';
-import './App.css';
+import Editor from '../library/Editor/Editor';
+import NumberNode from './components/NumberNode';
+
+import 'core/index.scss';
 
 function App() {
-  const [count, setCount] = useState(0);
+  const numberSocket: SocketBlueprint<number> = {
+    type: 'number',
+    defaultValue: 0,
+  };
+
+  const numberNode: NodeBlueprint<
+    Record<string, never>,
+    {
+      Number: SocketBlueprint<number>;
+    }
+  > = {
+    outputs: {
+      Number: numberSocket,
+    },
+    component: NumberNode,
+    color: 'linear-gradient(#228cfd, #007aff)',
+  };
+
+  const nodes = {
+    Number: numberNode,
+  };
 
   return (
-    <div className="App">
-      <div>
-        <a href="https://vitejs.dev" target="_blank" rel="noreferrer">
-          <img src="/vite.svg" className="logo" alt="Vite logo" />
-        </a>
-      </div>
-      <h1>Vite + React</h1>
-      <div className="card">
-        <button onClick={() => setCount(count => count + 1)}>count is {count}</button>
-        <p>
-          Edit <code>src/App.tsx</code> and save to test HMR
-        </p>
-      </div>
-      <p className="read-the-docs">Click on the Vite and React logos to learn more</p>
-    </div>
+    <Editor
+      nodes={nodes}
+      editorContextMenu={{
+        nodes: true,
+      }}
+      nodeContextMenu={{
+        items: [{ type: 'delete' }, { type: 'clone' }],
+      }}
+    />
   );
 }
 

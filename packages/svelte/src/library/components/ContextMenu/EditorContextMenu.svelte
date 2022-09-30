@@ -1,6 +1,4 @@
 <script lang="ts">
-  import type { Editor } from 'core/components/Editor';
-
   import type {
     ContextMenu as ContextMenuType,
     EditorContextMenuBlueprint,
@@ -8,8 +6,9 @@
   import { getTruePosition } from 'core/components/Drag';
   import ContextMenu from './ContextMenu.svelte';
   import ContextMenuItem from './ContextMenuItem.svelte';
+  import type { SvelteEditor } from '../Editor';
 
-  export let editorInstance: Editor;
+  export let editorInstance: SvelteEditor;
   export let instance: ContextMenuType | undefined = undefined;
 
   export let contextMenu: EditorContextMenuBlueprint;
@@ -37,6 +36,8 @@
               originY: $editorPosition.originY,
               scale: $editorPosition.scale,
             });
+
+            console.log({ truePosition: { x, y }, position: { x: instance?.x, y: instance?.y } });
 
             editorInstance.addNode(key, { x, y });
           }}

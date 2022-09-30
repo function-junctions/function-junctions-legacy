@@ -1,8 +1,8 @@
 <script lang="ts">
-  import type { NodeBlueprint } from 'core/components/Nodes';
   import { Editor, type EditorState } from 'core/components/Editor';
   import RawNode from '../Node/RawNode.svelte';
   import { writable, type Writable } from 'svelte/store';
+  import type { NodeBlueprint } from '@/library';
 
   export let nodes: Record<string, NodeBlueprint>;
   export let state: EditorState;

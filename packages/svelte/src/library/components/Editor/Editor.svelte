@@ -4,13 +4,10 @@
   // Editor must be imported as EditorClass or svelte package fails to
   // properly type props
   import { type EditorState, Editor as EditorClass } from 'core/components/Editor';
-  import type {
-    EditorContextMenuBlueprint,
-    NodeContextMenuBlueprint,
-  } from 'core/components/ContextMenu';
+  import type { EditorContextMenuProp, NodeContextMenuProp } from 'core/components/ContextMenu';
   import type { NodeControlButtons } from 'core/components/NodeButton';
 
-  import type { NodeBlueprint } from '@/library';
+  import type { NodeBlueprint } from '../Node';
   import Nodes from '../Nodes/Nodes.svelte';
 
   import { getAppearance } from 'core/components/Theme';
@@ -32,14 +29,8 @@
 
   export let editable = true;
 
-  export let editorContextMenu:
-    | EditorContextMenuBlueprint
-    | ((event: MouseEvent) => void)
-    | undefined = undefined;
-  export let nodeContextMenu:
-    | NodeContextMenuBlueprint
-    | ((ids: string[], event: MouseEvent) => void)
-    | undefined = undefined;
+  export let editorContextMenu: EditorContextMenuProp = undefined;
+  export let nodeContextMenu: NodeContextMenuProp = undefined;
   export let nodeControlButtons: NodeControlButtons | boolean = {
     delete: true,
     clone: true,
@@ -58,10 +49,6 @@
   export let onReady: ((editor: SvelteEditor) => void) | undefined = undefined;
 
   const appearanceClassName = getAppearance(appearance);
-
-  const { readonly } = instance;
-
-  $: editable = $readonly;
 
   $: instance.inputs = inputs;
   $: instance.outputs = outputs;
