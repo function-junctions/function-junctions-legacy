@@ -233,7 +233,6 @@ export class Interaction {
       event.preventDefault();
 
       if (this.editorContextMenu.type === 'instance') {
-        console.log(this.editorContextMenu.instance.x);
         this.editorContextMenu.instance.open(event);
       } else if (this.editorContextMenu.type === 'callback') {
         this.editorContextMenu.callback(event);

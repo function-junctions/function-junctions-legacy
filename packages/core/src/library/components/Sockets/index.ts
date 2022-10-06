@@ -67,14 +67,14 @@ export type LiveConnection = {
   >;
 };
 
-export class Sockets {
-  nodes: Writable<Record<string, InternalNode<unknown>>>;
+export class Sockets<C, S> {
+  nodes: Writable<Record<string, InternalNode<C, S>>>;
   editorPosition: Writable<Position>;
   liveConnection: LiveConnection;
 
   constructor(
     editorPosition: Writable<Position>,
-    nodes: Writable<Record<string, InternalNode<unknown>>>,
+    nodes: Writable<Record<string, InternalNode<C, S>>>,
     liveConnection: LiveConnection,
   ) {
     this.nodes = nodes;

@@ -54,7 +54,7 @@ const Nodes = ({
   const { show: showLiveConnectionStore, state: liveConnectionStateStore } = editor.connection;
 
   const position = useReadable(positionStore);
-  const nodes = useReadable(nodesStore);
+  const [nodes, , updateNodes] = useWritable(nodesStore);
 
   const stateRestored = useReadable(stateRestoredStore);
   const nodesState = useReadable(nodesStateStore);
@@ -93,6 +93,10 @@ const Nodes = ({
       }),
     [position, setState],
   );
+
+  React.useEffect(() => {
+    console.log(nodesState);
+  }, [nodesState]);
 
   React.useEffect(() => {
     if (stateRestored && onReady) onReady(editor);
@@ -215,6 +219,7 @@ const Nodes = ({
                 className={`${nodes[key].className ?? ''} ${
                   !interactable ? 'function-junction-node-disabled' : ''
                 }`}
+                updateNodes={updateNodes}
                 style={nodes[key].style}
                 selected={interaction.selectedNodesIds.some(
                   (selectedNodeId) => key === selectedNodeId,

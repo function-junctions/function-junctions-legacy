@@ -65,7 +65,7 @@ export class Nodes<C, S> {
   inputs?: Record<string, { type: string; value: Writable<unknown> }>;
   outputs?: Record<string, { type: string; value: Writable<unknown> }>;
 
-  sockets: Sockets;
+  sockets: Sockets<C, S>;
 
   constructor(
     position: Writable<Position>,

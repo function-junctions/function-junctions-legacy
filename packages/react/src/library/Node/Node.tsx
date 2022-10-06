@@ -1,6 +1,6 @@
 import React from 'react';
 import { NodeControlButtons } from 'core/components/NodeButton';
-import { InputSocket, OutputSocket, Point } from 'core/types';
+import { InputSocket, InternalNode, OutputSocket, Point } from 'core/types';
 import NodeButton from '../NodeButton/NodeButton';
 import Socket from '../Socket/Socket';
 import { ReactComponent, ReactEditor } from '../Editor';
@@ -24,6 +24,17 @@ export type NodeContainerProps = {
   selected?: boolean;
   store?: Record<string, unknown>;
   editor: ReactEditor;
+  updateNodes: Updater<
+    Record<
+      string,
+      InternalNode<
+        ReactComponent,
+        React.CSSProperties,
+        Record<string, InputSocket<any>>,
+        Record<string, OutputSocket<any>>
+      >
+    >
+  >;
   onClick?: React.MouseEventHandler<HTMLDivElement>;
   onMouseDown?: React.MouseEventHandler<HTMLDivElement>;
   onTouchStart?: React.TouchEventHandler<HTMLDivElement>;
@@ -46,6 +57,7 @@ const Node = ({
   selected,
   store = {},
   editor,
+  updateNodes,
   onClick,
   onMouseDown,
   onTouchStart,
@@ -67,7 +79,7 @@ const Node = ({
       });
 
       return newInputs;
-    }
+    } else if (Object.keys(inputs).length < 1) setReactInputs({});
 
     return;
   }, [inputs, reactInputs]);
@@ -85,7 +97,7 @@ const Node = ({
       });
 
       return newOutputs;
-    }
+    } else if (Object.keys(outputs).length < 1) setReactOutputs({});
     return;
   }, [outputs, reactOutputs]);
 
@@ -141,16 +153,12 @@ const Node = ({
           )}
           <div className="function-junctions-node-content">
             {inputs &&
-              Object.keys(outputs ?? {}).map((key) => (
+              Object.keys(inputs ?? {}).map((key) => (
                 <InputValueGenerator
-                  value={outputs[key].value}
+                  value={inputs[key].value}
                   key={key}
-                  get={(destructuredValue) =>
-                    setReactInputs((prevOutputs) => ({
-                      ...prevOutputs,
-                      [key]: destructuredValue,
-                    }))
-                  }
+                  id={key}
+                  setReactInputs={setReactInputs}
                 />
               ))}
             {outputs &&
@@ -158,12 +166,11 @@ const Node = ({
                 <OutputValueGenerator
                   value={outputs[key].value}
                   key={key}
-                  get={(destructuredValue) =>
-                    setReactOutputs((prevOutputs) => ({
-                      ...prevOutputs,
-                      [key]: destructuredValue,
-                    }))
-                  }
+                  id={key}
+                  nodeId={id}
+                  updateNodes={updateNodes}
+                  setReactOutputs={setReactOutputs}
+                  outputs={outputs}
                 />
               ))}
 
