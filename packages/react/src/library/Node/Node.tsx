@@ -162,41 +162,43 @@ const Node = ({
           ) : (
             <></>
           )}
-          <div className="function-junctions-node-content">
-            {inputs &&
-              Object.keys(inputs ?? {}).map((key) => (
-                <InputValueGenerator
-                  value={inputs[key].value}
-                  key={key}
-                  id={key}
-                  setReactInputs={setReactInputs}
-                />
-              ))}
-            {outputs &&
-              Object.keys(outputs ?? {}).map((key) => (
-                <OutputValueGenerator
-                  value={outputs[key].value}
-                  key={key}
-                  id={key}
-                  nodeId={id}
-                  updateNodes={updateNodes}
-                  setReactOutputs={setReactOutputs}
-                  outputs={outputs}
-                />
-              ))}
+          {Component && (
+            <div className="function-junctions-node-content">
+              {inputs &&
+                Object.keys(inputs ?? {}).map((key) => (
+                  <InputValueGenerator
+                    value={inputs[key].value}
+                    key={key}
+                    id={key}
+                    setReactInputs={setReactInputs}
+                  />
+                ))}
+              {outputs &&
+                Object.keys(outputs ?? {}).map((key) => (
+                  <OutputValueGenerator
+                    value={outputs[key].value}
+                    key={key}
+                    id={key}
+                    nodeId={id}
+                    updateNodes={updateNodes}
+                    setReactOutputs={setReactOutputs}
+                    outputs={outputs}
+                  />
+                ))}
 
-            {computedReactInputs && computedReactOutputs && (
-              <Component
-                title={title}
-                id={id}
-                editor={editor}
-                store={reactStore}
-                setStore={setReactStore}
-                inputs={computedReactInputs}
-                outputs={computedReactOutputs}
-              />
-            )}
-          </div>
+              {computedReactInputs && computedReactOutputs && (
+                <Component
+                  title={title}
+                  id={id}
+                  editor={editor}
+                  store={reactStore}
+                  setStore={setReactStore}
+                  inputs={computedReactInputs}
+                  outputs={computedReactOutputs}
+                />
+              )}
+            </div>
+          )}
           {inputs ? (
             <div className="function-junctions-node-inputs">
               {Object.keys(inputs).map((key) => (

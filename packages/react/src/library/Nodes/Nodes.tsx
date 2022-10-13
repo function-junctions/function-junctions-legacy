@@ -62,15 +62,13 @@ const Nodes = ({
   const [, setShowLiveConnection] = useWritable(showLiveConnectionStore);
   const liveConnectionState = useReadable(liveConnectionStateStore);
 
-  const interaction = React.useMemo(
-    () =>
-      new Interaction(nodesStore, positionStore, undefined, {
-        multiselect,
-        zoomable,
-        pannable,
-        moveable,
-      }),
-    [moveable, multiselect, nodesStore, pannable, positionStore, zoomable],
+  const [interaction] = React.useState(
+    new Interaction(nodesStore, positionStore, undefined, {
+      multiselect,
+      zoomable,
+      pannable,
+      moveable,
+    }),
   );
 
   const [editorContextMenuInstance, setEditorContextMenuInstance] = React.useState<ContextMenu>();
@@ -93,6 +91,10 @@ const Nodes = ({
       }),
     [position, setState],
   );
+
+  React.useEffect(() => {
+    console.log(nodesState);
+  }, [nodesState]);
 
   React.useEffect(() => {
     if (stateRestored && onReady) onReady(editor);
@@ -137,6 +139,11 @@ const Nodes = ({
     nodeContextMenu,
     nodeContextMenuInstance,
   ]);
+
+  React.useEffect(() => {
+    interaction.nodes = nodesStore;
+    interaction.position = positionStore;
+  }, [interaction, nodesStore, positionStore]);
 
   return (
     <div

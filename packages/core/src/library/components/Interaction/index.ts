@@ -10,7 +10,7 @@ export type InteractionContextMenu<T, C> =
   | { type: 'callback'; callback: C };
 
 export class Interaction {
-  nodes: Writable<Record<string, InternalNode<unknown>>>;
+  nodes: Writable<Record<string, InternalNode<unknown, any>>>;
   selectedNodesIds: string[] = [];
 
   position: Writable<Position>;
@@ -102,8 +102,6 @@ export class Interaction {
 
   public zoom = (event: WheelEvent) => {
     if (this.options.zoomable) {
-      event.preventDefault();
-
       const factor = 3.5;
       this.dragger?.zoom({
         deltaScale: Math.sign(event.deltaY) > 0 ? -factor : factor,
@@ -155,7 +153,6 @@ export class Interaction {
     const movementY = pageY - (this.previousCoordinates.y ?? 0);
 
     if (this.containerMoving && !this.nodeMoving && this.options.pannable) {
-      console.log(this.containerMoving);
       this.dragger?.panBy({
         originX: movementX,
         originY: movementY,

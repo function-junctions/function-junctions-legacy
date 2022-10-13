@@ -38,12 +38,15 @@ const NodeContextMenu = ({
         {contextMenu.items && instance && (
           <>
             {contextMenu.items.map((item) => {
-              <ContextMenuItem
-                item={item}
-                ids={ids}
-                contextMenu={instance}
-                editor={editorInstance}
-              />;
+              return (
+                <ContextMenuItem
+                  key={item.type}
+                  item={item}
+                  ids={ids}
+                  contextMenu={instance}
+                  editor={editorInstance}
+                />
+              );
             })}
           </>
         )}

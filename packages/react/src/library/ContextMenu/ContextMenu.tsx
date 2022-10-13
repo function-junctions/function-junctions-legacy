@@ -21,7 +21,6 @@ const ContextMenu = ({
   onOpened,
 }: ContextMenuProps) => {
   const ref = React.useRef<HTMLDivElement>(null);
-  const [unsubscribe, setUnsubscribe] = React.useState<Unsubscriber>();
 
   React.useEffect(() => {
     if (ref && ref?.current && containerRef && containerRef.current) {
@@ -32,19 +31,15 @@ const ContextMenu = ({
         if (contextMenuInstance) {
           const { opened: value } = contextMenuInstance;
 
-          setUnsubscribe(value.subscribe((isOpened) => onOpened(isOpened)));
+          value.subscribe((isOpened) => {
+            onOpened(isOpened);
+          });
         }
       } else {
         instance.scope = containerRef.current;
       }
     }
   }, [ref, setInstance, containerRef, instance, onOpened]);
-
-  React.useEffect(() => {
-    return () => {
-      unsubscribe?.();
-    };
-  }, [unsubscribe]);
 
   return (
     <div className="function-junctions-context_menu" ref={ref}>

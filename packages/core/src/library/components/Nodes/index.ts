@@ -215,6 +215,8 @@ export class Nodes<C, S> {
   public deleteNode = (id: string): void => {
     const currentNodes = get(this.nodes.current);
 
+    console.log(currentNodes);
+
     this.nodes.current.update(() =>
       Object.keys(currentNodes).reduce((newNodes: Record<string, InternalNode<C, S>>, key) => {
         const oldNode = currentNodes[key];
