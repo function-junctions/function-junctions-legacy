@@ -31,7 +31,8 @@ function App() {
       LHS: SocketBlueprint<number>;
       RHS: SocketBlueprint<number>;
     },
-    { Number: SocketBlueprint<number> }
+    { Number: SocketBlueprint<number> },
+    { type: 'addition' | 'subtraction' | 'multiplication' | 'division' }
   > = {
     inputs: {
       LHS: numberSocket,
@@ -40,7 +41,6 @@ function App() {
     outputs: {
       Number: numberSocket,
     },
-    // @ts-expect-error
     component: MathNode,
     color: 'linear-gradient(#ff5776, #ff2d55)',
   };

@@ -17,11 +17,13 @@ export type InternalNodeBlueprint<
   S,
   I = Record<string, SocketBlueprint>,
   O = Record<string, SocketBlueprint>,
+  ST = Record<string, any>,
 > = {
   inputs?: I;
   outputs?: O;
   color?: string;
   className?: string;
+  store?: ST;
   style?: S;
   component: C;
   deletable?: boolean;
@@ -33,8 +35,9 @@ export type InternalNode<
   S = string,
   I = Record<string, InputSocket<any>>,
   O = Record<string, OutputSocket<any>>,
+  ST = Record<string, unknown>,
 > = Point &
-  InternalNodeBlueprint<C, S, I, O> & {
+  InternalNodeBlueprint<C, S, I, O, ST> & {
     type: string;
   };
 
@@ -198,6 +201,7 @@ export class Nodes<C, S> {
           style: blueprint.style,
           deletable: blueprint.deletable,
           cloneable: blueprint.cloneable,
+          store: blueprint.store,
         },
       }));
 

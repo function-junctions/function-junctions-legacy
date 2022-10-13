@@ -155,6 +155,7 @@ export class Interaction {
     const movementY = pageY - (this.previousCoordinates.y ?? 0);
 
     if (this.containerMoving && !this.nodeMoving && this.options.pannable) {
+      console.log(this.containerMoving);
       this.dragger?.panBy({
         originX: movementX,
         originY: movementY,

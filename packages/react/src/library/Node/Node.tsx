@@ -66,6 +66,7 @@ const Node = ({
   const [reactInputs, setReactInputs] = React.useState<Record<string, unknown>>();
   const [reactOutputs, setReactOutputs] =
     React.useState<Record<string, [unknown, Setter<unknown>, Updater<unknown>]>>();
+  const [reactStore, setReactStore] = React.useState<Record<string, unknown>>(store);
 
   const computedReactInputs = React.useMemo(() => {
     if (reactInputs) {
@@ -100,6 +101,16 @@ const Node = ({
     } else if (Object.keys(outputs).length < 1) setReactOutputs({});
     return;
   }, [outputs, reactOutputs]);
+
+  React.useEffect(() => {
+    updateNodes((prevNodes) => ({
+      ...prevNodes,
+      [id]: {
+        ...prevNodes[id],
+        store: reactStore,
+      },
+    }));
+  }, [id, reactStore, updateNodes]);
 
   return (
     <>
@@ -179,7 +190,8 @@ const Node = ({
                 title={title}
                 id={id}
                 editor={editor}
-                store={store}
+                store={reactStore}
+                setStore={setReactStore}
                 inputs={computedReactInputs}
                 outputs={computedReactOutputs}
               />

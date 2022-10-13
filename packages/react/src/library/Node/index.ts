@@ -8,7 +8,8 @@ import { ReactInputSocket, ReactOutputSocket } from '../Socket';
 export type NodeBlueprint<
   I = Record<string, SocketBlueprint>,
   O = Record<string, SocketBlueprint>,
-> = InternalNodeBlueprint<ReactComponent, React.CSSProperties, I, O>;
+  S = Record<string, any>,
+> = InternalNodeBlueprint<ReactComponent, React.CSSProperties, I, O, S>;
 
 export type Node = InternalNode<ReactComponent, React.CSSProperties>;
 
@@ -20,4 +21,5 @@ export type ReactNodeProps<
   inputs: I;
   outputs: O;
   store: S;
+  setStore: React.Dispatch<React.SetStateAction<S>>;
 };

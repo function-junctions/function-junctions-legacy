@@ -95,10 +95,6 @@ const Nodes = ({
   );
 
   React.useEffect(() => {
-    console.log(nodesState);
-  }, [nodesState]);
-
-  React.useEffect(() => {
     if (stateRestored && onReady) onReady(editor);
   }, [onReady, editor, stateRestored]);
 

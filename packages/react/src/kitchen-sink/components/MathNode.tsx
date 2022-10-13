@@ -8,13 +8,14 @@ const MathNode = ({
   store = {
     type: 'addition',
   },
+  setStore,
 }: ReactNodeProps<
   {
     LHS: ReactInputSocket<number>;
     RHS: ReactInputSocket<number>;
   },
   { Number: ReactOutputSocket<number> },
-  { type: 'addition' | 'subtraction' | 'multiplication' | 'division' }
+  { type?: 'addition' | 'subtraction' | 'multiplication' | 'division' }
 >) => {
   const { value: LHS } = inputs.LHS;
   const { value: RHS } = inputs.RHS;
@@ -46,7 +47,19 @@ const MathNode = ({
   return (
     <>
       <h1 style={{ textAlign: 'center' }}>{output}</h1>
-      <select value={store.type}>
+      <select
+        value={store.type}
+        onChange={(event) =>
+          setStore((prevStore) => ({
+            ...prevStore,
+            type: event.currentTarget.value as
+              | 'addition'
+              | 'subtraction'
+              | 'multiplication'
+              | 'division',
+          }))
+        }
+      >
         <option value="addition">Addition</option>
         <option value="subtraction">Subtraction</option>
         <option value="multiplication">Multiplication</option>
