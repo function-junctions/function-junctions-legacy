@@ -211,6 +211,7 @@ const Nodes = ({
               <Node
                 title={nodes[key].type}
                 id={key}
+                key={key}
                 component={nodes[key].component}
                 inputs={nodes[key].inputs}
                 outputs={nodes[key].outputs}

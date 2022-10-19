@@ -147,7 +147,7 @@
     bind:this={ref}
   >
     <Connections {editor} />
-    {#each Object.keys($nodes) as key}
+    {#each Object.keys($nodes) as key (key)}
       {#if $nodes[key] && $nodesState[key]}
         <Node
           title={$nodes[key].type}

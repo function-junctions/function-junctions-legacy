@@ -215,10 +215,8 @@ export class Nodes<C, S> {
   public deleteNode = (id: string): void => {
     const currentNodes = get(this.nodes.current);
 
-    console.log(currentNodes);
-
-    this.nodes.current.update(() =>
-      Object.keys(currentNodes).reduce((newNodes: Record<string, InternalNode<C, S>>, key) => {
+    const newNodes = Object.keys(currentNodes).reduce(
+      (newNodes: Record<string, InternalNode<C, S>>, key) => {
         const oldNode = currentNodes[key];
         const inputs = oldNode.inputs;
 
@@ -235,8 +233,13 @@ export class Nodes<C, S> {
         if (key !== id) newNodes[key] = oldNode;
 
         return newNodes;
-      }, {}),
+      },
+      {},
     );
+
+    console.log(newNodes);
+
+    this.nodes.current.update(() => newNodes);
   };
 
   public cloneNode = (id: string, position?: Point): void => {

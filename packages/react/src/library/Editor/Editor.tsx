@@ -15,6 +15,9 @@ export type EditorProps = {
   inputs?: Record<string, { type: string; value: Writable<unknown> }>;
   outputs?: Record<string, { type: string; value: Writable<unknown> }>;
 
+  state?: EditorState;
+  setState?: React.Dispatch<React.SetStateAction<EditorState | undefined>>;
+
   multiselect?: boolean;
   zoomable?: boolean;
   pannable?: boolean;
@@ -35,6 +38,8 @@ const Editor = ({
   nodes,
   inputs,
   outputs,
+  state: defaultState,
+  setState: defaultSetState,
   multiselect = true,
   zoomable = true,
   pannable = true,
@@ -50,7 +55,7 @@ const Editor = ({
   appearance = 'auto',
   onReady,
 }: EditorProps) => {
-  const [state, setState] = React.useState<EditorState | undefined>();
+  const [state, setState] = React.useState<EditorState | undefined>(defaultState);
 
   const instance = React.useMemo<ReactEditor>(
     () => new EditorClass(writable(nodes), state, !editable, inputs, outputs),
@@ -65,6 +70,10 @@ const Editor = ({
     instance.inputs = inputs;
     instance.outputs = outputs;
   }, [inputs, outputs, instance]);
+
+  React.useEffect(() => {
+    defaultSetState?.(state);
+  }, [defaultSetState, state]);
 
   return (
     <div
