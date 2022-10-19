@@ -1,10 +1,11 @@
 <script lang="ts">
-  import type {
-    ContextMenuItem,
-    GenericContextMenuTypes,
+  import {
+    type ContextMenuItem,
+    type GenericContextMenuTypes,
     ContextMenu,
-  } from 'core/components/ContextMenu';
-  import { getTruePosition } from 'core/components/Drag';
+    getTruePosition,
+  } from '@function-junctions/core';
+
   import type { SvelteEditor } from '../Editor';
 
   export let ids: string[] | undefined = undefined;

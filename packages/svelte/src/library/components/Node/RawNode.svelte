@@ -1,7 +1,8 @@
 <script lang="ts">
   import type { SvelteComponentDev } from 'svelte/internal';
 
-  import type { InputSocket, OutputSocket } from 'core/components/Sockets';
+  import type { InputSocket, OutputSocket } from '@function-junctions/core';
+
   import type { SvelteEditor } from '../Editor';
 
   export let title: string;

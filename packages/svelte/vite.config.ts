@@ -3,14 +3,17 @@ import { svelte } from '@sveltejs/vite-plugin-svelte';
 import { resolve } from 'path';
 
 import eslintPlugin from 'vite-plugin-eslint';
-import sveld from 'vite-plugin-sveld';
+
+import dts from 'vite-plugin-dts';
 
 // https://vitejs.dev/config/
 export default defineConfig({
   plugins: [
     svelte(),
     eslintPlugin(),
-    sveld(),
+    dts({
+      insertTypesEntry: true,
+    }),
   ],
   server: {
     host: true,

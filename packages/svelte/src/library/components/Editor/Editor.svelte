@@ -3,14 +3,18 @@
 
   // Editor must be imported as EditorClass or svelte package fails to
   // properly type props
-  import { type EditorState, Editor as EditorClass } from 'core/components/Editor';
-  import type { EditorContextMenuProp, NodeContextMenuProp } from 'core/components/ContextMenu';
-  import type { NodeControlButtons } from 'core/components/NodeButton';
+  import {
+    type EditorState,
+    Editor as EditorClass,
+    type EditorContextMenuProp,
+    type NodeContextMenuProp,
+    type NodeControlButtons,
+    getAppearance,
+  } from '@function-junctions/core';
 
   import type { NodeBlueprint } from '../Node';
   import Nodes from '../Nodes/Nodes.svelte';
 
-  import { getAppearance } from 'core/components/Theme';
   import type { SvelteEditor } from '.';
 
   export let nodes: Record<string, NodeBlueprint>;

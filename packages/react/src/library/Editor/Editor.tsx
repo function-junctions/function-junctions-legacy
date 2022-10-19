@@ -1,11 +1,8 @@
-import { EditorContextMenuProp, NodeContextMenuProp } from 'core/components/ContextMenu';
-import { NodeControlButtons } from 'core/components/NodeButton';
+import { EditorContextMenuProp, NodeContextMenuProp, NodeControlButtons, EditorState, Editor as EditorClass, getAppearance } from '@function-junctions/core';
 import { Writable, writable } from 'svelte/store';
 import { ReactEditor } from '.';
 import { NodeBlueprint } from '../Node';
-import { type EditorState, Editor as EditorClass } from 'core/components/Editor';
 import React from 'react';
-import { getAppearance } from 'core/components/Theme';
 import Nodes from '../Nodes/Nodes';
 import { useReadable } from '../Hooks';
 

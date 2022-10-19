@@ -1,4 +1,4 @@
-import type { Editor } from 'core/index';
+import type { Editor } from '@function-junctions/core';
 import React from 'react';
 import { ReactNodeProps } from '../Node';
 

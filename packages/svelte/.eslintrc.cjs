@@ -29,7 +29,7 @@ module.exports = {
     browser: true,
   },
   plugins: ['@typescript-eslint', 'prettier'],
-  ignorePatterns: ['node_modules', '.eslintrc.cjs', 'vite.config.ts'],
+  ignorePatterns: ['node_modules', '.eslintrc.cjs', 'vite.config.ts', 'dist'],
   rules: {
     '@typescript-eslint/ban-ts-comment': 'off',
     '@typescript-eslint/no-unsafe-assignment': 'off',

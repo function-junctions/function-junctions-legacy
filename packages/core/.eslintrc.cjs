@@ -11,7 +11,7 @@ module.exports = {
     sourceType: 'module',
   },
   plugins: ['@typescript-eslint', 'prettier'],
-  ignorePatterns: ['node_modules', '.eslintrc.cjs', 'vite.config.ts'],
+  ignorePatterns: ['node_modules', '.eslintrc.cjs', 'vite.config.ts', 'dist'],
   rules: {
     'prettier/prettier': [
       'warn',

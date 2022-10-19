@@ -1,5 +1,5 @@
 <script lang="ts">
-  import { Editor, type EditorState } from 'core/components/Editor';
+  import { Editor, type EditorState } from '@function-junctions/core';
   import RawNode from '../Node/RawNode.svelte';
   import { writable, type Writable } from 'svelte/store';
   import type { NodeBlueprint } from '@/library';

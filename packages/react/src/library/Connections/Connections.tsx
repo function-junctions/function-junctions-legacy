@@ -1,6 +1,5 @@
 import React from 'react';
-import { getConnections } from 'core/components/Connections';
-import { Point } from 'core/index';
+import { Point, getConnections } from '@function-junctions/core';
 import { useReadable } from '../Hooks';
 import Connection from '../Connection/Connection';
 import { ReactEditor } from '../Editor';

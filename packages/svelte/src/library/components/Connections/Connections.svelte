@@ -1,6 +1,5 @@
 <script lang="ts">
-  import type { Point } from 'core/index';
-  import { getConnections } from 'core/index';
+  import { type Point, getConnections } from '@function-junctions/core';
 
   import Connection from '../Connection/Connection.svelte';
   import type { SvelteEditor } from '../Editor';

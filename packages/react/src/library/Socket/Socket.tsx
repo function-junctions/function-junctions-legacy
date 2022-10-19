@@ -1,6 +1,6 @@
 import React from 'react';
 
-import { getTruePosition } from 'core/components/Drag';
+import { getTruePosition } from '@function-junctions/core';
 
 import { useReadable } from '../Hooks';
 import { ReactEditor } from '../Editor';

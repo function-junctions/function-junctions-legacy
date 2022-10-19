@@ -1,16 +1,19 @@
 <script lang="ts">
-  import type { EditorState } from 'core/components/Editor';
-  import type { NodeControlButtons } from 'core/components/NodeButton';
-  import Drag, { getMatrix } from 'core/components/Drag';
+  import {
+    type EditorState,
+    type NodeControlButtons,
+    type ContextMenu,
+    getMatrix,
+    Interaction,
+    Drag,
+  } from '@function-junctions/core';
   import Node from '../Node/Node.svelte';
   import Connections from '../Connections/Connections.svelte';
 
   import type { EditorContextMenuProp, NodeContextMenuProp } from 'core/components/ContextMenu';
-  import type { ContextMenu } from 'core/components/ContextMenu';
   import EditorContextMenu from '../ContextMenu/EditorContextMenu.svelte';
   import NodeContextMenu from '../ContextMenu/NodeContextMenu.svelte';
   import type { SvelteEditor } from '../Editor';
-  import { Interaction } from 'core/components/Interaction';
   import { onMount } from 'svelte';
 
   export let editor: SvelteEditor;

@@ -1,8 +1,8 @@
 import {
   EditorContextMenuBlueprint,
   ContextMenu as ContextMenuClass,
-} from 'core/components/ContextMenu';
-import { getTruePosition } from 'core/components/Drag';
+  getTruePosition,
+} from '@function-junctions/core';
 import React from 'react';
 import { ReactEditor } from '../Editor';
 import { useReadable } from '../Hooks';

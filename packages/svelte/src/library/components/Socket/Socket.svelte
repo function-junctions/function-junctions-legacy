@@ -1,5 +1,5 @@
 <script lang="ts">
-  import { getTruePosition } from 'core/components/Drag';
+  import { getTruePosition } from '@function-junctions/core';
 
   import type { SvelteEditor } from '../Editor';
 

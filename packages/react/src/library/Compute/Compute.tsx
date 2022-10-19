@@ -1,4 +1,4 @@
-import { Editor, EditorState } from 'core/index';
+import { Editor, EditorState } from '@function-junctions/core';
 import React from 'react';
 import { Writable, writable } from 'svelte/store';
 import { ReactEditor } from '../Editor';

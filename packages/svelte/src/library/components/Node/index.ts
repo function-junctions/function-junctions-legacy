@@ -1,6 +1,9 @@
 import type { SvelteComponentDev } from 'svelte/internal';
-import type { InternalNodeBlueprint, InternalNode } from 'core/components/Nodes';
-import type { SocketBlueprint } from 'core/components/Sockets';
+import type {
+  InternalNodeBlueprint,
+  InternalNode,
+  SocketBlueprint,
+} from '@function-junctions/core';
 
 export type NodeBlueprint<
   I = Record<string, SocketBlueprint>,

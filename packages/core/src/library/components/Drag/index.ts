@@ -8,7 +8,7 @@ export type Position = {
   scale: number;
 };
 
-export type Drag = {
+export type DragType = {
   element: HTMLElement;
   minScale: number;
   maxScale: number;
@@ -54,14 +54,14 @@ export type GetScale = (scale: {
   deltaScale: number;
 }) => [number, number];
 
-export type Pan = (positions: { state: Drag; originX: number; originY: number }) => void;
+export type Pan = (positions: { state: DragType; originX: number; originY: number }) => void;
 
-export type CanPan = (state: Drag) => {
+export type CanPan = (state: DragType) => {
   panBy: (origins: { originX: number; originY: number }) => void;
   panTo: (positions: { originX: number; originY: number; scale: number }) => void;
 };
 
-export type CanZoom = (state: Drag) => {
+export type CanZoom = (state: DragType) => {
   zoom: (postions: { x: number; y: number; deltaScale: number }) => void;
 };
 
@@ -122,7 +122,7 @@ const pan: Pan = ({ state, originX, originY }) => {
   });
 };
 
-const canPan: CanPan = (state: Drag) => ({
+const canPan: CanPan = (state: DragType) => ({
   panBy: ({ originX, originY }) => pan({ state, originX, originY }),
   panTo: ({ originX, originY, scale }) => {
     const transformation = get(state.transformation);
@@ -193,10 +193,10 @@ export default ({
   minScale: number;
   maxScale: number;
   element: HTMLElement;
-  transformation: Drag['transformation'];
+  transformation: DragType['transformation'];
   scaleSensitivity: number;
 }): DragInstance => {
-  const state: Drag = {
+  const state: DragType = {
     element,
     minScale,
     maxScale,

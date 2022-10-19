@@ -1,8 +1,9 @@
 <script lang="ts">
   import type {
-    ContextMenu as ContextMenuType,
     NodeContextMenuBlueprint,
-  } from 'core/components/ContextMenu';
+    ContextMenu as ContextMenuType,
+  } from '@function-junctions/core';
+
   import ContextMenu from './ContextMenu.svelte';
   import ContextMenuItem from './ContextMenuItem.svelte';
   import type { SvelteEditor } from '../Editor';

@@ -3,7 +3,7 @@ import React from 'react';
 import {
   NodeContextMenuBlueprint,
   ContextMenu as ContextMenuClass,
-} from 'core/components/ContextMenu';
+} from '@function-junctions/core';
 import ContextMenuItem from './ContextMenuItem';
 import ContextMenu from './ContextMenu';
 import { ReactEditor } from '../Editor';

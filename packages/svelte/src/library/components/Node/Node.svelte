@@ -1,9 +1,11 @@
 <script lang="ts">
   import type { SvelteComponentDev } from 'svelte/internal';
-  import type { Point } from 'core/index';
-
-  import type { InputSocket, OutputSocket } from 'core/components/Sockets';
-  import type { NodeControlButtons } from 'core/components/NodeButton';
+  import type {
+    Point,
+    InputSocket,
+    OutputSocket,
+    NodeControlButtons,
+  } from '@function-junctions/core';
 
   import NodeButton from '../NodeButton/NodeButton.svelte';
   import Socket from '../Socket/Socket.svelte';

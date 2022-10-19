@@ -20,5 +20,8 @@
     "vite-plugin-eslint": "^1.8.1",
     "vite-plugin-dts": "^1.6.6",
     "lerna": "^5.5.2"
+  },
+  "resolutions": {
+    "typescript": "^4.6.3"
   }
 }

@@ -1,6 +1,6 @@
 import React from 'react';
 
-import { InputSocket, InternalNode, OutputSocket } from 'core/index';
+import { InputSocket, InternalNode, OutputSocket } from '@function-junctions/core';
 import { ReactComponent, ReactEditor } from '../Editor';
 import { Updater } from '../Hooks';
 
