@@ -1,7 +1,7 @@
 {
   "name": "@function-junctions/svelte",
   "private": true,
-  "version": "0.0.0",
+  "version": "0.1.0",
   "type": "module",
   "scripts": {
     "dev": "vite",
@@ -27,7 +27,6 @@
     "svelte-preprocess": "^4.10.7",
     "tslib": "^2.4.0",
     "typescript": "^4.6.4",
-    "vite": "^3.1.0",
-    "vite-plugin-eslint": "^1.8.1"
+    "vite-plugin-sveld": "^1.0.3"
   }
 }

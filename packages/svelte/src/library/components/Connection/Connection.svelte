@@ -1,5 +1,5 @@
 <script lang="ts">
-  import type { Point } from 'core/types';
+  import type { Point } from 'core/index';
   import { createConnectionPath } from 'core/components/Connection';
 
   export let connection: { p1: Point; p2: Point };

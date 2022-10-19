@@ -4,7 +4,6 @@ import {
   ContextMenu,
 } from 'core/components/ContextMenu';
 import { getTruePosition } from 'core/components/Drag';
-import { Editor } from 'core/types';
 import React from 'react';
 import { ReactEditor } from '../Editor';
 import { useReadable } from '../Hooks';

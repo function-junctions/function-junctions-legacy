@@ -7,7 +7,7 @@ import {
   type Writable,
   writable,
 } from 'svelte/store';
-import type { Point } from '../../types';
+import type { Point } from '../..';
 import type { Position } from '../Drag';
 import type { InternalNode } from '../Nodes';
 
@@ -83,20 +83,32 @@ export class Sockets<C, S> {
   }
 
   private update = (nodeId: string, socketId: string) => {
-    this.nodes.update((prevNodes) => ({
-      ...prevNodes,
-      [nodeId]: {
-        ...prevNodes[nodeId],
-        outputs: {
-          ...prevNodes[nodeId]?.outputs,
-          [socketId]: {
-            // eslint-disable-next-line @typescript-eslint/no-non-null-assertion
-            ...prevNodes[nodeId]?.outputs![socketId],
-            trigger: !prevNodes[nodeId]?.outputs?.[socketId].trigger,
-          },
-        },
-      },
-    }));
+    this.nodes.update((prevNodes) => {
+      const nodes = {
+        ...prevNodes,
+        ...(() => {
+          if (prevNodes[nodeId]) {
+            return {
+              [nodeId]: {
+                ...prevNodes[nodeId],
+                outputs: {
+                  ...prevNodes[nodeId]?.outputs,
+                  [socketId]: {
+                    // eslint-disable-next-line @typescript-eslint/no-non-null-assertion
+                    ...prevNodes[nodeId]?.outputs![socketId],
+                    trigger: !prevNodes[nodeId]?.outputs?.[socketId].trigger,
+                  },
+                },
+              },
+            };
+          }
+
+          return;
+        })(),
+      };
+
+      return nodes;
+    });
   };
 
   public createInput = <T>(

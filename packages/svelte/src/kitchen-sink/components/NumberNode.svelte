@@ -1,5 +1,5 @@
 <script lang="ts">
-  import type { OutputSocket } from 'core/types';
+  import type { OutputSocket } from 'core/index';
 
   export let outputs: {
     Number: OutputSocket<number>;

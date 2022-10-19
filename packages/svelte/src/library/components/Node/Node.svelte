@@ -1,6 +1,6 @@
 <script lang="ts">
   import type { SvelteComponentDev } from 'svelte/internal';
-  import type { Point } from 'core/types';
+  import type { Point } from 'core/index';
 
   import type { InputSocket, OutputSocket } from 'core/components/Sockets';
   import type { NodeControlButtons } from 'core/components/NodeButton';

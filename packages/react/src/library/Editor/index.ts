@@ -1,5 +1,4 @@
-import { NodeProps } from 'core/components/Node';
-import type { Editor } from 'core/types';
+import type { Editor } from 'core/index';
 import React from 'react';
 import { ReactNodeProps } from '../Node';
 

@@ -1,9 +1,11 @@
 import { tick } from 'svelte';
 import { get } from 'svelte/store';
-import { Point } from '../../types';
-import { Node } from '../Nodes';
+import { Point } from '../..';
+import { InternalNode } from '../Nodes';
 
-export const getConnections = (nodes: Record<string, Node>): Promise<{ p1: Point; p2: Point }[]> =>
+export const getConnections = <T extends InternalNode<any, any>>(
+  nodes: Record<string, T>,
+): Promise<{ p1: Point; p2: Point }[]> =>
   new Promise((resolve) => {
     let newConnections: { p1: Point; p2: Point }[] = [];
 

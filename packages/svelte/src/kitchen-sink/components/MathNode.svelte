@@ -1,7 +1,5 @@
 <script lang="ts">
-  import type { InputSocket, OutputSocket } from 'core/types';
-
-  import { List, ListInput } from 'framework7-svelte';
+  import type { InputSocket, OutputSocket } from 'core/index';
 
   export let inputs: {
     LHS: InputSocket<number>;
@@ -46,12 +44,9 @@
 </script>
 
 <h1 style="text-align: center">{$output}</h1>
-<List class="no-margin" noHairlines>
-  <ListInput label="Type" type="select" bind:value={store.type}>
-    <i class="icon demo-list-icon" slot="media" />
-    <option value="addition">Addition</option>
-    <option value="subtraction">Subtraction</option>
-    <option value="multiplication">Multiplication</option>
-    <option value="division">Division</option>
-  </ListInput>
-</List>
+<select bind:value={store.type}>
+  <option value="addition">Addition</option>
+  <option value="subtraction">Subtraction</option>
+  <option value="multiplication">Multiplication</option>
+  <option value="division">Division</option>
+</select>

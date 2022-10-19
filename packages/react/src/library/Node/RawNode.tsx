@@ -1,7 +1,8 @@
 import React from 'react';
 
-import { InputSocket, OutputSocket } from 'core/types';
+import { InputSocket, InternalNode, OutputSocket } from 'core/index';
 import { ReactComponent, ReactEditor } from '../Editor';
+import { Updater } from '../Hooks';
 
 export type RawNodeProps = {
   title: string;
@@ -11,6 +12,17 @@ export type RawNodeProps = {
   component: ReactComponent;
   store?: Record<string, unknown>;
   editor: ReactEditor;
+  updateNodes: Updater<
+    Record<
+      string,
+      InternalNode<
+        ReactComponent,
+        React.CSSProperties,
+        Record<string, InputSocket<any>>,
+        Record<string, OutputSocket<any>>
+      >
+    >
+  >;
 };
 
 const RawNode = ({
@@ -21,19 +33,31 @@ const RawNode = ({
   component: Component,
   store = {},
   editor,
-}: RawNodeProps) => (
-  <div className="function-junctions-raw-node">
-    <div className="function-junctions-raw-node-content">
-      <Component
-        title={title}
-        id={id}
-        editor={editor}
-        store={store}
-        inputs={inputs}
-        outputs={outputs}
-      />
+  updateNodes,
+}: RawNodeProps) => {
+  const [reactStore, setReactStore] = React.useState<Record<string, unknown>>(store);
+
+  React.useEffect(() => {
+    updateNodes((prevNodes) => ({
+      ...prevNodes,
+    }));
+  }, [id, reactStore, updateNodes]);
+
+  return (
+    <div className="function-junctions-raw-node">
+      <div className="function-junctions-raw-node-content">
+        <Component
+          title={title}
+          id={id}
+          editor={editor}
+          store={store}
+          inputs={inputs}
+          outputs={outputs}
+          setStore={setReactStore}
+        />
+      </div>
     </div>
-  </div>
-);
+  );
+};
 
 export default RawNode;

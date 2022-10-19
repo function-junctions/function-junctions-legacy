@@ -1,4 +1,4 @@
-import { Point } from '../../types';
+import { Point } from '../..';
 
 export const computeSVGPath = (points: { p1: Point; p2: Point }, curvature: number): string => {
   const { p1, p2 } = points;

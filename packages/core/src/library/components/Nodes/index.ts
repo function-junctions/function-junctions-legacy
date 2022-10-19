@@ -1,6 +1,6 @@
 import { tick } from 'svelte/internal';
 import { get, type Writable } from 'svelte/store';
-import type { Point } from '../../types';
+import type { Point } from '../..';
 import type { Position } from '../Drag';
 import {
   type InputSocketState,
@@ -236,8 +236,6 @@ export class Nodes<C, S> {
       },
       {},
     );
-
-    console.log(newNodes);
 
     this.nodes.current.update(() => newNodes);
   };

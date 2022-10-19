@@ -1,5 +1,5 @@
 import { NodeBlueprint } from '@/library/Node';
-import { SocketBlueprint } from 'core/types';
+import { SocketBlueprint } from 'core/index';
 import React from 'react';
 import Editor from '../library/Editor/Editor';
 import NumberNode from './components/NumberNode';

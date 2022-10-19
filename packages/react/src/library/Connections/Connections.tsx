@@ -1,9 +1,10 @@
 import React from 'react';
 import { getConnections } from 'core/components/Connections';
-import { Point } from 'core/types';
+import { Point } from 'core/index';
 import { useReadable } from '../Hooks';
 import Connection from '../Connection/Connection';
 import { ReactEditor } from '../Editor';
+import { Node } from '../Node';
 
 export type ConnectionsProps = {
   editor: ReactEditor;
@@ -24,7 +25,7 @@ const Connections = ({ editor }: ConnectionsProps) => {
   const showLiveConnection = useReadable(showLiveConnectionStore);
 
   React.useEffect(() => {
-    getConnections(nodes)
+    getConnections<Node>(nodes)
       .then((newConnections) => {
         setConnections(newConnections);
       })

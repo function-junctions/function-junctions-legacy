@@ -1,7 +1,7 @@
 // TODO: make all these functions pure
 
 import { get, Writable } from 'svelte/store';
-import { InternalNode, Point } from '../../types';
+import { InternalNode, Point } from '../..';
 import { ContextMenu, EditorContextMenuBlueprint, NodeContextMenuBlueprint } from '../ContextMenu';
 import Drag, { Position } from '../Drag';
 

@@ -1,8 +1,8 @@
-import { Editor, EditorState, OutputSocket } from 'core/types';
+import { Editor, EditorState } from 'core/index';
 import React from 'react';
 import { Writable, writable } from 'svelte/store';
 import { ReactEditor } from '../Editor';
-import { Setter, useReadable } from '../Hooks';
+import { useReadable, useWritable } from '../Hooks';
 import RawNode from '../Node/RawNode';
 import { NodeBlueprint } from '../Node';
 
@@ -21,7 +21,7 @@ const Compute = ({ nodes, state, inputs = {}, outputs = {} }: ComputeProps) => {
   const { current: currentNodesStore } = instance.nodes;
   const { nodes: nodesStateStore } = instance.state;
 
-  const currentNodes = useReadable(currentNodesStore);
+  const [currentNodes, , updateNodesState] = useWritable(currentNodesStore);
   const nodesState = useReadable(nodesStateStore);
 
   return (
@@ -36,6 +36,7 @@ const Compute = ({ nodes, state, inputs = {}, outputs = {} }: ComputeProps) => {
             outputs={currentNodes[key].outputs}
             editor={instance}
             store={nodesState[key].store}
+            updateNodes={updateNodesState}
           />;
 
         return <></>;

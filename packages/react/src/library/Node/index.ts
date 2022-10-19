@@ -1,6 +1,6 @@
 import { NodeProps } from 'core/components/Node';
 import type { InternalNodeBlueprint, InternalNode } from 'core/components/Nodes';
-import { SocketBlueprint } from 'core/types';
+import { SocketBlueprint } from 'core/index';
 import React from 'react';
 import { ReactComponent } from '../Editor';
 import { ReactInputSocket, ReactOutputSocket } from '../Socket';

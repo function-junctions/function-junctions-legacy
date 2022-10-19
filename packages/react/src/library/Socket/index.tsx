@@ -1,7 +1,7 @@
 import React from 'react';
 import { InputSocket, OutputSocket } from 'core/components/Sockets';
 import { Setter, Updater, useReadable, useWritable } from '../Hooks';
-import { InternalNode } from 'core/types';
+import { InternalNode } from 'core/index';
 import { ReactComponent } from '../Editor';
 
 export type ReactInputSocket<T> = Omit<InputSocket<T>, 'value'> & {

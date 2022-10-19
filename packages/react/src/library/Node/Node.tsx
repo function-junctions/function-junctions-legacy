@@ -1,6 +1,6 @@
 import React from 'react';
 import { NodeControlButtons } from 'core/components/NodeButton';
-import { InputSocket, InternalNode, OutputSocket, Point } from 'core/types';
+import { InputSocket, InternalNode, OutputSocket, Point } from 'core/index';
 import NodeButton from '../NodeButton/NodeButton';
 import Socket from '../Socket/Socket';
 import { ReactComponent, ReactEditor } from '../Editor';

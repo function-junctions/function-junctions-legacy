@@ -5,7 +5,7 @@ import {
   NodeContextMenuProp,
 } from 'core/components/ContextMenu';
 import { NodeControlButtons } from 'core/components/NodeButton';
-import { EditorState } from 'core/types';
+import { EditorState } from 'core/index';
 import { ReactEditor } from '../Editor';
 import { useReadable, useWritable } from '../Hooks';
 import { Interaction } from 'core/components/Interaction';
@@ -93,7 +93,7 @@ const Nodes = ({
   );
 
   React.useEffect(() => {
-    console.log(nodesState);
+    // console.log(nodesState);
   }, [nodesState]);
 
   React.useEffect(() => {

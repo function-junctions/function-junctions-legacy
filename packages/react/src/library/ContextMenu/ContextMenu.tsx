@@ -3,7 +3,6 @@ import {
   ContextMenu as ContextMenuClass,
 } from 'core/components/ContextMenu';
 import React from 'react';
-import { Unsubscriber } from 'svelte/store';
 
 export type ContextMenuProps = {
   containerRef: React.RefObject<HTMLDivElement>;
