@@ -13,12 +13,13 @@
     "svelte": "^3.50.1"
   },
   "files": ["dist"],
-  "main": "./dist/function-junctions.umd.js",
+  "main": "./dist/function-junctions.cjs.js",
   "module": "./dist/function-junctions.es.js",
+  "types": "./dist/react/src/library/index.d.ts",
   "exports": {
     ".": {
       "import": "./dist/function-junctions.es.js",
-      "require": "./dist/function-junctions.umd.js"
+      "require": "./dist/function-junctions.cjs.js"
     }
   },
   "prettier": "../../.prettierrc.json",

@@ -10,7 +10,6 @@ export default defineConfig({
     eslintPlugin(),
     dts({
       insertTypesEntry: true,
-      
     }),
   ],
   server: {

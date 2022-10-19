@@ -22,6 +22,7 @@ export default defineConfig({
       entry: resolve(__dirname, 'src/library/index.ts'),
       name: 'function-junctions',
       fileName: (format) => `function-junctions.${format}.js`,
+      formats: ['es', 'cjs'],
     },
   },
   resolve: {

@@ -1,5 +1,11 @@
 import React from 'react';
-import { NodeControlButtons, InputSocket, InternalNode, OutputSocket, Point } from '@function-junctions/core';
+import {
+  NodeControlButtons,
+  InputSocket,
+  InternalNode,
+  OutputSocket,
+  Point,
+} from '@function-junctions/core';
 import NodeButton from '../NodeButton/NodeButton';
 import Socket from '../Socket/Socket';
 import { ReactComponent, ReactEditor } from '../Editor';
