@@ -44,7 +44,9 @@
     }
   },
   "publishConfig": {
+    "registry": "https://npm.pkg.github.com",
     "access": "public"
   },
-  "repository": "https://github.com/function-junctions/function-junctions.git"
+  "repository": "https://github.com/function-junctions/function-junctions.git",
+  "gitHead": "db1300f671e96bf4fa42d43ed89d5ffb7225aa17"
 }
