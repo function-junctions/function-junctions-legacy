@@ -48,5 +48,6 @@
   "repository": {
     "type": "git",
     "url": "git+https://github.com/function-junctions/function-junctions.git"
-  }
+  },
+  "gitHead": "5bb8af414fe49b63c26ccba53f21effba46b70ef"
 }
