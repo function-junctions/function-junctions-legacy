@@ -1,7 +1,8 @@
 {
   "name": "@function-junctions/react",
-  "version": "0.1.0",
+  "version": "0.0.0",
   "type": "module",
+  "license": "Apache-2.0",
   "scripts": {
     "dev": "vite",
     "build": "tsc && vite build",
@@ -23,6 +24,10 @@
       "import": "./dist/function-junctions.es.js",
       "require": "./dist/function-junctions.cjs.js"
     }
+  },
+  "repository": "https://github.com/function-junctions/function-junctions.git",
+  "publishConfig": {
+    "registry": "https://npm.pkg.github.com"
   },
   "prettier": "../../.prettierrc.json",
   "devDependencies": {

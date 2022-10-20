@@ -1,7 +1,8 @@
 {
   "name": "@function-junctions/svelte",
-  "version": "0.1.0",
+  "version": "0.0.0",
   "type": "module",
+  "license": "Apache-2.0",
   "scripts": {
     "dev": "vite",
     "build": "vite build",
@@ -41,5 +42,9 @@
       "import": "./dist/function-junctions.es.js",
       "require": "./dist/function-junctions.umd.js"
     }
+  },
+  "repository": "https://github.com/function-junctions/function-junctions.git",
+  "publishConfig": {
+    "registry": "https://npm.pkg.github.com"
   }
 }
