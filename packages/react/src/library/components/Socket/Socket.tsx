@@ -1,9 +1,9 @@
 import React from 'react';
 
-import { getTruePosition } from '@function-junctions/core';
+import { getTruePosition } from 'core/index';
 
 import { useReadable } from '../Hooks';
-import { ReactEditor } from '../Editor';
+import { Editor } from '../Editor';
 
 export type SocketProps = {
   title: string;
@@ -13,7 +13,7 @@ export type SocketProps = {
   socketType: string;
   disabled?: boolean;
   color?: string;
-  editor: ReactEditor;
+  editor: Editor;
 };
 
 const Socket = ({ title, type, id, nodeId, socketType, disabled, color, editor }: SocketProps) => {

@@ -1,16 +1,13 @@
 <script lang="ts">
-  import type {
-    NodeContextMenuBlueprint,
-    ContextMenu as ContextMenuType,
-  } from '@function-junctions/core';
+  import type { NodeContextMenuBlueprint, ContextMenu as ContextMenuType } from 'core/index';
 
   import ContextMenu from './ContextMenu.svelte';
   import ContextMenuItem from './ContextMenuItem.svelte';
-  import type { SvelteEditor } from '../Editor';
+  import type { Editor } from '../Editor';
 
   export let ids: string[];
 
-  export let editorInstance: SvelteEditor;
+  export let editorInstance: Editor;
   export let instance: ContextMenuType | undefined = undefined;
 
   export let contextMenu: NodeContextMenuBlueprint;

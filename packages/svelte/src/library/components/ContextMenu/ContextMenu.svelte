@@ -3,7 +3,7 @@
 
   import type { Unsubscriber } from 'svelte/store';
 
-  import { ContextMenu } from '@function-junctions/core';
+  import { ContextMenu } from 'core/index';
 
   export let containerRef: HTMLDivElement;
   export let ref: HTMLDivElement | undefined = undefined;

@@ -1,14 +1,14 @@
-import { NodeBlueprint } from '@/library/Node';
-import { SocketBlueprint } from 'core/index';
+import { NodeBlueprint } from '@/library/components/Node';
+import { FJ } from '@/library';
 import React from 'react';
-import Editor from '../library/Editor/Editor';
+import Editor from '../library/components/Editor/Editor';
 import NumberNode from './components/NumberNode';
 import MathNode from './components/MathNode';
 
 import 'core/index.scss';
 
 function App() {
-  const numberSocket: SocketBlueprint<number> = {
+  const numberSocket: FJ.SocketBlueprint<number> = {
     type: 'number',
     defaultValue: 0,
   };
@@ -16,7 +16,7 @@ function App() {
   const numberNode: NodeBlueprint<
     Record<string, never>,
     {
-      Number: SocketBlueprint<number>;
+      Number: FJ.SocketBlueprint<number>;
     }
   > = {
     outputs: {
@@ -28,10 +28,10 @@ function App() {
 
   const mathNode: NodeBlueprint<
     {
-      LHS: SocketBlueprint<number>;
-      RHS: SocketBlueprint<number>;
+      LHS: FJ.SocketBlueprint<number>;
+      RHS: FJ.SocketBlueprint<number>;
     },
-    { Number: SocketBlueprint<number> },
+    { Number: FJ.SocketBlueprint<number> },
     { type: 'addition' | 'subtraction' | 'multiplication' | 'division' }
   > = {
     inputs: {

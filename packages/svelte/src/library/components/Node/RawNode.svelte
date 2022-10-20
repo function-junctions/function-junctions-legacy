@@ -1,9 +1,8 @@
 <script lang="ts">
   import type { SvelteComponentDev } from 'svelte/internal';
 
-  import type { InputSocket, OutputSocket } from '@function-junctions/core';
-
-  import type { SvelteEditor } from '../Editor';
+  import type { Editor } from '../Editor';
+  import type { InputSocket, OutputSocket } from '../Socket';
 
   export let title: string;
   export let id: string;
@@ -14,7 +13,7 @@
   export let component: typeof SvelteComponentDev;
   export let store: Record<string, unknown> | undefined;
 
-  export let editor: SvelteEditor;
+  export let editor: Editor;
 </script>
 
 <div class="function-junctions-raw-node">

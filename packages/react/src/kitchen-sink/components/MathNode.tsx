@@ -1,6 +1,5 @@
 import React from 'react';
-import { ReactNodeProps } from '@/library/Node';
-import { ReactInputSocket, ReactOutputSocket } from '@/library/Socket';
+import { FJ } from '@/library';
 
 const MathNode = ({
   inputs,
@@ -9,12 +8,12 @@ const MathNode = ({
     type: 'addition',
   },
   setStore,
-}: ReactNodeProps<
+}: FJ.NodeProps<
   {
-    LHS: ReactInputSocket<number>;
-    RHS: ReactInputSocket<number>;
+    LHS: FJ.InputSocket<number>;
+    RHS: FJ.InputSocket<number>;
   },
-  { Number: ReactOutputSocket<number> },
+  { Number: FJ.OutputSocket<number> },
   { type?: 'addition' | 'subtraction' | 'multiplication' | 'division' }
 >) => {
   const { value: LHS } = inputs.LHS;

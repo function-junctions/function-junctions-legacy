@@ -1,6 +1,12 @@
-import { EditorContextMenuProp, NodeContextMenuProp, NodeControlButtons, EditorState, Editor as EditorClass, getAppearance } from '@function-junctions/core';
+import {
+  EditorContextMenuProp,
+  NodeContextMenuProp,
+  NodeControlButtons,
+  EditorState,
+  getAppearance,
+} from 'core/index';
 import { Writable, writable } from 'svelte/store';
-import { ReactEditor } from '.';
+import { Editor as EditorClass } from '.';
 import { NodeBlueprint } from '../Node';
 import React from 'react';
 import Nodes from '../Nodes/Nodes';
@@ -28,7 +34,7 @@ export type EditorProps = {
 
   appearance?: 'light' | 'dark' | 'auto';
 
-  onReady?: (editor: ReactEditor) => void;
+  onReady?: (editor: EditorClass) => void;
 };
 
 const Editor = ({
@@ -54,8 +60,15 @@ const Editor = ({
 }: EditorProps) => {
   const [state, setState] = React.useState<EditorState | undefined>(defaultState);
 
-  const instance = React.useMemo<ReactEditor>(
-    () => new EditorClass(writable(nodes), state, !editable, inputs, outputs),
+  const instance = React.useMemo<EditorClass>(
+    () =>
+      new EditorClass({
+        blueprint: writable(nodes),
+        state,
+        readonly: !editable,
+        inputs,
+        outputs,
+      }),
     [editable, inputs, nodes, outputs, state],
   );
 

@@ -2,6 +2,7 @@ export type Point = {
   x: number;
   y: number;
 };
+
 import Drag from './components/Drag';
 
 export * from './components/Connection';

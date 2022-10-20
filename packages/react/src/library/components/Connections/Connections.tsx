@@ -1,12 +1,12 @@
 import React from 'react';
-import { Point, getConnections } from '@function-junctions/core';
+import { Point, getConnections } from 'core/index';
 import { useReadable } from '../Hooks';
 import Connection from '../Connection/Connection';
-import { ReactEditor } from '../Editor';
+import { Editor } from '../Editor';
 import { Node } from '../Node';
 
 export type ConnectionsProps = {
-  editor: ReactEditor;
+  editor: Editor;
 };
 
 const Connections = ({ editor }: ConnectionsProps) => {

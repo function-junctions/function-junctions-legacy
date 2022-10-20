@@ -6,17 +6,17 @@
     getMatrix,
     Interaction,
     Drag,
-  } from '@function-junctions/core';
+  } from 'core/index';
   import Node from '../Node/Node.svelte';
   import Connections from '../Connections/Connections.svelte';
 
   import type { EditorContextMenuProp, NodeContextMenuProp } from 'core/components/ContextMenu';
   import EditorContextMenu from '../ContextMenu/EditorContextMenu.svelte';
   import NodeContextMenu from '../ContextMenu/NodeContextMenu.svelte';
-  import type { SvelteEditor } from '../Editor';
+  import type { Editor } from '../Editor';
   import { onMount } from 'svelte';
 
-  export let editor: SvelteEditor;
+  export let editor: Editor;
   export let state: EditorState | undefined;
 
   export let multiselect: boolean;
@@ -30,7 +30,7 @@
   export let editorContextMenu: EditorContextMenuProp;
   export let nodeContextMenu: NodeContextMenuProp;
 
-  export let onReady: ((editor: SvelteEditor) => void) | undefined = undefined;
+  export let onReady: ((editor: Editor) => void) | undefined = undefined;
 
   let ref: HTMLDivElement;
 

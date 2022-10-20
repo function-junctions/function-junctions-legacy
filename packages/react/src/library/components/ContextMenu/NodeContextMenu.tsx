@@ -1,16 +1,13 @@
 import React from 'react';
 
-import {
-  NodeContextMenuBlueprint,
-  ContextMenu as ContextMenuClass,
-} from '@function-junctions/core';
+import { NodeContextMenuBlueprint, ContextMenu as ContextMenuClass } from 'core/index';
 import ContextMenuItem from './ContextMenuItem';
 import ContextMenu from './ContextMenu';
-import { ReactEditor } from '../Editor';
+import { Editor } from '../Editor';
 
 export type NodeContextMenuProps = {
   ids: string[];
-  editorInstance: ReactEditor;
+  editorInstance: Editor;
   instance: ContextMenuClass | undefined;
   contextMenu: NodeContextMenuBlueprint;
   containerRef: React.RefObject<HTMLDivElement>;

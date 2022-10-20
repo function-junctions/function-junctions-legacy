@@ -1,6 +1,5 @@
 import React from 'react';
-import { createConnectionPath } from '@function-junctions/core';
-import { Point } from 'core/index';
+import { createConnectionPath, Point } from 'core/index';
 
 export type ConnectionProps = {
   connection: { p1: Point; p2: Point };

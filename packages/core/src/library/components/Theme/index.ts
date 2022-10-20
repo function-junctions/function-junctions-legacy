@@ -1,7 +1,7 @@
 import { type Writable, writable } from 'svelte/store';
 
 export const getAppearance = (
-  appearance: 'light' | 'dark' | 'auto'
+  appearance: 'light' | 'dark' | 'auto',
 ): Writable<'light' | 'dark'> => {
   const className = writable<'light' | 'dark'>(appearance !== 'auto' ? appearance : 'light');
 

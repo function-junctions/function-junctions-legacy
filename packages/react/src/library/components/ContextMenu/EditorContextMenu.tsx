@@ -2,15 +2,15 @@ import {
   EditorContextMenuBlueprint,
   ContextMenu as ContextMenuClass,
   getTruePosition,
-} from '@function-junctions/core';
+} from 'core/index';
 import React from 'react';
-import { ReactEditor } from '../Editor';
+import { Editor } from '../Editor';
 import { useReadable } from '../Hooks';
 import ContextMenu from './ContextMenu';
 import ContextMenuItem from './ContextMenuItem';
 
 export type EditorContextMenuProps = {
-  editorInstance: ReactEditor;
+  editorInstance: Editor;
   instance: ContextMenuClass | undefined;
   contextMenu: EditorContextMenuBlueprint;
   containerRef: React.RefObject<HTMLDivElement>;

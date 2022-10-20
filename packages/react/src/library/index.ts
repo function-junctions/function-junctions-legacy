@@ -1,34 +1,32 @@
-export * from './Editor';
-export * from './Node';
+import Compute from './components/Compute/Compute';
+import Connection from './components/Connection/Connection';
+import Connections from './components/Connections/Connections';
+import ContextMenu from './components/ContextMenu/ContextMenu';
+import ContextMenuItem from './components/ContextMenu/ContextMenuItem';
+import EditorContextMenu from './components/ContextMenu/EditorContextMenu';
+import NodeContextMenu from './components/ContextMenu/NodeContextMenu';
+import Editor from './components/Editor/Editor';
+import Node from './components/Node/Node';
+import RawNode from './components/Node/RawNode';
+import NodeButton from './components/NodeButton/NodeButton';
+import Nodes from './components/Nodes/Nodes';
+import Socket from './components/Socket/Socket';
 
-import Compute from './Compute/Compute';
-import Connection from './Connection/Connection';
-import Connections from './Connections/Connections';
-import ContextMenu from './ContextMenu/ContextMenu';
-import ContextMenuItem from './ContextMenu/ContextMenuItem';
-import EditorContextMenu from './ContextMenu/EditorContextMenu';
-import NodeContextMenu from './ContextMenu/NodeContextMenu';
-import Editor from './Editor/Editor';
-import Node from './Node/Node';
-import RawNode from './Node/RawNode';
-import NodeButton from './NodeButton/NodeButton';
-import Nodes from './Nodes/Nodes';
-import Socket from './Socket/Socket';
+export * from './components/Compute/Compute';
+export * from './components/Connection/Connection';
+export * from './components/Connections/Connections';
+export * from './components/ContextMenu/ContextMenu';
+export * from './components/ContextMenu/ContextMenuItem';
+export * from './components/ContextMenu/EditorContextMenu';
+export * from './components/ContextMenu/NodeContextMenu';
+export * from './components/Editor/Editor';
+export * from './components/Node/Node';
+export * from './components/Node/RawNode';
+export * from './components/NodeButton/NodeButton';
+export * from './components/Nodes/Nodes';
+export * from './components/Socket/Socket';
 
-export * from './Compute/Compute';
-export * from './Connection/Connection';
-export * from './Connections/Connections';
-export * from './ContextMenu/ContextMenu';
-export * from './ContextMenu/ContextMenuItem';
-export * from './ContextMenu/EditorContextMenu';
-export * from './ContextMenu/NodeContextMenu';
-export * from './Editor/Editor';
-export * from './Node/Node';
-export * from './Node/RawNode';
-export * from './NodeButton/NodeButton';
-export * from './Nodes/Nodes';
-export * from './Socket/Socket';
-export * from './Socket/index';
+export * as FJ from './internal';
 
 export {
   Compute,

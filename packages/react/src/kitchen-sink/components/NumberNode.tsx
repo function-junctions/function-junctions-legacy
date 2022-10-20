@@ -1,10 +1,9 @@
 import React from 'react';
-import { ReactNodeProps } from '@/library/Node';
-import { ReactOutputSocket } from '@/library/Socket';
+import { FJ } from '@/library';
 
 const NumberNode = ({
   outputs,
-}: ReactNodeProps<Record<string, never>, { Number: ReactOutputSocket<number> }>) => {
+}: FJ.NodeProps<Record<string, never>, { Number: FJ.OutputSocket<number> }>) => {
   const { value, setValue } = outputs.Number;
 
   return (

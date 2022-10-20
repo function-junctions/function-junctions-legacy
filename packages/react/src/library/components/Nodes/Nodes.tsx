@@ -8,8 +8,8 @@ import {
   Interaction,
   Drag,
   getMatrix,
-} from '@function-junctions/core';
-import { ReactEditor } from '../Editor';
+} from 'core/index';
+import { Editor } from '../Editor';
 import { useReadable, useWritable } from '../Hooks';
 import EditorContextMenu from '../ContextMenu/EditorContextMenu';
 import Node from '../Node/Node';
@@ -17,7 +17,7 @@ import NodeContextMenu from '../ContextMenu/NodeContextMenu';
 import Connections from '../Connections/Connections';
 
 export type NodesProps = {
-  editor: ReactEditor;
+  editor: Editor;
   state: EditorState | undefined;
   setState: React.Dispatch<React.SetStateAction<EditorState | undefined>>;
 
@@ -31,7 +31,7 @@ export type NodesProps = {
   editorContextMenu: EditorContextMenuProp;
   nodeContextMenu: NodeContextMenuProp;
 
-  onReady: ((editor: ReactEditor) => void) | undefined;
+  onReady: ((editor: Editor) => void) | undefined;
 };
 
 const Nodes = ({
@@ -92,10 +92,6 @@ const Nodes = ({
       }),
     [position, setState],
   );
-
-  React.useEffect(() => {
-    // console.log(nodesState);
-  }, [nodesState]);
 
   React.useEffect(() => {
     if (stateRestored && onReady) onReady(editor);

@@ -3,12 +3,12 @@
     type EditorContextMenuBlueprint,
     type ContextMenu as ContextMenuType,
     getTruePosition,
-  } from '@function-junctions/core';
+  } from 'core/index';
   import ContextMenu from './ContextMenu.svelte';
   import ContextMenuItem from './ContextMenuItem.svelte';
-  import type { SvelteEditor } from '../Editor';
+  import type { Editor } from '../Editor';
 
-  export let editorInstance: SvelteEditor;
+  export let editorInstance: Editor;
   export let instance: ContextMenuType | undefined = undefined;
 
   export let contextMenu: EditorContextMenuBlueprint;
@@ -36,8 +36,6 @@
               originY: $editorPosition.originY,
               scale: $editorPosition.scale,
             });
-
-            console.log({ truePosition: { x, y }, position: { x: instance?.x, y: instance?.y } });
 
             editorInstance.addNode(key, { x, y });
           }}

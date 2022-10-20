@@ -1,13 +1,13 @@
 <script lang="ts">
-  import type { InputSocket, OutputSocket } from 'core/index';
+  import type { FJ } from '@/library';
 
   export let inputs: {
-    LHS: InputSocket<number>;
-    RHS: InputSocket<number>;
+    LHS: FJ.InputSocket<number>;
+    RHS: FJ.InputSocket<number>;
   };
 
   export let outputs: {
-    Number: OutputSocket<number>;
+    Number: FJ.OutputSocket<number>;
   };
 
   export let store: {

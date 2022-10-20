@@ -7,14 +7,17 @@ export type EditorState = Partial<{
   position: Position;
 }>;
 
-export class Editor<C, S = string> extends Nodes<C, S> {
-  constructor(
-    blueprint: Writable<Record<string, InternalNodeBlueprint<C, S>>>,
-    state?: EditorState,
-    readonly?: boolean,
-    inputs?: Record<string, { type: string; value: Writable<unknown> }>,
-    outputs?: Record<string, { type: string; value: Writable<unknown> }>,
-  ) {
+export type InternalEditorOptions<C, S> = {
+  blueprint: Writable<Record<string, InternalNodeBlueprint<C, S>>>;
+  state?: EditorState;
+  readonly?: boolean;
+  inputs?: Record<string, { type: string; value: Writable<unknown> }>;
+  outputs?: Record<string, { type: string; value: Writable<unknown> }>;
+};
+
+export class InternalEditor<C, S = string> extends Nodes<C, S> {
+  constructor(options: InternalEditorOptions<C, S>) {
+    const { blueprint, state, readonly, inputs, outputs } = options;
     super(
       writable(
         state?.position ?? {

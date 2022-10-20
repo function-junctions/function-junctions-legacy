@@ -16,8 +16,7 @@ import NodeButton from './components/NodeButton/NodeButton.svelte';
 import Nodes from './components/Nodes/Nodes.svelte';
 import Socket from './components/Socket/Socket.svelte';
 
-export * from './components/Node';
-export * from './components/Editor';
+export * as FJ from './internal';
 
 export {
   Compute,

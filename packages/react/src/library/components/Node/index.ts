@@ -1,12 +1,12 @@
 import {
   InternalNodeBlueprint,
   InternalNode,
-  NodeProps,
+  InternalNodeProps,
   SocketBlueprint,
-} from '@function-junctions/core';
+} from 'core/index';
 import React from 'react';
 import { ReactComponent } from '../Editor';
-import { ReactInputSocket, ReactOutputSocket } from '../Socket';
+import { InputSocket, OutputSocket } from '../Socket';
 
 export type NodeBlueprint<
   I = Record<string, SocketBlueprint>,
@@ -16,11 +16,11 @@ export type NodeBlueprint<
 
 export type Node = InternalNode<ReactComponent, React.CSSProperties>;
 
-export type ReactNodeProps<
-  I extends Record<string, ReactInputSocket<any> | never> = any,
-  O extends Record<string, ReactOutputSocket<any> | never> = any,
+export type NodeProps<
+  I extends Record<string, InputSocket<any> | never> = any,
+  O extends Record<string, OutputSocket<any> | never> = any,
   S = Record<string, any>,
-> = Omit<NodeProps<ReactComponent, React.CSSProperties>, 'outputs' | 'inputs'> & {
+> = Omit<InternalNodeProps<ReactComponent, React.CSSProperties>, 'outputs' | 'inputs'> & {
   inputs: I;
   outputs: O;
   store: S;

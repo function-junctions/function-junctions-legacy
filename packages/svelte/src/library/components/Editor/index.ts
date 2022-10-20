@@ -1,4 +1,8 @@
-import type { Editor } from '@function-junctions/core';
+import { InternalEditor, type InternalEditorOptions } from 'core/index';
 import type { SvelteComponentDev } from 'svelte/internal';
 
-export type SvelteEditor = Editor<typeof SvelteComponentDev>;
+export class Editor extends InternalEditor<typeof SvelteComponentDev, string> {
+  constructor(options: InternalEditorOptions<typeof SvelteComponentDev, string>) {
+    super(options);
+  }
+}

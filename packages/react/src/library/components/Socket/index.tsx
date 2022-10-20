@@ -1,13 +1,13 @@
 import React from 'react';
-import { InputSocket, OutputSocket, InternalNode } from '@function-junctions/core';
+import { InternalInputSocket, InternalOutputSocket, InternalNode } from 'core/index';
 import { Setter, Updater, useReadable, useWritable } from '../Hooks';
 import { ReactComponent } from '../Editor';
 
-export type ReactInputSocket<T> = Omit<InputSocket<T>, 'value'> & {
+export type InputSocket<T> = Omit<InternalInputSocket<T>, 'value'> & {
   value: T;
 };
 
-export type ReactOutputSocket<T> = Omit<OutputSocket<T>, 'value'> & {
+export type OutputSocket<T> = Omit<InternalOutputSocket<T>, 'value'> & {
   value: T;
   setValue: Setter<T>;
 };
@@ -20,18 +20,18 @@ export const OutputValueGenerator = ({
   outputs,
   setReactOutputs,
   updateNodes,
-}: { value: OutputSocket<unknown>['value'] } & {
+}: { value: InternalOutputSocket<unknown>['value'] } & {
   id: string;
   nodeId: string;
-  outputs: Record<string, OutputSocket<any>>;
+  outputs: Record<string, InternalOutputSocket<any>>;
   updateNodes: Updater<
     Record<
       string,
       InternalNode<
         ReactComponent,
         React.CSSProperties,
-        Record<string, InputSocket<any>>,
-        Record<string, OutputSocket<any>>
+        Record<string, InternalInputSocket<any>>,
+        Record<string, InternalOutputSocket<any>>
       >
     >
   >;
@@ -86,7 +86,7 @@ export const InputValueGenerator = ({
   value,
   id,
   setReactInputs,
-}: { value: InputSocket<unknown>['value'] } & {
+}: { value: InternalInputSocket<unknown>['value'] } & {
   id: string;
   setReactInputs: React.Dispatch<React.SetStateAction<Record<string, unknown> | undefined>>;
 }) => {

@@ -3,14 +3,13 @@
 
   import './App.scss';
 
-  import { Editor, type NodeBlueprint } from '../library';
+  import { FJ, Editor } from '../library';
 
   import NumberNode from './components/NumberNode.svelte';
   import { writable } from 'svelte/store';
   import MathNode from './components/MathNode.svelte';
 
   import tree from './state.json';
-  import type { SvelteEditor } from '@/library/components/Editor';
 
   let state: EditorState = tree;
 
@@ -19,7 +18,7 @@
     defaultValue: 0,
   };
 
-  const numberNode: NodeBlueprint<
+  const numberNode: FJ.NodeBlueprint<
     Record<string, never>,
     {
       Number: SocketBlueprint<number>;
@@ -32,7 +31,7 @@
     color: 'linear-gradient(#228cfd, #007aff)',
   };
 
-  const mathNode: NodeBlueprint<
+  const mathNode: FJ.NodeBlueprint<
     {
       LHS: SocketBlueprint<number>;
       RHS: SocketBlueprint<number>;
@@ -57,7 +56,7 @@
     Math: mathNode,
   };
 
-  let editor: SvelteEditor;
+  let editor: FJ.Editor;
 
   const value = writable();
   const Test = writable(2);

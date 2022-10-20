@@ -1,7 +1,7 @@
 <script lang="ts">
-  import { getTruePosition } from '@function-junctions/core';
+  import { getTruePosition } from 'core/index';
 
-  import type { SvelteEditor } from '../Editor';
+  import type { Editor } from '../Editor';
 
   export let title: string;
   export let type: 'input' | 'output';
@@ -14,7 +14,7 @@
 
   export let color: string | undefined = undefined;
 
-  export let editor: SvelteEditor;
+  export let editor: Editor;
 
   let ref: HTMLDivElement;
   let coordinates: DOMRect;

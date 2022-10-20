@@ -22,7 +22,7 @@ export type SocketBlueprint<T = any> = {
   color?: string;
 };
 
-export type InputSocket<T> = {
+export type InternalInputSocket<T> = {
   type: string;
   value: Readable<T>;
   color?: string;
@@ -31,7 +31,7 @@ export type InputSocket<T> = {
   disabled?: boolean;
 };
 
-export type OutputSocket<T> = {
+export type InternalOutputSocket<T> = {
   type: string;
   value: Writable<T>;
   color?: string;
@@ -40,12 +40,12 @@ export type OutputSocket<T> = {
   disabled?: boolean;
 };
 
-export type InputSocketState = {
+export type InternalInputSocketState = {
   type: string;
   connection?: SocketConnection;
 };
 
-export type OutputSocketState = {
+export type InternalOutputSocketState = {
   type: string;
   value: unknown;
 };
@@ -117,7 +117,7 @@ export class Sockets<C, S> {
     state?: {
       connection?: SocketConnection;
     },
-  ): InputSocket<T> => {
+  ): InternalInputSocket<T> => {
     let valueUnsubscribe: Unsubscriber | undefined;
     let prevConnectedNodeId: string;
     let prevConnectedSocketId: string;
@@ -177,7 +177,7 @@ export class Sockets<C, S> {
     };
   };
 
-  public createOutput = <T>(type: string, defaultValue?: T): OutputSocket<T> => {
+  public createOutput = <T>(type: string, defaultValue?: T): InternalOutputSocket<T> => {
     const value = writable<T>(defaultValue);
 
     return {

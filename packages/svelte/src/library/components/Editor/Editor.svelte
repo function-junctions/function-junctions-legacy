@@ -5,17 +5,16 @@
   // properly type props
   import {
     type EditorState,
-    Editor as EditorClass,
     type EditorContextMenuProp,
     type NodeContextMenuProp,
     type NodeControlButtons,
     getAppearance,
-  } from '@function-junctions/core';
+  } from 'core/index';
 
   import type { NodeBlueprint } from '../Node';
   import Nodes from '../Nodes/Nodes.svelte';
 
-  import type { SvelteEditor } from '.';
+  import { Editor } from '.';
 
   export let nodes: Record<string, NodeBlueprint>;
   export let state: EditorState | undefined = undefined;
@@ -42,15 +41,15 @@
 
   export let appearance: 'light' | 'dark' | 'auto' = 'auto';
 
-  export let instance: SvelteEditor = new EditorClass(
-    writable(nodes),
+  export let instance: Editor = new Editor({
+    blueprint: writable(nodes),
     state,
-    !editable,
+    readonly: !editable,
     inputs,
     outputs,
-  );
+  });
 
-  export let onReady: ((editor: SvelteEditor) => void) | undefined = undefined;
+  export let onReady: ((editor: Editor) => void) | undefined = undefined;
 
   const appearanceClassName = getAppearance(appearance);
 

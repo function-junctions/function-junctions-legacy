@@ -1,23 +1,23 @@
 import React from 'react';
 import {
   NodeControlButtons,
-  InputSocket,
+  InternalInputSocket,
   InternalNode,
-  OutputSocket,
+  InternalOutputSocket,
   Point,
-} from '@function-junctions/core';
+} from 'core/index';
 import NodeButton from '../NodeButton/NodeButton';
 import Socket from '../Socket/Socket';
-import { ReactComponent, ReactEditor } from '../Editor';
+import { ReactComponent, Editor } from '../Editor';
 import { Setter, Updater } from '../Hooks';
 import { InputValueGenerator, OutputValueGenerator } from '../Socket';
-import { ReactNodeProps } from '.';
+import { NodeProps } from '.';
 
 export type NodeContainerProps = {
   title: string;
   id: string;
-  inputs: Record<string, InputSocket<any>> | undefined;
-  outputs: Record<string, OutputSocket<any>> | undefined;
+  inputs: Record<string, InternalInputSocket<any>> | undefined;
+  outputs: Record<string, InternalOutputSocket<any>> | undefined;
   color?: string;
   className?: string;
   style?: React.CSSProperties;
@@ -28,15 +28,15 @@ export type NodeContainerProps = {
   cloneable?: boolean;
   selected?: boolean;
   store?: Record<string, unknown>;
-  editor: ReactEditor;
+  editor: Editor;
   updateNodes: Updater<
     Record<
       string,
       InternalNode<
         ReactComponent,
         React.CSSProperties,
-        Record<string, InputSocket<any>>,
-        Record<string, OutputSocket<any>>
+        Record<string, InternalInputSocket<any>>,
+        Record<string, InternalOutputSocket<any>>
       >
     >
   >;
@@ -75,7 +75,7 @@ const Node = ({
 
   const computedReactInputs = React.useMemo(() => {
     if (reactInputs) {
-      const newInputs: ReactNodeProps['inputs'] = {};
+      const newInputs: NodeProps['inputs'] = {};
 
       Object.keys(inputs).forEach((key) => {
         newInputs[key] = {
@@ -92,7 +92,7 @@ const Node = ({
 
   const computedReactOutputs = React.useMemo(() => {
     if (reactOutputs) {
-      const newOutputs: ReactNodeProps['outputs'] = {};
+      const newOutputs: NodeProps['outputs'] = {};
 
       Object.keys(outputs).forEach((key) => {
         newOutputs[key] = {

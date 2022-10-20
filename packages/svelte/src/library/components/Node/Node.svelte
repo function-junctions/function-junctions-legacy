@@ -1,15 +1,11 @@
 <script lang="ts">
   import type { SvelteComponentDev } from 'svelte/internal';
-  import type {
-    Point,
-    InputSocket,
-    OutputSocket,
-    NodeControlButtons,
-  } from '@function-junctions/core';
+  import type { Point, NodeControlButtons } from 'core/index';
 
   import NodeButton from '../NodeButton/NodeButton.svelte';
   import Socket from '../Socket/Socket.svelte';
-  import type { SvelteEditor } from '../Editor';
+  import type { Editor } from '../Editor';
+  import type { InputSocket, OutputSocket } from '../Socket';
 
   export let title: string;
   export let id: string;
@@ -32,7 +28,7 @@
 
   export let store: Record<string, unknown> | undefined;
 
-  export let editor: SvelteEditor;
+  export let editor: Editor;
 </script>
 
 <div

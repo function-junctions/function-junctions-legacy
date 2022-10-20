@@ -3,16 +3,16 @@ import {
   ContextMenuItem as ContextMenuItemType,
   ContextMenu,
   getTruePosition,
-} from '@function-junctions/core';
+} from 'core/index';
 import React from 'react';
-import { ReactEditor } from '../Editor';
+import { Editor } from '../Editor';
 import { useReadable } from '../Hooks';
 
 export type ContextMenuItemProps = {
   ids?: string[];
   item: ContextMenuItemType<'delete' | 'clone' | GenericContextMenuTypes>;
   contextMenu: ContextMenu;
-  editor: ReactEditor;
+  editor: Editor;
 };
 
 const ContextMenuItem = ({ ids, item, contextMenu, editor }: ContextMenuItemProps) => {

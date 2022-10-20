@@ -1,7 +1,4 @@
-import {
-  ContextMenu as ContextMenuType,
-  ContextMenu as ContextMenuClass,
-} from '@function-junctions/core';
+import { ContextMenu as ContextMenuType, ContextMenu as ContextMenuClass } from 'core/index';
 import React from 'react';
 
 export type ContextMenuProps = {

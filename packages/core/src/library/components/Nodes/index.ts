@@ -3,13 +3,13 @@ import { get, type Writable } from 'svelte/store';
 import type { Point } from '../..';
 import type { Position } from '../Drag';
 import {
-  type InputSocketState,
+  type InternalInputSocketState,
   type LiveConnection,
-  type OutputSocketState,
+  type InternalOutputSocketState,
   type SocketBlueprint,
   Sockets,
-  InputSocket,
-  OutputSocket,
+  InternalInputSocket,
+  InternalOutputSocket,
 } from '../Sockets';
 
 export type InternalNodeBlueprint<
@@ -33,8 +33,8 @@ export type InternalNodeBlueprint<
 export type InternalNode<
   C,
   S = string,
-  I = Record<string, InputSocket<any>>,
-  O = Record<string, OutputSocket<any>>,
+  I = Record<string, InternalInputSocket<any>>,
+  O = Record<string, InternalOutputSocket<any>>,
   ST = Record<string, unknown>,
 > = Point &
   InternalNodeBlueprint<C, S, I, O, ST> & {
@@ -43,8 +43,8 @@ export type InternalNode<
 
 export type NodeState = Point & {
   type: string;
-  inputs?: Record<string, InputSocketState>;
-  outputs?: Record<string, OutputSocketState>;
+  inputs?: Record<string, InternalInputSocketState>;
+  outputs?: Record<string, InternalOutputSocketState>;
   store?: Record<string, unknown>;
 };
 
@@ -134,7 +134,7 @@ export class Nodes<C, S> {
         ...prevNodes,
         [id]: {
           inputs: (() => {
-            const inputs: Record<string, InputSocket<any>> = {};
+            const inputs: Record<string, InternalInputSocket<any>> = {};
 
             if (blueprint.inputs) {
               Object.keys(blueprint.inputs ?? {}).map((inputKey) => {
@@ -164,7 +164,7 @@ export class Nodes<C, S> {
             return Object.keys(inputs).length > 0 ? inputs : undefined;
           })(),
           outputs: (() => {
-            const outputs: Record<string, OutputSocket<any>> = {};
+            const outputs: Record<string, InternalOutputSocket<any>> = {};
 
             if (blueprint.outputs) {
               Object.keys(blueprint.outputs ?? {}).map((outputKey) => {
@@ -303,7 +303,7 @@ export class Nodes<C, S> {
             inputs: {
               ...state[id].inputs,
               ...(() => {
-                let inputs: Record<string, InputSocketState> = {};
+                let inputs: Record<string, InternalInputSocketState> = {};
 
                 Object.keys(nodes[id]?.inputs ?? {}).forEach((inputId) => {
                   const type = nodes[id].inputs?.[inputId].type ?? '';
@@ -324,7 +324,7 @@ export class Nodes<C, S> {
             outputs: {
               ...state[id].outputs,
               ...(() => {
-                let outputs: Record<string, OutputSocketState> = {};
+                let outputs: Record<string, InternalOutputSocketState> = {};
 
                 Object.keys(nodes[id]?.outputs ?? {}).forEach((outputId) => {
                   const value = nodes[id].outputs?.[outputId].value;

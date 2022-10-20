@@ -1,8 +1,8 @@
 <script lang="ts">
-  import type { OutputSocket } from 'core/index';
+  import type { FJ } from '@/library';
 
   export let outputs: {
-    Number: OutputSocket<number>;
+    Number: FJ.OutputSocket<number>;
   };
 
   const { value } = outputs.Number;

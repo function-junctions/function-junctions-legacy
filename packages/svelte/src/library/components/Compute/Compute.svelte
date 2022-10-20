@@ -1,16 +1,23 @@
 <script lang="ts">
-  import { Editor, type EditorState } from '@function-junctions/core';
+  import type { EditorState } from 'core/index';
   import RawNode from '../Node/RawNode.svelte';
   import { writable, type Writable } from 'svelte/store';
-  import type { NodeBlueprint } from '@/library';
+  import type { FJ } from '@/library';
+  import { Editor } from '../Editor';
 
-  export let nodes: Record<string, NodeBlueprint>;
+  export let nodes: Record<string, FJ.NodeBlueprint>;
   export let state: EditorState;
 
   export let inputs: Record<string, { type: string; value: Writable<unknown> }> = {};
   export let outputs: Record<string, { type: string; value: Writable<unknown> }> = {};
 
-  export let instance = new Editor(writable(nodes), state, true, inputs, outputs);
+  export let instance = new Editor({
+    blueprint: writable(nodes),
+    state,
+    readonly: true,
+    inputs,
+    outputs,
+  });
 
   const { current: currentNodes } = instance.nodes;
   const { nodes: nodesState } = instance.state;
