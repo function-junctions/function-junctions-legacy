@@ -26,9 +26,6 @@
     }
   },
   "repository": "https://github.com/function-junctions/function-junctions.git",
-  "publishConfig": {
-    "registry": "https://npm.pkg.github.com/@aksg"
-  },
   "prettier": "../../.prettierrc.json",
   "devDependencies": {
     "@types/react": "^18.0.17",
