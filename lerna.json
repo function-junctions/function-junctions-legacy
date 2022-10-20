@@ -9,5 +9,11 @@
     "packages/core/**",
     "packages/react/**",
     "packages/svelte/**"
-  ]
+  ],
+  "command": {
+    "publish": {
+      "registry": "https://npm.pkg.github.com/",
+      "npmClient": "npm"
+    }
+  }
 }
