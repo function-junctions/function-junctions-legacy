@@ -43,6 +43,8 @@
       "require": "./dist/function-junctions.umd.js"
     }
   },
-  "repository": "https://github.com/function-junctions/function-junctions.git",
-  "gitHead": "bc706e79c9a296389e262115e5e30ec162847fa7"
+  "publishConfig": {
+    "access": "public"
+  },
+  "repository": "https://github.com/function-junctions/function-junctions.git"
 }
