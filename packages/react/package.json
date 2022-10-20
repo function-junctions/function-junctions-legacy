@@ -1,6 +1,6 @@
 {
   "name": "@function-junctions/react",
-  "version": "0.0.0",
+  "version": "0.1.0",
   "type": "module",
   "scripts": {
     "dev": "vite",
@@ -12,7 +12,9 @@
     "react-dom": "^18.2.0",
     "svelte": "^3.50.1"
   },
-  "files": ["dist"],
+  "files": [
+    "dist"
+  ],
   "main": "./dist/function-junctions.cjs.js",
   "module": "./dist/function-junctions.es.js",
   "types": "./dist/react/src/library/index.d.ts",
