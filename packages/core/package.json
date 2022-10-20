@@ -1,6 +1,6 @@
 {
   "name": "@function-junctions/core",
-  "version": "0.0.0",
+  "version": "0.1.0",
   "license": "Apache-2.0",
   "type": "module",
   "private": "true",
@@ -22,7 +22,9 @@
     "sass": "^1.55.0",
     "typescript": "^4.6.4"
   },
-  "files": ["dist"],
+  "files": [
+    "dist"
+  ],
   "main": "./dist/function-junctions.cjs.js",
   "module": "./dist/function-junctions.es.js",
   "types": "./dist/library/index.d.ts",
