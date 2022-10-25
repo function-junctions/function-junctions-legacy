@@ -1,0 +1,37 @@
+{
+  "name": "@function-junctions/core",
+  "version": "0.1.0",
+  "license": "Apache-2.0",
+  "type": "module",
+  "private": "true",
+  "scripts": {
+    "dev": "vite",
+    "build": "tsc && vite build",
+    "preview": "vite preview"
+  },
+  "prettier": "../../.prettierrc.json",
+  "dependencies": {
+    "svelte": "^3.50.1"
+  },
+  "devDependencies": {
+    "@typescript-eslint/eslint-plugin": "^5.38.0",
+    "@typescript-eslint/parser": "^5.38.0",
+    "eslint-config-prettier": "^8.5.0",
+    "eslint-plugin-prettier": "^4.2.1",
+    "prettier": "^2.3.2",
+    "sass": "^1.55.0",
+    "typescript": "^4.6.4"
+  },
+  "files": [
+    "dist"
+  ],
+  "main": "./dist/function-junctions.cjs.js",
+  "module": "./dist/function-junctions.es.js",
+  "types": "./dist/library/index.d.ts",
+  "exports": {
+    ".": {
+      "import": "./dist/function-junctions.es.js",
+      "require": "./dist/function-junctions.cjs.js"
+    }
+  }
+}
