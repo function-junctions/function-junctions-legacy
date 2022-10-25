@@ -1,6 +1,6 @@
 {
   "name": "@function-junctions/react",
-  "version": "0.1.0-alpha.3",
+  "version": "0.1.0-alpha.0",
   "type": "module",
   "license": "Apache-2.0",
   "scripts": {
@@ -40,14 +40,5 @@
     "prettier": "^2.3.2",
     "sass": "^1.55.0",
     "typescript": "^4.6.4"
-  },
-  "publishConfig": {
-    "registry": "https://npm.pkg.github.com/",
-    "access": "public"
-  },
-  "repository": {
-    "type": "git",
-    "url": "git+https://github.com/function-junctions/function-junctions.git"
-  },
-  "gitHead": "c9584552bc9dcea1dbd722387a38cfbf280da977"
+  }
 }

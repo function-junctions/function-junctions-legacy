@@ -1,6 +1,6 @@
 {
   "name": "@function-junctions/svelte",
-  "version": "0.1.0-alpha.3",
+  "version": "0.1.0-alpha.0",
   "type": "module",
   "license": "Apache-2.0",
   "scripts": {
@@ -42,14 +42,5 @@
       "import": "./dist/function-junctions.es.js",
       "require": "./dist/function-junctions.umd.js"
     }
-  },
-  "publishConfig": {
-    "registry": "https://npm.pkg.github.com/",
-    "access": "public"
-  },
-  "repository": {
-    "type": "git",
-    "url": "git+https://github.com/function-junctions/function-junctions.git"
-  },
-  "gitHead": "c9584552bc9dcea1dbd722387a38cfbf280da977"
+  }
 }
