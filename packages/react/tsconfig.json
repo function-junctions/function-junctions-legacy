@@ -20,6 +20,6 @@
     "noEmit": true,
     "jsx": "react-jsx"
   },
-  "include": ["src", "../svelte/src/library/components/Node/index.ts"],
+  "include": ["src", "../core"],
   "references": [{ "path": "./tsconfig.node.json" }]
 }
