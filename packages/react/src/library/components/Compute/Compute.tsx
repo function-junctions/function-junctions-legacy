@@ -6,6 +6,8 @@ import { useReadable, useWritable } from '../Hooks';
 import RawNode from '../Node/RawNode';
 import { NodeBlueprint } from '../Node';
 
+import '../../../../../core/src/library/components/Compute/Compute.scss';
+
 export type ComputeProps = {
   nodes: Record<string, NodeBlueprint>;
   state: EditorState;

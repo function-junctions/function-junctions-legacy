@@ -8,7 +8,9 @@
   "packages": [
     "packages/core/**",
     "packages/react/**",
-    "packages/svelte/**"
+    "packages/svelte/**",
+    "packages/react-playground/**",
+    "packages/svelte-playground/**"
   ],
   "command": {
     "publish": {

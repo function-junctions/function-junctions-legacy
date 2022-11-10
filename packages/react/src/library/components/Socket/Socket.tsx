@@ -5,6 +5,8 @@ import { getTruePosition } from 'core/index';
 import { useReadable } from '../Hooks';
 import { Editor } from '../Editor';
 
+import '../../../../../core/src/library/components/Socket/Socket.scss';
+
 export type SocketProps = {
   title: string;
   type: 'input' | 'output';

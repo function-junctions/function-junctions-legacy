@@ -5,6 +5,8 @@ import Connection from '../Connection/Connection';
 import { Editor } from '../Editor';
 import { Node } from '../Node';
 
+import '../../../../../core/src/library/components/Connections/Connections.scss';
+
 export type ConnectionsProps = {
   editor: Editor;
 };

@@ -16,6 +16,8 @@ import Node from '../Node/Node';
 import NodeContextMenu from '../ContextMenu/NodeContextMenu';
 import Connections from '../Connections/Connections';
 
+import '../../../../../core/src/library/components/Nodes/Nodes.scss';
+
 export type NodesProps = {
   editor: Editor;
   state: EditorState | undefined;

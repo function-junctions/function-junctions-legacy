@@ -4,6 +4,8 @@ import { InternalInputSocket, InternalNode, InternalOutputSocket } from 'core/in
 import { ReactComponent, Editor } from '../Editor';
 import { Updater } from '../Hooks';
 
+import '../../../../../core/src/library/components/Node/RawNode.scss';
+
 export type RawNodeProps = {
   title: string;
   id: string;

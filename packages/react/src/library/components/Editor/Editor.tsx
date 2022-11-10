@@ -12,6 +12,8 @@ import React from 'react';
 import Nodes from '../Nodes/Nodes';
 import { useReadable } from '../Hooks';
 
+import '../../../../../core/src/library/components/Editor/Editor.scss';
+
 export type EditorProps = {
   nodes: Record<string, NodeBlueprint>;
 

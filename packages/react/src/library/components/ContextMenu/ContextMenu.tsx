@@ -1,6 +1,8 @@
 import { ContextMenu as ContextMenuType, ContextMenu as ContextMenuClass } from 'core/index';
 import React from 'react';
 
+import '../../../../../core/src/library/components/ContextMenu/ContextMenu.scss';
+
 export type ContextMenuProps = {
   containerRef: React.RefObject<HTMLDivElement>;
   instance: ContextMenuType | undefined;

@@ -13,6 +13,8 @@ import { Setter, Updater } from '../Hooks';
 import { InputValueGenerator, OutputValueGenerator } from '../Socket';
 import { NodeProps } from '.';
 
+import '../../../../../core/src/library/components/Node/Node.scss';
+
 export type NodeContainerProps = {
   title: string;
   id: string;

@@ -1,5 +1,7 @@
 import React from 'react';
 
+import '../../../../../core/src/library/components/NodeButton/NodeButton.scss';
+
 export type NodeButtonProps = {
   text: string;
   color?: string;

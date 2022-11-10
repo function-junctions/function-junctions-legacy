@@ -1,6 +1,8 @@
 import React from 'react';
 import { createConnectionPath, Point } from 'core/index';
 
+import '../../../../../core/src/library/components/Connection/Connection.scss';
+
 export type ConnectionProps = {
   connection: { p1: Point; p2: Point };
 };

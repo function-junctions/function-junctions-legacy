@@ -18,11 +18,25 @@ export default defineConfig({
     port: 8002,
   },
   build: {
+    sourcemap: true,
     lib: {
       entry: resolve(__dirname, 'src/library/index.ts'),
       name: 'function-junctions',
       fileName: (format) => `function-junctions.${format}.js`,
       formats: ['es', 'cjs'],
+    },
+    rollupOptions: {
+      external: ['react', 'react-dom'],
+    },
+  },
+  css: {
+    preprocessorOptions: {
+      sass: {
+        additionalData: [
+          '@import "../core/src/library/index.scss";',
+          '',
+        ].join('\n'),
+      },
     },
   },
   resolve: {
