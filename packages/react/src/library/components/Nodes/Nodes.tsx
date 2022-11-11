@@ -83,17 +83,16 @@ const Nodes = ({
   );
 
   React.useEffect(() => {
+    console.log(nodes);
     if (stateRestored) editor.updateState();
   }, [nodes, stateRestored, editor]);
 
-  React.useEffect(
-    () =>
-      setState({
-        nodes: nodesState,
-        position,
-      }),
-    [position, setState],
-  );
+  React.useEffect(() => {
+    setState({
+      nodes: nodesState,
+      position,
+    });
+  }, [position, nodesState, setState]);
 
   React.useEffect(() => {
     if (stateRestored && onReady) onReady(editor);

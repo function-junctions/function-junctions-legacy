@@ -71,7 +71,7 @@ const Editor = ({
         inputs,
         outputs,
       }),
-    [editable, inputs, nodes, outputs, state],
+    [editable, inputs, nodes, outputs],
   );
 
   const appearanceClassNameStore = React.useMemo(() => getAppearance(appearance), [appearance]);

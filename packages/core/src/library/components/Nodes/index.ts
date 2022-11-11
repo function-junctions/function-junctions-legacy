@@ -347,6 +347,6 @@ export class Nodes<C, S> {
       }
     });
 
-    this.state.nodes.set(newState);
+    // this.state.nodes.set(newState);
   };
 }

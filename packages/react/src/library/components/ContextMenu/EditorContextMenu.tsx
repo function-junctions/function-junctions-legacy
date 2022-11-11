@@ -32,10 +32,6 @@ const EditorContextMenu = ({
   const nodes = useReadable(nodesStore);
   const editorPosition = useReadable(editorPositionStore);
 
-  React.useEffect(() => {
-    console.log(nodes);
-  }, [nodes]);
-
   return (
     <ContextMenu
       containerRef={containerRef}

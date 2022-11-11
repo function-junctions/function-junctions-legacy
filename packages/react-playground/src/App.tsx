@@ -47,6 +47,12 @@ function App() {
     Number: numberNode,
     Math: mathNode,
   };
+
+  const [state, setState] = React.useState<FJ.EditorState | undefined>();
+
+  React.useEffect(() => {
+    console.log(state);
+  }, [state]);
   
   return (
     <Editor
@@ -57,6 +63,8 @@ function App() {
       nodeContextMenu={{
         items: [{ type: 'delete' }, { type: 'clone' }],
       }}
+      state={state}
+      setState={setState}
     />
   );
 }
