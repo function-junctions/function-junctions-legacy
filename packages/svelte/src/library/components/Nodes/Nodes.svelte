@@ -153,7 +153,7 @@
     {#each Object.keys($nodes) as key (key)}
       {#if $nodes[key] && $nodesState[key]}
         <Node
-          title={$nodes[key].type}
+          title={$nodes[key]?.title ?? $nodes[key].type}
           id={key}
           component={$nodes[key].component}
           inputs={$nodes[key].inputs}

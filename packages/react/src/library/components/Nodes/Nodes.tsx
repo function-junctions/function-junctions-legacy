@@ -207,7 +207,7 @@ const Nodes = ({
           if (nodes[key] && nodesState[key])
             return (
               <Node
-                title={nodes[key].type}
+                title={nodes[key]?.title ?? nodes[key].type}
                 id={key}
                 key={key}
                 component={nodes[key].component}

@@ -22,6 +22,7 @@ function App() {
     outputs: {
       Number: numberSocket,
     },
+    title: 'Testing',
     component: NumberNode,
     color: 'linear-gradient(#228cfd, #007aff)',
   };
@@ -59,6 +60,7 @@ function App() {
       nodeContextMenu={{
         items: [{ type: 'delete' }, { type: 'clone' }],
       }}
+      onReady={(editor) => console.log(editor)}
     />
   );
 }

@@ -21,6 +21,7 @@ export type InternalNodeBlueprint<
 > = {
   inputs?: I;
   outputs?: O;
+  title?: string;
   color?: string;
   className?: string;
   store?: ST;
@@ -95,9 +96,13 @@ export class Nodes<C, S> {
 
   public addNode = (
     key: string,
-    position?: Point,
-    state?: { id?: string; blueprint: NodeState },
+    options?: {
+      position?: Point;
+      state?: { id?: string; blueprint: NodeState };
+    },
   ): void => {
+    const { state, position } = options || {};
+
     const blueprint = get(this.nodes.registered)?.[key];
     const nodes = get(this.nodes.current);
 
@@ -195,6 +200,7 @@ export class Nodes<C, S> {
           type: key,
           x,
           y,
+          title: blueprint.title,
           component: blueprint.component,
           color: blueprint.color,
           className: blueprint.className,
@@ -245,17 +251,20 @@ export class Nodes<C, S> {
     const state = get(this.state.nodes)[id];
 
     if (state) {
-      this.addNode(node.type, position, {
-        blueprint: JSON.parse(
-          JSON.stringify({
-            inputs: state.inputs,
-            outputs: undefined,
-            store: state.store,
-            x: position?.x ?? state.x,
-            y: position?.y ?? state.y,
-            type: state.type,
-          }),
-        ),
+      this.addNode(node.type, {
+        position,
+        state: {
+          blueprint: JSON.parse(
+            JSON.stringify({
+              inputs: state.inputs,
+              outputs: undefined,
+              store: state.store,
+              x: position?.x ?? state.x,
+              y: position?.y ?? state.y,
+              type: state.type,
+            }),
+          ),
+        },
       });
     } else {
       throw new Error('Cannot clone node that does not exist');
@@ -269,7 +278,9 @@ export class Nodes<C, S> {
 
   private restoreState = (state: Record<string, NodeState>): void => {
     Object.keys(state).forEach((id) =>
-      this.addNode(state[id].type, { x: 0, y: 0 }, { id, blueprint: state[id] }),
+      this.addNode(state[id].type, {
+        state: { id, blueprint: state[id] },
+      }),
     );
 
     void tick().then(() => {

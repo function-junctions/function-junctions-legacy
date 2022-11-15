@@ -57,7 +57,9 @@ const EditorContextMenu = ({
                       scale: editorPosition.scale,
                     });
 
-                    editorInstance.addNode(key, { x, y });
+                    editorInstance.addNode(key, {
+                      position: { x, y },
+                    });
                   }}
                 >
                   {key}
