@@ -102,11 +102,19 @@ export class Nodes<C, S> {
   public addNode = (
     key: string,
     options?: {
+      title?: string;
+      color?: string;
+      className?: string;
+      store?: Record<string, unknown>;
+      style?: S;
+      deletable?: boolean;
+      cloneable?: boolean;
       position?: Point;
       state?: { id?: string; blueprint: NodeState };
     },
   ): void => {
-    const { state, position } = options || {};
+    const { state, position, title, color, className, style, store, deletable, cloneable } =
+      options || {};
 
     const blueprint = get(this.nodes.registered)?.[key];
     const nodes = get(this.nodes.current);
@@ -205,14 +213,14 @@ export class Nodes<C, S> {
           type: key,
           x,
           y,
-          title: blueprint.title,
+          title: title ?? blueprint.title,
           component: blueprint.component,
-          color: blueprint.color,
-          className: blueprint.className,
-          style: blueprint.style,
-          deletable: blueprint.deletable,
-          cloneable: blueprint.cloneable,
-          store: blueprint.store,
+          color: color ?? blueprint.color,
+          className: className ?? blueprint.className,
+          style: style ?? blueprint.style,
+          deletable: deletable ?? blueprint.deletable,
+          cloneable: cloneable ?? blueprint.cloneable,
+          store: store ?? blueprint.store,
         },
       }));
 
