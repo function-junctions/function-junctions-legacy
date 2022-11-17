@@ -76,6 +76,12 @@ export type NodeOptions<S = string> = {
   state?: { id?: string; blueprint: NodeState };
 };
 
+export type NodeResolution<C, S> = {
+  id: string;
+  state: NodeState;
+  node: InternalNode<C, S>;
+};
+
 export class Nodes<C, S> {
   nodes: CurrentNodes<C, S>;
   state: NodesState;
@@ -111,43 +117,45 @@ export class Nodes<C, S> {
     this.restoreState(get(this.state.nodes));
   }
 
-  public addNode = (key: string, options?: NodeOptions<S>): void => {
-    const { state, position, title, color, className, style, store, deletable, cloneable } =
-      options || {};
+  public addNode = (key: string, options?: NodeOptions<S>): Promise<NodeResolution<C, S>> =>
+    new Promise((resolve) => {
+      const { state, position, title, color, className, style, store, deletable, cloneable } =
+        options || {};
 
-    const blueprint = get(this.nodes.registered)?.[key];
-    const nodes = get(this.nodes.current);
+      const blueprint = get(this.nodes.registered)?.[key];
+      const nodes = get(this.nodes.current);
 
-    const id =
-      state?.id ??
-      (() => {
-        let requestedId = Object.keys(nodes).length;
-        let checking = true;
+      const id =
+        state?.id ??
+        (() => {
+          let requestedId = Object.keys(nodes).length;
+          let checking = true;
 
-        while (checking) {
-          if (requestedId.toString() in nodes) {
-            requestedId += 1;
-          } else {
-            checking = false;
+          while (checking) {
+            if (requestedId.toString() in nodes) {
+              requestedId += 1;
+            } else {
+              checking = false;
+            }
           }
-        }
 
-        return requestedId;
-      })();
+          return requestedId;
+        })().toString();
 
-    const x = state?.blueprint.x ?? position?.x ?? 0;
-    const y = state?.blueprint.y ?? position?.y ?? 0;
+      const x = state?.blueprint.x ?? position?.x ?? 0;
+      const y = state?.blueprint.y ?? position?.y ?? 0;
 
-    const newStore = state?.blueprint?.store ?? store ?? blueprint.store;
+      const newStore = state?.blueprint?.store ?? store ?? blueprint.store;
 
-    const newState: NodeState = {
-      type: key,
-      x,
-      y,
-      store: newStore,
-    };
+      const newState: NodeState = {
+        type: key,
+        x,
+        y,
+        store: newStore,
+      };
 
-    if (blueprint) {
+      if (!blueprint) throw new Error(`Node with key ${key} does not exist`);
+
       // Add node to active nodes list
       this.nodes.current.update((prevNodes) => ({
         ...prevNodes,
@@ -229,52 +237,60 @@ export class Nodes<C, S> {
         ...prevNodesState,
         [id]: newState,
       }));
-    }
-  };
 
-  public updateNode = (id: string, options?: NodeOptions<S>) => {
-    const { state, position, title, color, className, style, store, deletable, cloneable } =
-      options || {};
+      tick().then(() => {
+        resolve({ id, state: newState, node: get(this.nodes.current)[id] });
+      });
+    });
 
-    const nodes = get(this.nodes.current);
-    const currentState = get(this.state.nodes);
+  public updateNode = (id: string, options?: NodeOptions<S>): Promise<NodeResolution<C, S>> =>
+    new Promise((resolve) => {
+      const { state, position, title, color, className, style, store, deletable, cloneable } =
+        options || {};
 
-    if (!nodes[id]) throw new Error(`Node with id ${id} does not exist`);
-    if (!currentState[id]) throw new Error(`Could not find state for node with id ${id}`);
+      const nodes = get(this.nodes.current);
+      const currentState = get(this.state.nodes);
 
-    const x = state?.blueprint.x ?? position?.x ?? currentState[id].x;
-    const y = state?.blueprint.y ?? position?.y ?? currentState[id].y;
+      if (!nodes[id]) throw new Error(`Node with id ${id} does not exist`);
+      if (!currentState[id]) throw new Error(`Could not find state for node with id ${id}`);
 
-    const newStore = state?.blueprint.store ?? store ?? currentState[id].store;
+      const x = state?.blueprint.x ?? position?.x ?? currentState[id].x;
+      const y = state?.blueprint.y ?? position?.y ?? currentState[id].y;
 
-    const newState: NodeState = {
-      ...currentState[id],
-      x,
-      y,
-      store: newStore,
-    };
+      const newStore = state?.blueprint.store ?? store ?? currentState[id].store;
 
-    this.nodes.current.update((prevNodes) => ({
-      ...prevNodes,
-      [id]: {
-        ...prevNodes[id],
+      const newState: NodeState = {
+        ...currentState[id],
         x,
         y,
-        title: title ?? prevNodes[id].title,
-        color: color ?? prevNodes[id].color,
-        className: className ?? prevNodes[id].className,
-        style: style ?? prevNodes[id].style,
-        deletable: deletable ?? prevNodes[id].deletable,
-        cloneable: cloneable ?? prevNodes[id].cloneable,
         store: newStore,
-      },
-    }));
+      };
 
-    this.state.nodes.update((prevNodesState) => ({
-      ...prevNodesState,
-      [id]: newState,
-    }));
-  };
+      this.nodes.current.update((prevNodes) => ({
+        ...prevNodes,
+        [id]: {
+          ...prevNodes[id],
+          x,
+          y,
+          title: title ?? prevNodes[id].title,
+          color: color ?? prevNodes[id].color,
+          className: className ?? prevNodes[id].className,
+          style: style ?? prevNodes[id].style,
+          deletable: deletable ?? prevNodes[id].deletable,
+          cloneable: cloneable ?? prevNodes[id].cloneable,
+          store: newStore,
+        },
+      }));
+
+      this.state.nodes.update((prevNodesState) => ({
+        ...prevNodesState,
+        [id]: newState,
+      }));
+
+      tick().then(() => {
+        resolve({ id, state: newState, node: get(this.nodes.current)[id] });
+      });
+    });
 
   public connectNodes = (params: { input: NodeConnection; output: NodeConnection }): void => {
     const { input, output } = params;
@@ -328,30 +344,31 @@ export class Nodes<C, S> {
     this.nodes.current.update(() => newNodes);
   };
 
-  public cloneNode = (id: string, position?: Point): void => {
-    const node = get(this.nodes.current)[id];
-    const state = get(this.state.nodes)[id];
+  public cloneNode = (id: string, position?: Point): Promise<NodeResolution<C, S>> =>
+    new Promise((resolve) => {
+      const node = get(this.nodes.current)[id];
+      const state = get(this.state.nodes)[id];
 
-    if (state) {
-      this.addNode(node.type, {
-        position,
-        state: {
-          blueprint: JSON.parse(
-            JSON.stringify({
-              inputs: state.inputs,
-              outputs: undefined,
-              store: state.store,
-              x: position?.x ?? state.x,
-              y: position?.y ?? state.y,
-              type: state.type,
-            }),
-          ),
-        },
-      });
-    } else {
-      throw new Error('Cannot clone node that does not exist');
-    }
-  };
+      if (state) {
+        this.addNode(node.type, {
+          position,
+          state: {
+            blueprint: JSON.parse(
+              JSON.stringify({
+                inputs: state.inputs,
+                outputs: undefined,
+                store: state.store,
+                x: position?.x ?? state.x,
+                y: position?.y ?? state.y,
+                type: state.type,
+              }),
+            ),
+          },
+        }).then((node) => resolve(node));
+      } else {
+        throw new Error('Cannot clone node that does not exist');
+      }
+    });
 
   public clear = (): void => {
     this.nodes.current.update(() => ({}));

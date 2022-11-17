@@ -67,11 +67,17 @@ function App() {
     [mathNode, numberNode],
   );
 
-  const onReady = React.useCallback((editor: FJ.Editor) => console.log(editor), []);
-
-  React.useEffect(() => {
-    console.log(state);
-  }, [state]);
+  const onReady = React.useCallback((editor: FJ.Editor) => {
+    editor.addNode('Number').then(({ id }) => {
+      editor
+        .updateNode(id, {
+          title: 'New Test',
+        })
+        .then((node) => {
+          console.log(node);
+        });
+    });
+  }, []);
 
   return (
     <Editor
