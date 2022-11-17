@@ -37,7 +37,7 @@
               scale: $editorPosition.scale,
             });
 
-            editorInstance.addNode(key, {
+            void editorInstance.addNode(key, {
               position: { x, y },
             });
           }}

@@ -43,7 +43,7 @@
       });
 
       ids?.forEach((id) => {
-        editor.cloneNode(id, { x, y });
+        void editor.cloneNode(id, { x, y });
       });
 
       if (item.onClick) item.onClick();
