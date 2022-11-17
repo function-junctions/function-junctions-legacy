@@ -59,6 +59,11 @@ export type NodesState = {
   restored: Writable<boolean>;
 };
 
+export type NodeConnection = {
+  nodeId: string;
+  socketId: string;
+};
+
 export class Nodes<C, S> {
   nodes: CurrentNodes<C, S>;
   state: NodesState;
@@ -216,6 +221,30 @@ export class Nodes<C, S> {
         [id]: newState,
       }));
     }
+  };
+
+  public connectNodes = (params: { input: NodeConnection; output: NodeConnection }): void => {
+    const { input, output } = params;
+    const { nodeId: nodeId1, socketId: socketId1 } = input;
+    const { nodeId: nodeId2, socketId: socketId2 } = output;
+
+    if (!nodeId1 || !nodeId2 || !socketId1 || !socketId2)
+      throw new Error('An input or output was not provided or is missing data');
+
+    const nodes = get(this.nodes.current);
+
+    const node1 = nodes[nodeId1];
+    const node2 = nodes[nodeId2];
+
+    const inputSocket = node1.inputs?.[socketId1];
+    const outputSocket = node2.outputs?.[socketId2];
+
+    if (!inputSocket || !outputSocket) throw new Error('An input or output socket was not found');
+
+    inputSocket.connection.update(() => ({
+      connectedNodeId: nodeId2,
+      connectedSocketId: socketId1,
+    }));
   };
 
   public deleteNode = (id: string): void => {
