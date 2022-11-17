@@ -7,25 +7,35 @@ import MathNode from './components/MathNode';
 
 import 'core/index.scss';
 
+import tree from './state.json';
+
 function App() {
-  const numberSocket: FJ.SocketBlueprint<number> = {
-    type: 'number',
-    defaultValue: 0,
-  };
+  const [state, setState] = React.useState<FJ.EditorState | undefined>(tree);
+
+  const numberSocket: FJ.SocketBlueprint<number> = React.useMemo(
+    () => ({
+      type: 'number',
+      defaultValue: 0,
+    }),
+    [],
+  );
 
   const numberNode: NodeBlueprint<
     Record<string, never>,
     {
       Number: FJ.SocketBlueprint<number>;
     }
-  > = {
-    outputs: {
-      Number: numberSocket,
-    },
-    title: 'Testing',
-    component: NumberNode,
-    color: 'linear-gradient(#228cfd, #007aff)',
-  };
+  > = React.useMemo(
+    () => ({
+      outputs: {
+        Number: numberSocket,
+      },
+      title: 'Testing',
+      component: NumberNode,
+      color: 'linear-gradient(#228cfd, #007aff)',
+    }),
+    [numberSocket],
+  );
 
   const mathNode: NodeBlueprint<
     {
@@ -34,22 +44,34 @@ function App() {
     },
     { Number: FJ.SocketBlueprint<number> },
     { type: 'addition' | 'subtraction' | 'multiplication' | 'division' }
-  > = {
-    inputs: {
-      LHS: numberSocket,
-      RHS: numberSocket,
-    },
-    outputs: {
-      Number: numberSocket,
-    },
-    component: MathNode,
-    color: 'linear-gradient(#ff5776, #ff2d55)',
-  };
+  > = React.useMemo(
+    () => ({
+      inputs: {
+        LHS: numberSocket,
+        RHS: numberSocket,
+      },
+      outputs: {
+        Number: numberSocket,
+      },
+      component: MathNode,
+      color: 'linear-gradient(#ff5776, #ff2d55)',
+    }),
+    [numberSocket],
+  );
 
-  const nodes = {
-    Number: numberNode,
-    Math: mathNode,
-  };
+  const nodes = React.useMemo(
+    () => ({
+      Number: numberNode,
+      Math: mathNode,
+    }),
+    [mathNode, numberNode],
+  );
+
+  const onReady = React.useCallback((editor: FJ.Editor) => console.log(editor), []);
+
+  React.useEffect(() => {
+    console.log(state);
+  }, [state]);
 
   return (
     <Editor
@@ -60,7 +82,9 @@ function App() {
       nodeContextMenu={{
         items: [{ type: 'delete' }, { type: 'clone' }],
       }}
-      onReady={(editor) => console.log(editor)}
+      state={state}
+      setState={setState}
+      onReady={onReady}
     />
   );
 }

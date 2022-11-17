@@ -83,7 +83,6 @@ const Nodes = ({
   );
 
   React.useEffect(() => {
-    console.log(nodes);
     if (stateRestored) editor.updateState();
   }, [nodes, stateRestored, editor]);
 
