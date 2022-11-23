@@ -32,6 +32,7 @@ export type EditorProps = {
 
   editorContextMenu?: EditorContextMenuProp;
   nodeContextMenu?: NodeContextMenuProp;
+
   nodeControlButtons?: NodeControlButtons | boolean;
 
   appearance?: 'light' | 'dark' | 'auto';
