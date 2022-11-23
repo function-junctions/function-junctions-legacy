@@ -226,15 +226,15 @@ const Nodes = ({
                   (selectedNodeId) => key === selectedNodeId,
                 )}
                 cloneable={nodes[key].cloneable}
-                deletable={(interactable ?? true) && nodes[key].deletable}
+                deletable={(nodes[key].interactable ?? true) && nodes[key].deletable}
                 nodeControlButtons={nodeControlButtons}
                 editor={editor}
                 store={nodesState[key].store}
                 onMouseDown={({ nativeEvent }) =>
-                  (interactable ?? true) && interaction.dragNode(nativeEvent, key)
+                  (nodes[key].interactable ?? true) && interaction.dragNode(nativeEvent, key)
                 }
                 onTouchStart={({ nativeEvent }) =>
-                  (interactable ?? true) && interaction.dragNode(nativeEvent, key)
+                  (nodes[key].interactable ?? true) && interaction.dragNode(nativeEvent, key)
                 }
                 onContextMenu={({ nativeEvent }) =>
                   interaction.openNodeContextMenu(nativeEvent, key)
