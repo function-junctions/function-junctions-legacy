@@ -73,6 +73,7 @@ export type NodeOptions<S = string> = {
   style?: S;
   deletable?: boolean;
   cloneable?: boolean;
+  interactable?: boolean;
   position?: Point;
   id?: string;
   state?: NodeState;
@@ -131,6 +132,7 @@ export class Nodes<C, S> {
         store,
         deletable,
         cloneable,
+        interactable,
         id: customId,
       } = options || {};
 
@@ -241,6 +243,7 @@ export class Nodes<C, S> {
           style: style ?? blueprint.style,
           deletable: deletable ?? blueprint.deletable,
           cloneable: cloneable ?? blueprint.cloneable,
+          interactable: interactable ?? blueprint.interactable,
           store: newStore,
         },
       }));
@@ -257,8 +260,18 @@ export class Nodes<C, S> {
 
   public updateNode = (id: string, options?: NodeOptions<S>): Promise<NodeResolution<C, S>> =>
     new Promise((resolve) => {
-      const { state, position, title, color, className, style, store, deletable, cloneable } =
-        options || {};
+      const {
+        state,
+        position,
+        title,
+        color,
+        className,
+        style,
+        store,
+        deletable,
+        cloneable,
+        interactable,
+      } = options || {};
 
       const nodes = get(this.nodes.current);
       const currentState = get(this.state.nodes);
@@ -290,6 +303,7 @@ export class Nodes<C, S> {
           style: style ?? prevNodes[id].style,
           deletable: deletable ?? prevNodes[id].deletable,
           cloneable: cloneable ?? prevNodes[id].cloneable,
+          interactable: interactable ?? prevNodes[id].interactable,
           store: newStore,
         },
       }));

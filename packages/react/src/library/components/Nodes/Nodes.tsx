@@ -230,12 +230,13 @@ const Nodes = ({
                 nodeControlButtons={nodeControlButtons}
                 editor={editor}
                 store={nodesState[key].store}
-                onMouseDown={({ nativeEvent }) =>
-                  (nodes[key].interactable ?? true) && interaction.dragNode(nativeEvent, key)
-                }
-                onTouchStart={({ nativeEvent }) =>
-                  (nodes[key].interactable ?? true) && interaction.dragNode(nativeEvent, key)
-                }
+                onMouseDown={({ nativeEvent }) => {
+                  console.log(nodes[key].interactable ?? true);
+                  if (nodes[key].interactable ?? true) interaction.dragNode(nativeEvent, key);
+                }}
+                onTouchStart={({ nativeEvent }) => {
+                  if (nodes[key].interactable ?? true) interaction.dragNode(nativeEvent, key);
+                }}
                 onContextMenu={({ nativeEvent }) =>
                   interaction.openNodeContextMenu(nativeEvent, key)
                 }

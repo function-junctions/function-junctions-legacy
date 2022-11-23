@@ -33,6 +33,7 @@ function App() {
       title: 'Testing',
       component: NumberNode,
       color: 'linear-gradient(#228cfd, #007aff)',
+      interactable: false,
     }),
     [numberSocket],
   );
