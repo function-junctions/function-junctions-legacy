@@ -28,6 +28,7 @@ export type NodeContainerProps = {
   nodeControlButtons: NodeControlButtons | boolean;
   deletable?: boolean;
   cloneable?: boolean;
+  interactable?: boolean;
   selected?: boolean;
   store?: Record<string, unknown>;
   editor: Editor;
@@ -61,6 +62,7 @@ const Node = ({
   nodeControlButtons,
   deletable,
   cloneable,
+  interactable,
   selected,
   store = {},
   editor,

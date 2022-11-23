@@ -29,6 +29,7 @@ export type InternalNodeBlueprint<
   component: C;
   deletable?: boolean;
   cloneable?: boolean;
+  interactable?: boolean;
 };
 
 export type InternalNode<
