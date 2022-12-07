@@ -10,7 +10,10 @@ const unset: any = Symbol();
 export function useReadable<T>(store: Readable<T>): T {
   const [value, set] = React.useState<T>(unset as unknown as T);
 
-  React.useEffect(() => store.subscribe(set), [store]);
+  React.useEffect(() => {
+    const unsubscribe = store.subscribe(set);
+    return () => unsubscribe();
+  }, [store]);
 
   return value === unset ? get(store) : value;
 }

@@ -13,15 +13,7 @@
 
   let connections: { p1: Point; p2: Point }[] = [];
 
-  $: $restored,
-    $nodes,
-    $liveConnection,
-    $position,
-    getConnections($nodes)
-      .then((newConnections) => {
-        connections = newConnections;
-      })
-      .catch(() => console.error('Failed to get connections'));
+  $: $restored, $nodes, $liveConnection, $position, (connections = getConnections($nodes));
 </script>
 
 <div class="function-junctions-connections">

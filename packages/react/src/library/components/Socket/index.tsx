@@ -72,7 +72,6 @@ export const OutputValueGenerator = ({
           ...prevNodes[nodeId].outputs,
           [id]: {
             ...prevNodes[nodeId].outputs![id],
-            value: outputs[id].value,
           },
         },
       },

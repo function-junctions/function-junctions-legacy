@@ -61,18 +61,29 @@ const Editor = ({
   onReady,
 }: EditorProps) => {
   const [state, setState] = React.useState<EditorState | undefined>(defaultState);
+  const [instance, setInstance] = React.useState<EditorClass>(
+    new EditorClass({
+      blueprint: writable(nodes),
+      state,
+      readonly: !editable,
+      inputs,
+      outputs,
+    }),
+  );
 
-  const instance = React.useMemo<EditorClass>(
-    () =>
-      new EditorClass({
+  React.useEffect(() => {
+    setInstance((prevInstance) => {
+      if (prevInstance.state.restored) return prevInstance;
+
+      return new EditorClass({
         blueprint: writable(nodes),
         state,
         readonly: !editable,
         inputs,
         outputs,
-      }),
-    [editable, inputs, nodes, outputs],
-  );
+      });
+    });
+  }, [editable, inputs, nodes, outputs, state]);
 
   const appearanceClassNameStore = React.useMemo(() => getAppearance(appearance), [appearance]);
 

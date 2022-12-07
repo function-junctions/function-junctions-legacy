@@ -6,6 +6,14 @@ const NumberNode = ({
 }: FJ.NodeProps<Record<string, never>, { Number: FJ.OutputSocket<number> }>) => {
   const { value, setValue } = outputs.Number;
 
+  React.useEffect(() => {
+    const interval = setInterval(() => {
+      setValue(value + 1);
+    }, 1000);
+
+    return () => clearInterval(interval);
+  }, [value, setValue]);
+
   return (
     <input
       type="number"

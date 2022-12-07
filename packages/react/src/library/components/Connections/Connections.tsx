@@ -26,11 +26,8 @@ const Connections = ({ editor }: ConnectionsProps) => {
   const showLiveConnection = useReadable(showLiveConnectionStore);
 
   React.useEffect(() => {
-    getConnections<Node>(nodes)
-      .then((newConnections) => {
-        setConnections(newConnections);
-      })
-      .catch(() => console.error('Failed to get connections'));
+    const newConnections = getConnections<Node>(nodes);
+    setConnections(newConnections);
   }, [restored, nodes, liveConnection, position]);
 
   return (
