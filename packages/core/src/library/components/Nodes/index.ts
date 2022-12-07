@@ -29,6 +29,7 @@ export type InternalNodeBlueprint<
   component: C;
   deletable?: boolean;
   cloneable?: boolean;
+  interactable?: boolean;
 };
 
 export type InternalNode<
@@ -72,8 +73,10 @@ export type NodeOptions<S = string> = {
   style?: S;
   deletable?: boolean;
   cloneable?: boolean;
+  interactable?: boolean;
   position?: Point;
-  state?: { id?: string; blueprint: NodeState };
+  id?: string;
+  state?: NodeState;
 };
 
 export type NodeResolution<C, S> = {
@@ -119,14 +122,25 @@ export class Nodes<C, S> {
 
   public addNode = (key: string, options?: NodeOptions<S>): Promise<NodeResolution<C, S>> =>
     new Promise((resolve) => {
-      const { state, position, title, color, className, style, store, deletable, cloneable } =
-        options || {};
+      const {
+        state,
+        position,
+        title,
+        color,
+        className,
+        style,
+        store,
+        deletable,
+        cloneable,
+        interactable,
+        id: customId,
+      } = options || {};
 
       const blueprint = get(this.nodes.registered)?.[key];
       const nodes = get(this.nodes.current);
 
       const id =
-        state?.id ??
+        customId ??
         (() => {
           let requestedId = Object.keys(nodes).length;
           let checking = true;
@@ -142,10 +156,10 @@ export class Nodes<C, S> {
           return requestedId;
         })().toString();
 
-      const x = state?.blueprint.x ?? position?.x ?? 0;
-      const y = state?.blueprint.y ?? position?.y ?? 0;
+      const x = state?.x ?? position?.x ?? 0;
+      const y = state?.y ?? position?.y ?? 0;
 
-      const newStore = state?.blueprint?.store ?? store ?? blueprint.store;
+      const newStore = state?.store ?? store ?? blueprint.store;
 
       const newState: NodeState = {
         type: key,
@@ -170,7 +184,7 @@ export class Nodes<C, S> {
                 if (inputBlueprint) {
                   const type = inputBlueprint.type;
                   const defaultValue = inputBlueprint?.defaultValue;
-                  const connection = state?.blueprint.inputs?.[inputKey].connection;
+                  const connection = state?.inputs?.[inputKey].connection;
 
                   newState.inputs = {
                     ...newState.inputs,
@@ -196,7 +210,7 @@ export class Nodes<C, S> {
             if (blueprint.outputs) {
               Object.keys(blueprint.outputs ?? {}).map((outputKey) => {
                 const outputBlueprint = blueprint.outputs?.[outputKey];
-                const outputState = state?.blueprint.outputs?.[outputKey];
+                const outputState = state?.outputs?.[outputKey];
 
                 if (outputBlueprint) {
                   const type = outputBlueprint.type;
@@ -229,6 +243,7 @@ export class Nodes<C, S> {
           style: style ?? blueprint.style,
           deletable: deletable ?? blueprint.deletable,
           cloneable: cloneable ?? blueprint.cloneable,
+          interactable: interactable ?? blueprint.interactable,
           store: newStore,
         },
       }));
@@ -245,8 +260,18 @@ export class Nodes<C, S> {
 
   public updateNode = (id: string, options?: NodeOptions<S>): Promise<NodeResolution<C, S>> =>
     new Promise((resolve) => {
-      const { state, position, title, color, className, style, store, deletable, cloneable } =
-        options || {};
+      const {
+        state,
+        position,
+        title,
+        color,
+        className,
+        style,
+        store,
+        deletable,
+        cloneable,
+        interactable,
+      } = options || {};
 
       const nodes = get(this.nodes.current);
       const currentState = get(this.state.nodes);
@@ -254,10 +279,10 @@ export class Nodes<C, S> {
       if (!nodes[id]) throw new Error(`Node with id ${id} does not exist`);
       if (!currentState[id]) throw new Error(`Could not find state for node with id ${id}`);
 
-      const x = state?.blueprint.x ?? position?.x ?? currentState[id].x;
-      const y = state?.blueprint.y ?? position?.y ?? currentState[id].y;
+      const x = state?.x ?? position?.x ?? currentState[id].x;
+      const y = state?.y ?? position?.y ?? currentState[id].y;
 
-      const newStore = state?.blueprint.store ?? store ?? currentState[id].store;
+      const newStore = state?.store ?? store ?? currentState[id].store;
 
       const newState: NodeState = {
         ...currentState[id],
@@ -278,6 +303,7 @@ export class Nodes<C, S> {
           style: style ?? prevNodes[id].style,
           deletable: deletable ?? prevNodes[id].deletable,
           cloneable: cloneable ?? prevNodes[id].cloneable,
+          interactable: interactable ?? prevNodes[id].interactable,
           store: newStore,
         },
       }));
@@ -352,18 +378,16 @@ export class Nodes<C, S> {
       if (state) {
         this.addNode(node.type, {
           position,
-          state: {
-            blueprint: JSON.parse(
-              JSON.stringify({
-                inputs: state.inputs,
-                outputs: undefined,
-                store: state.store,
-                x: position?.x ?? state.x,
-                y: position?.y ?? state.y,
-                type: state.type,
-              }),
-            ),
-          },
+          state: JSON.parse(
+            JSON.stringify({
+              inputs: state.inputs,
+              outputs: undefined,
+              store: state.store,
+              x: position?.x ?? state.x,
+              y: position?.y ?? state.y,
+              type: state.type,
+            }),
+          ),
         }).then((node) => resolve(node));
       } else {
         throw new Error('Cannot clone node that does not exist');
@@ -378,7 +402,8 @@ export class Nodes<C, S> {
   private restoreState = (state: Record<string, NodeState>): void => {
     Object.keys(state).forEach((id) =>
       this.addNode(state[id].type, {
-        state: { id, blueprint: state[id] },
+        id,
+        state: state[id],
       }),
     );
 

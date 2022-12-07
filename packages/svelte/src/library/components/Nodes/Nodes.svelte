@@ -153,7 +153,7 @@
     {#each Object.keys($nodes) as key (key)}
       {#if $nodes[key] && $nodesState[key]}
         <Node
-          title={$nodes[key]?.title ?? $nodes[key].type}
+          title={$nodes[key].type}
           id={key}
           component={$nodes[key].component}
           inputs={$nodes[key].inputs}
@@ -169,12 +169,14 @@
           style={$nodes[key].style ?? ''}
           selected={interaction.selectedNodesIds.some((selectedNodeId) => key === selectedNodeId)}
           cloneable={$nodes[key].cloneable}
-          deletable={$nodes[key].deletable}
+          deletable={($nodes[key].interactable ?? true) && $nodes[key].deletable}
           {nodeControlButtons}
           {editor}
           bind:store={$nodesState[key].store}
-          on:mousedown={(event) => interaction.dragNode(event, key)}
-          on:touchstart={(event) => interaction.dragNode(event, key)}
+          on:mousedown={(event) =>
+            ($nodes[key].interactable ?? true) && interaction.dragNode(event, key)}
+          on:touchstart={(event) =>
+            ($nodes[key].interactable ?? true) && interaction.dragNode(event, key)}
           on:contextmenu={(event) => interaction.openNodeContextMenu(event, key)}
         />
       {/if}

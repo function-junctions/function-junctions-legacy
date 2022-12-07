@@ -32,9 +32,13 @@ export type EditorProps = {
 
   editorContextMenu?: EditorContextMenuProp;
   nodeContextMenu?: NodeContextMenuProp;
+
   nodeControlButtons?: NodeControlButtons | boolean;
 
   appearance?: 'light' | 'dark' | 'auto';
+
+  className?: string;
+  style?: React.CSSProperties;
 
   onReady?: (editor: EditorClass) => void;
 };
@@ -58,6 +62,8 @@ const Editor = ({
     clone: true,
   },
   appearance = 'auto',
+  className,
+  style,
   onReady,
 }: EditorProps) => {
   const [state, setState] = React.useState<EditorState | undefined>(defaultState);
@@ -100,7 +106,10 @@ const Editor = ({
 
   return (
     <div
-      className={`function-junctions-editor function-junctions-appearance-${appearanceClassName}`}
+      className={`function-junctions-editor function-junctions-appearance-${appearanceClassName} ${
+        className ?? ''
+      }`}
+      style={style}
     >
       <Nodes
         editor={instance}
