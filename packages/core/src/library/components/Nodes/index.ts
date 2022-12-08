@@ -159,7 +159,7 @@ export class Nodes<C, S> {
       const x = state?.x ?? position?.x ?? 0;
       const y = state?.y ?? position?.y ?? 0;
 
-      const newStore = state?.store ?? store ?? blueprint.store;
+      const newStore = state?.store ?? store ?? blueprint?.store ?? {};
 
       const newState: NodeState = {
         type: key,
