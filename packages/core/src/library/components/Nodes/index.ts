@@ -2,6 +2,7 @@ import { tick } from 'svelte/internal';
 import { get, type Writable } from 'svelte/store';
 import type { Point } from '../..';
 import type { Position } from '../Drag';
+import deepmerge from 'deepmerge';
 import {
   type InternalInputSocketState,
   type LiveConnection,
@@ -76,7 +77,8 @@ export type NodeOptions<S = string> = {
   interactable?: boolean;
   position?: Point;
   id?: string;
-  state?: NodeState;
+  inputs?: Record<string, InternalInputSocketState>;
+  outputs?: Record<string, InternalOutputSocketState>;
 };
 
 export type NodeResolution<C, S> = {
@@ -123,7 +125,6 @@ export class Nodes<C, S> {
   public addNode = (key: string, options?: NodeOptions<S>): Promise<NodeResolution<C, S>> =>
     new Promise((resolve) => {
       const {
-        state,
         position,
         title,
         color,
@@ -134,6 +135,8 @@ export class Nodes<C, S> {
         cloneable,
         interactable,
         id: customId,
+        inputs,
+        outputs,
       } = options || {};
 
       const blueprint = get(this.nodes.registered)?.[key];
@@ -156,10 +159,10 @@ export class Nodes<C, S> {
           return requestedId;
         })().toString();
 
-      const x = state?.x ?? position?.x ?? 0;
-      const y = state?.y ?? position?.y ?? 0;
+      const x = position?.x ?? 0;
+      const y = position?.y ?? 0;
 
-      const newStore = state?.store ?? store ?? blueprint?.store ?? {};
+      const newStore = store ?? blueprint?.store ?? {};
 
       const newState: NodeState = {
         type: key,
@@ -175,7 +178,7 @@ export class Nodes<C, S> {
         ...prevNodes,
         [id]: {
           inputs: (() => {
-            const inputs: Record<string, InternalInputSocket<any>> = {};
+            const newInputs: Record<string, InternalInputSocket<any>> = {};
 
             if (blueprint.inputs) {
               Object.keys(blueprint.inputs ?? {}).map((inputKey) => {
@@ -184,7 +187,7 @@ export class Nodes<C, S> {
                 if (inputBlueprint) {
                   const type = inputBlueprint.type;
                   const defaultValue = inputBlueprint?.defaultValue;
-                  const connection = state?.inputs?.[inputKey].connection;
+                  const connection = inputs?.[inputKey].connection;
 
                   newState.inputs = {
                     ...newState.inputs,
@@ -194,7 +197,7 @@ export class Nodes<C, S> {
                     },
                   };
 
-                  inputs[inputKey] = {
+                  newInputs[inputKey] = {
                     ...this.sockets.createInput(type, defaultValue, { connection }),
                     color: inputBlueprint.color,
                   };
@@ -202,15 +205,15 @@ export class Nodes<C, S> {
               });
             }
 
-            return Object.keys(inputs).length > 0 ? inputs : undefined;
+            return Object.keys(newInputs).length > 0 ? newInputs : undefined;
           })(),
           outputs: (() => {
-            const outputs: Record<string, InternalOutputSocket<any>> = {};
+            const newOutputs: Record<string, InternalOutputSocket<any>> = {};
 
             if (blueprint.outputs) {
               Object.keys(blueprint.outputs ?? {}).map((outputKey) => {
                 const outputBlueprint = blueprint.outputs?.[outputKey];
-                const outputState = state?.outputs?.[outputKey];
+                const outputState = outputs?.[outputKey];
 
                 if (outputBlueprint) {
                   const type = outputBlueprint.type;
@@ -224,14 +227,14 @@ export class Nodes<C, S> {
                     },
                   };
 
-                  outputs[outputKey] = {
+                  newOutputs[outputKey] = {
                     ...this.sockets.createOutput(type, defaultValue),
                     color: outputBlueprint.color,
                   };
                 }
               });
             }
-            return Object.keys(outputs).length > 0 ? outputs : undefined;
+            return Object.keys(newOutputs).length > 0 ? newOutputs : undefined;
           })(),
           type: key,
           x,
@@ -261,7 +264,6 @@ export class Nodes<C, S> {
   public updateNode = (id: string, options?: NodeOptions<S>): Promise<NodeResolution<C, S>> =>
     new Promise((resolve) => {
       const {
-        state,
         position,
         title,
         color,
@@ -279,19 +281,16 @@ export class Nodes<C, S> {
       if (!nodes[id]) throw new Error(`Node with id ${id} does not exist`);
       if (!currentState[id]) throw new Error(`Could not find state for node with id ${id}`);
 
-      const x = state?.x ?? position?.x ?? currentState[id].x;
-      const y = state?.y ?? position?.y ?? currentState[id].y;
+      const x = position?.x ?? currentState[id].x;
+      const y = position?.y ?? currentState[id].y;
 
-      const newStore = state?.store ?? store ?? currentState[id].store;
+      const newStore = store ?? currentState[id].store;
 
       const newState: NodeState = {
         ...currentState[id],
         x,
         y,
         store: newStore,
-        type: state?.type ?? currentState[id].type,
-        outputs: state?.outputs ?? currentState[id].outputs,
-        inputs: state?.inputs ?? currentState[id].inputs,
       };
 
       this.nodes.current.update((prevNodes) => ({
@@ -379,19 +378,20 @@ export class Nodes<C, S> {
       const state = get(this.state.nodes)[id];
 
       if (state) {
-        this.addNode(node.type, {
-          position,
-          state: JSON.parse(
-            JSON.stringify({
+        this.addNode(
+          node.type,
+          deepmerge(
+            {
               inputs: state.inputs,
               outputs: undefined,
               store: state.store,
               x: position?.x ?? state.x,
               y: position?.y ?? state.y,
               type: state.type,
-            }),
+            },
+            {},
           ),
-        }).then((node) => resolve(node));
+        ).then((node) => resolve(node));
       } else {
         throw new Error('Cannot clone node that does not exist');
       }
@@ -406,7 +406,7 @@ export class Nodes<C, S> {
     Object.keys(state).forEach((id) =>
       this.addNode(state[id].type, {
         id,
-        state: state[id],
+        ...state[id],
       }),
     );
 
