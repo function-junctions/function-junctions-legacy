@@ -1,8 +1,7 @@
-import { Point } from '../..';
 import { InternalEditor } from '../Editor';
 import { InternalInputSocket, InternalOutputSocket } from '../Sockets';
 
-export type InternalNodeProps<C, S = string> = Point & {
+export type InternalNodeProps<C, S = string> = {
   title: string;
   id: string;
   inputs: Record<string, InternalInputSocket<any>> | undefined;

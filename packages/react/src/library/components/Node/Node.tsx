@@ -23,7 +23,7 @@ export type NodeContainerProps = {
   color?: string;
   className?: string;
   style?: React.CSSProperties;
-  component: ReactComponent;
+  component: ReactComponent<Point>;
   coordinates: Point;
   nodeControlButtons: NodeControlButtons | boolean;
   deletable?: boolean;
