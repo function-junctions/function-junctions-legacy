@@ -289,6 +289,9 @@ export class Nodes<C, S> {
         x,
         y,
         store: newStore,
+        type: state?.type ?? currentState[id].type,
+        outputs: state?.outputs ?? currentState[id].outputs,
+        inputs: state?.inputs ?? currentState[id].inputs,
       };
 
       this.nodes.current.update((prevNodes) => ({
