@@ -78,6 +78,8 @@
         {title}
         {id}
         {editor}
+        x={coordinates.x}
+        y={coordinates.y}
         bind:store
         bind:inputs
         bind:outputs

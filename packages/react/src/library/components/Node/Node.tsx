@@ -202,6 +202,8 @@ const Node = ({
                   setStore={setReactStore}
                   inputs={computedReactInputs}
                   outputs={computedReactOutputs}
+                  x={coordinates.x}
+                  y={coordinates.y}
                 />
               )}
             </div>
