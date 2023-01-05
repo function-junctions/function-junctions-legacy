@@ -16,7 +16,7 @@ module.exports = {
     sourceType: 'module',
   },
   plugins: ['react', '@typescript-eslint', 'prettier'],
-  ignorePatterns: ['node_modules', '.eslintrc.cjs', 'vite.config.ts', 'dist'],
+  ignorePatterns: ['node_modules', '.eslintrc.cjs', 'vite.config.ts', 'jest.config.cjs', 'dist'],
   rules: {
     'prettier/prettier': [
       'warn',
