@@ -1,4 +1,4 @@
-import { InternalEditor, InternalEditorOptions } from 'core/index';
+import { InternalEditor, InternalEditorOptions } from '@core/index';
 import React from 'react';
 import { NodeProps } from '../Node';
 

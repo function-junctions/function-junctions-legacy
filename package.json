@@ -14,7 +14,10 @@
     "build:react": "lerna run build --stream --scope @function-junctions/react",
     "build:svelte": "lerna run build --stream --scope @function-junctions/svelte",
 
+    "test:core": "lerna run test --stream --scope @function-junctions/core",
     "test:react": "lerna run test --stream --scope @function-junctions/react",
+
+    "test": "lerna run test --stream",
 
     "release": "lerna run build && lerna publish",
 

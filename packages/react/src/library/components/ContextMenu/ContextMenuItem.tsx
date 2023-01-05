@@ -3,7 +3,7 @@ import {
   ContextMenuItem as ContextMenuItemType,
   ContextMenu,
   getTruePosition,
-} from 'core/index';
+} from '@core/index';
 import React from 'react';
 import { Editor } from '../Editor';
 import { useReadable } from '../Hooks';

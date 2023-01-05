@@ -5,7 +5,7 @@ import {
   InternalNode,
   InternalOutputSocket,
   Point,
-} from 'core/index';
+} from '@core/index';
 import NodeButton from '../NodeButton/NodeButton';
 import Socket from '../Socket/Socket';
 import { ReactComponent, Editor } from '../Editor';

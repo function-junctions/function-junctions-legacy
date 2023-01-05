@@ -12,6 +12,7 @@ import {
   InternalInputSocket,
   InternalOutputSocket,
 } from '../Sockets';
+import { generateUniqueIdFromRecord } from '../Helpers';
 
 export type InternalNodeBlueprint<
   C,
@@ -66,7 +67,7 @@ export type NodeConnection = {
   socketId: string;
 };
 
-export type NodeOptions<S = string> = {
+export type CreateNodeOptions<S = string> = Partial<Point> & {
   title?: string;
   color?: string;
   className?: string;
@@ -75,10 +76,23 @@ export type NodeOptions<S = string> = {
   deletable?: boolean;
   cloneable?: boolean;
   interactable?: boolean;
-  position?: Point;
   id?: string;
   inputs?: Record<string, InternalInputSocketState>;
   outputs?: Record<string, InternalOutputSocketState>;
+};
+
+export type UpdateNodeOptions<S = string> = Partial<Point> & {
+  title?: string;
+  color?: string;
+  className?: string;
+  store?: Record<string, unknown>;
+  style?: S;
+  deletable?: boolean;
+  cloneable?: boolean;
+  interactable?: boolean;
+  id?: string;
+  inputs?: Record<string, Partial<InternalInputSocket<unknown>>>;
+  outputs?: Record<string, Partial<InternalOutputSocket<unknown>>>;
 };
 
 export type NodeResolution<C, S> = {
@@ -122,10 +136,11 @@ export class Nodes<C, S> {
     this.restoreState(get(this.state.nodes));
   }
 
-  public addNode = (key: string, options?: NodeOptions<S>): Promise<NodeResolution<C, S>> =>
+  public addNode = (key: string, options?: CreateNodeOptions<S>): Promise<NodeResolution<C, S>> =>
     new Promise((resolve) => {
       const {
-        position,
+        x: newX,
+        y: newY,
         title,
         color,
         className,
@@ -142,25 +157,10 @@ export class Nodes<C, S> {
       const blueprint = get(this.nodes.registered)?.[key];
       const nodes = get(this.nodes.current);
 
-      const id =
-        customId ??
-        (() => {
-          let requestedId = Object.keys(nodes).length;
-          let checking = true;
+      const id = customId ?? generateUniqueIdFromRecord(nodes);
 
-          while (checking) {
-            if (requestedId.toString() in nodes) {
-              requestedId += 1;
-            } else {
-              checking = false;
-            }
-          }
-
-          return requestedId;
-        })().toString();
-
-      const x = position?.x ?? 0;
-      const y = position?.y ?? 0;
+      const x = newX ?? 0;
+      const y = newY ?? 0;
 
       const newStore = store ?? blueprint?.store ?? {};
 
@@ -261,10 +261,11 @@ export class Nodes<C, S> {
       });
     });
 
-  public updateNode = (id: string, options?: NodeOptions<S>): Promise<NodeResolution<C, S>> =>
+  public updateNode = (id: string, options?: UpdateNodeOptions<S>): Promise<NodeResolution<C, S>> =>
     new Promise((resolve) => {
       const {
-        position,
+        x: newX,
+        y: newY,
         title,
         color,
         className,
@@ -273,6 +274,8 @@ export class Nodes<C, S> {
         deletable,
         cloneable,
         interactable,
+        inputs,
+        outputs,
       } = options || {};
 
       const nodes = get(this.nodes.current);
@@ -281,8 +284,8 @@ export class Nodes<C, S> {
       if (!nodes[id]) throw new Error(`Node with id ${id} does not exist`);
       if (!currentState[id]) throw new Error(`Could not find state for node with id ${id}`);
 
-      const x = position?.x ?? currentState[id].x;
-      const y = position?.y ?? currentState[id].y;
+      const x = newX ?? currentState[id].x;
+      const y = newY ?? currentState[id].y;
 
       const newStore = store ?? currentState[id].store;
 
@@ -307,6 +310,47 @@ export class Nodes<C, S> {
           cloneable: cloneable ?? prevNodes[id].cloneable,
           interactable: interactable ?? prevNodes[id].interactable,
           store: newStore,
+          inputs: (() => {
+            if (!inputs) return nodes[id].inputs;
+
+            const newInputs: Record<string, InternalInputSocket<any>> = {};
+
+            Object.keys(inputs ?? {}).map((inputKey) => {
+              if (nodes[id].inputs?.[inputKey] != null) {
+                // Typescript is not smart enough to know that the input exists
+                // eslint-disable-next-line @typescript-eslint/no-non-null-assertion
+                newInputs[inputKey] = deepmerge(nodes[id].inputs![inputKey], inputs[inputKey]);
+              } else {
+                throw new Error(
+                  `Input with key ${inputKey} does not exist. You cannot create new inputs at runtime`,
+                );
+              }
+            });
+
+            return newInputs;
+          })(),
+          outputs: (() => {
+            if (!outputs) return nodes[id].outputs;
+
+            const newOutputs: Record<string, InternalOutputSocket<any>> = {};
+
+            Object.keys(outputs ?? {}).map((outputKey) => {
+              if (nodes[id].outputs?.[outputKey] != null) {
+                newOutputs[outputKey] = deepmerge(
+                  // Typescript is not smart enough to know that the output exists
+                  // eslint-disable-next-line @typescript-eslint/no-non-null-assertion
+                  nodes[id].outputs![outputKey],
+                  outputs[outputKey],
+                );
+              } else {
+                throw new Error(
+                  `Output with key ${outputKey} does not exist. You cannot create new outputs at runtime`,
+                );
+              }
+            });
+
+            return newOutputs;
+          })(),
         },
       }));
 
@@ -340,7 +384,7 @@ export class Nodes<C, S> {
 
     inputSocket.connection.update(() => ({
       connectedNodeId: nodeId2,
-      connectedSocketId: socketId1,
+      connectedSocketId: socketId2,
     }));
   };
 
@@ -402,18 +446,20 @@ export class Nodes<C, S> {
     this.state.nodes.update(() => ({}));
   };
 
-  private restoreState = (state: Record<string, NodeState>): void => {
-    Object.keys(state).forEach((id) =>
-      this.addNode(state[id].type, {
-        id,
-        ...state[id],
-      }),
-    );
+  private restoreState = (state: Record<string, NodeState>): Promise<boolean> =>
+    new Promise((resolve) => {
+      Object.keys(state).forEach((id) =>
+        this.addNode(state[id].type, {
+          id,
+          ...state[id],
+        }),
+      );
 
-    void tick().then(() => {
-      this.state.restored.set(true);
+      void tick().then(() => {
+        this.state.restored.set(true);
+        resolve(true);
+      });
     });
-  };
 
   public reset = (state: Record<string, NodeState>): void => {
     this.clear();

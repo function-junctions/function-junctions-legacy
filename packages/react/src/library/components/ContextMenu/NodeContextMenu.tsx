@@ -1,6 +1,6 @@
 import React from 'react';
 
-import { NodeContextMenuBlueprint, ContextMenu as ContextMenuClass } from 'core/index';
+import { NodeContextMenuBlueprint, ContextMenu as ContextMenuClass } from '@core/index';
 import ContextMenuItem from './ContextMenuItem';
 import ContextMenu from './ContextMenu';
 import { Editor } from '../Editor';

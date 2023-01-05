@@ -5,12 +5,12 @@
     "lib": ["DOM", "DOM.Iterable", "ESNext"],
     "allowJs": false,
     "skipLibCheck": true,
-    "esModuleInterop": false,
+    "esModuleInterop": true,
     "allowSyntheticDefaultImports": true,
     "strict": true,
     "paths": {
       "@/*": ["./src/*"],
-      "core/*": ["../core/src/library/*"]
+      "@core/*": ["../core/src/library/*"]
     },
     "forceConsistentCasingInFileNames": true,
     "module": "ESNext",

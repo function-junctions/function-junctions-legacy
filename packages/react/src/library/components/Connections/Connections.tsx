@@ -1,5 +1,5 @@
 import React from 'react';
-import { Point, getConnections } from 'core/index';
+import { Point, getConnections } from '@core/index';
 import { useReadable } from '../Hooks';
 import Connection from '../Connection/Connection';
 import { Editor } from '../Editor';

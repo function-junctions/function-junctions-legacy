@@ -3,7 +3,7 @@ import {
   InternalNode,
   InternalNodeProps,
   SocketBlueprint,
-} from 'core/index';
+} from '@core/index';
 import React from 'react';
 import { ReactComponent } from '../Editor';
 import { InputSocket, OutputSocket } from '../Socket';

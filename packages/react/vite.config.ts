@@ -42,7 +42,7 @@ export default defineConfig({
   resolve: {
     alias: {
       '@': resolve(resolve(), './src'),
-      'core': resolve(resolve(), '../core/src/library'),
+      '@core': resolve(resolve(), '../core/src/library'),
     },
   },
 });

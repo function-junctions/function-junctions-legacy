@@ -3,9 +3,11 @@ const { compilerOptions } = require('./tsconfig');
 
 module.exports = {
   preset: 'ts-jest',
-  testEnvironment: 'node',
-  moduleNameMapper: pathsToModuleNameMapper(compilerOptions.paths),
-  modulePaths: [
-    '<rootDir>'
-  ],
+  moduleNameMapper: {
+    '^@core/(.*)$': '<rootDir>/../core/src/library/$1',
+    '\\.(css|less|scss|sass)$': 'identity-obj-proxy',
+  },
+  roots: ['<rootDir>'],
+  modulePaths: ['<rootDir>'],
+  testEnvironment: 'jsdom',
 };

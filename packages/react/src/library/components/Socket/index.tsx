@@ -1,5 +1,5 @@
 import React from 'react';
-import { InternalInputSocket, InternalOutputSocket, InternalNode } from 'core/index';
+import { InternalInputSocket, InternalOutputSocket, InternalNode } from '@core/index';
 import { Setter, Updater, useReadable, useWritable } from '../Hooks';
 import { ReactComponent } from '../Editor';
 

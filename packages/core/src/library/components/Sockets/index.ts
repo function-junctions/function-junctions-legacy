@@ -27,7 +27,7 @@ export type InternalInputSocket<T> = {
   value: Readable<T>;
   color?: string;
   connection: Writable<SocketConnection | undefined>;
-  coordinates: Point;
+  coordinates: Readonly<Point>;
   disabled?: boolean;
 };
 
@@ -35,8 +35,8 @@ export type InternalOutputSocket<T> = {
   type: string;
   value: Writable<T>;
   color?: string;
-  coordinates: Point;
-  trigger?: boolean;
+  coordinates: Readonly<Point>;
+  trigger?: Readonly<boolean>;
   disabled?: boolean;
 };
 
@@ -47,7 +47,7 @@ export type InternalInputSocketState = {
 
 export type InternalOutputSocketState = {
   type: string;
-  value: unknown;
+  value?: unknown;
 };
 
 export type ConnectionSocket = {

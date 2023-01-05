@@ -1,4 +1,4 @@
-import { ContextMenu as ContextMenuType, ContextMenu as ContextMenuClass } from 'core/index';
+import { ContextMenu as ContextMenuType, ContextMenu as ContextMenuClass } from '@core/index';
 import React from 'react';
 
 import '../../../../../core/src/library/components/ContextMenu/ContextMenu.scss';

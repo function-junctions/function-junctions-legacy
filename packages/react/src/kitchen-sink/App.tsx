@@ -5,7 +5,7 @@ import Editor from '../library/components/Editor/Editor';
 import NumberNode from './components/NumberNode';
 import MathNode from './components/MathNode';
 
-import 'core/index.scss';
+import '@core/index.scss';
 
 import tree from './state.json';
 

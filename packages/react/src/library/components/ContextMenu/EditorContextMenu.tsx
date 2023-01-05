@@ -2,7 +2,7 @@ import {
   EditorContextMenuBlueprint,
   ContextMenu as ContextMenuClass,
   getTruePosition,
-} from 'core/index';
+} from '@core/index';
 import React from 'react';
 import { Editor } from '../Editor';
 import { useReadable } from '../Hooks';
@@ -58,7 +58,8 @@ const EditorContextMenu = ({
                     });
 
                     editorInstance.addNode(key, {
-                      position: { x, y },
+                      x,
+                      y,
                     });
                   }}
                 >

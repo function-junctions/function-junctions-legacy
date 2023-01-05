@@ -1,17 +1,28 @@
 import Editor from './Editor';
 import * as React from 'react';
-import { act } from 'react-dom/test-utils';
-import ReactDOM from 'react-dom';
+import { act, render } from '@testing-library/react';
 
 describe('React: Tests for the "Editor" component', () => {
-  it('should render the editor', () => {
-    const container = document.createElement('div');
-    document.body.appendChild(container);
-    act(() => {
-      ReactDOM.render(<Editor nodes={{}} />, container);
+  beforeAll(() => {
+    Object.defineProperty(window, 'matchMedia', {
+      writable: true,
+      value: jest.fn().mockImplementation((query) => ({
+        matches: false,
+        media: query,
+        onchange: null,
+        addListener: jest.fn(), // deprecated
+        removeListener: jest.fn(), // deprecated
+        addEventListener: jest.fn(),
+        removeEventListener: jest.fn(),
+        dispatchEvent: jest.fn(),
+      })),
     });
+  });
 
-    const editor = container.querySelector('.function-junctions-editor');
+  it('should render the editor', async () => {
+    await act(async () => render(<Editor nodes={{}} />));
+
+    const editor = document.body.querySelector('.function-junctions-editor');
     expect(editor).not.toBeNull();
   });
 });

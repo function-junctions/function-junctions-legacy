@@ -1,6 +1,6 @@
 import React from 'react';
 
-import { getTruePosition } from 'core/index';
+import { getTruePosition } from '@core/index';
 
 import { useReadable } from '../Hooks';
 import { Editor } from '../Editor';

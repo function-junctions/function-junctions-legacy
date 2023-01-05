@@ -4,7 +4,7 @@ import {
   NodeControlButtons,
   EditorState,
   getAppearance,
-} from 'core/index';
+} from '@core/index';
 import { Writable, writable } from 'svelte/store';
 import { Editor as EditorClass } from '.';
 import { NodeBlueprint } from '../Node';

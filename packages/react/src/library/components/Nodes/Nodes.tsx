@@ -8,7 +8,7 @@ import {
   Interaction,
   Drag,
   getMatrix,
-} from 'core/index';
+} from '@core/index';
 import { Editor } from '../Editor';
 import { useReadable, useWritable } from '../Hooks';
 import EditorContextMenu from '../ContextMenu/EditorContextMenu';
