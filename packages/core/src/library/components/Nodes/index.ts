@@ -294,6 +294,47 @@ export class Nodes<C, S> {
         x,
         y,
         store: newStore,
+        inputs: (() => {
+          if (!inputs) return currentState[id].inputs;
+
+          const newInputs: Record<string, InternalInputSocketState> = {};
+
+          Object.keys(inputs ?? {}).map((inputKey) => {
+            if (nodes[id].inputs?.[inputKey] != null) {
+              newInputs[inputKey] = {
+                // Typescript is not smart enough to know that the input exists
+                // eslint-disable-next-line @typescript-eslint/no-non-null-assertion
+                type: inputs[inputKey].type ?? nodes[id].inputs![inputKey].type,
+                connection:
+                  inputs[inputKey].connection != null
+                    ? // eslint-disable-next-line @typescript-eslint/no-non-null-assertion
+                      get(inputs[inputKey].connection!)
+                    : undefined,
+              };
+            }
+          });
+
+          return newInputs;
+        })(),
+        outputs: (() => {
+          if (!outputs) return currentState[id].outputs;
+
+          const newOutputs: Record<string, InternalOutputSocketState> = {};
+
+          Object.keys(outputs ?? {}).map((inputKey) => {
+            if (nodes[id].outputs?.[inputKey] != null) {
+              newOutputs[inputKey] = {
+                // Typescript is not smart enough to know that the input exists
+                // eslint-disable-next-line @typescript-eslint/no-non-null-assertion
+                type: outputs[inputKey].type ?? nodes[id].outputs![inputKey].type,
+                // eslint-disable-next-line @typescript-eslint/no-non-null-assertion
+                value: outputs[inputKey].value ?? nodes[id].outputs![inputKey].value,
+              };
+            }
+          });
+
+          return newOutputs;
+        })(),
       };
 
       this.nodes.current.update((prevNodes) => ({

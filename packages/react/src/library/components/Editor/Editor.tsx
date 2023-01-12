@@ -92,7 +92,6 @@ const Editor = ({
   }, [editable, inputs, nodes, outputs, state]);
 
   const appearanceClassNameStore = React.useMemo(() => getAppearance(appearance), [appearance]);
-
   const appearanceClassName = useReadable(appearanceClassNameStore);
 
   React.useEffect(() => {
