@@ -128,41 +128,41 @@ export class Sockets<C, S> {
       connection.subscribe((connections) => {
         const nodes = get(this.nodes);
 
-        void tick().then(() => {
-          if (connections) {
-            const { connectedNodeId, connectedSocketId } = connections;
-
-            if (connectedNodeId && connectedSocketId) {
-              prevConnectedNodeId = connectedNodeId;
-              prevConnectedSocketId = connectedSocketId;
-
-              const connectedSocket = nodes[connectedNodeId]?.outputs?.[connectedSocketId];
-
-              if (connectedSocket) {
-                valueUnsubscribe = connectedSocket.value.subscribe((value) => {
-                  this.update(connectedNodeId, connectedSocketId);
-
-                  set(value as T);
-                });
-
-                return;
-              }
-            }
+        // If the subscriber is active disconnect it
+        if (valueUnsubscribe) {
+          // https://github.com/sveltejs/svelte/issues/4765
+          // Reactive stores are scary
+          try {
+            valueUnsubscribe();
+          } catch (error) {
+            return;
           }
+        }
 
-          if (valueUnsubscribe) {
-            // https://github.com/sveltejs/svelte/issues/4765
-            // Reactive stores are scary
-            try {
-              valueUnsubscribe();
-            } catch (error) {
+        if (connections) {
+          const { connectedNodeId, connectedSocketId } = connections;
+
+          if (connectedNodeId && connectedSocketId) {
+            prevConnectedNodeId = connectedNodeId;
+            prevConnectedSocketId = connectedSocketId;
+
+            const connectedSocket = nodes[connectedNodeId]?.outputs?.[connectedSocketId];
+
+            if (connectedSocket) {
+              valueUnsubscribe = connectedSocket.value.subscribe((value) => {
+                this.update(connectedNodeId, connectedSocketId);
+
+                set(value as T);
+              });
+
               return;
             }
           }
-          if (typeof defaultValue !== 'undefined') set(defaultValue);
-          if (prevConnectedNodeId && prevConnectedSocketId)
-            this.update(prevConnectedNodeId, prevConnectedSocketId);
-        });
+        }
+
+        if (typeof defaultValue !== 'undefined') set(defaultValue);
+        if (prevConnectedNodeId && prevConnectedSocketId)
+          this.update(prevConnectedNodeId, prevConnectedSocketId);
       });
     });
 

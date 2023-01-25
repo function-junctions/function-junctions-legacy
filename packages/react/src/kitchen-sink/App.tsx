@@ -8,6 +8,7 @@ import MathNode from './components/MathNode';
 import '@core/index.scss';
 
 import tree from './state.json';
+import IncrementingNumberNode from './components/IncrementingNumberNode';
 
 function App() {
   const [state, setState] = React.useState<FJ.EditorState | undefined>(tree);
@@ -31,7 +32,7 @@ function App() {
         Number: numberSocket,
       },
       title: 'Testing',
-      component: NumberNode,
+      component: IncrementingNumberNode,
       color: 'linear-gradient(#228cfd, #007aff)',
       interactable: false,
     }),
