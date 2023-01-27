@@ -237,15 +237,14 @@ export class Sockets<C, S> {
       tree[nodeId].visited = true;
 
       if (mappedInputs.every((connection) => typeof connection !== 'undefined')) {
-        for (let i = 0; i < mappedInputs.length; i += 1) {
-          const input = mappedInputs[i];
+        mappedInputs.forEach((input) => {
           const newConnection = input?.connection;
 
           if (newConnection) {
             const { connectedNodeId: newNodeId } = newConnection;
             results.push(traverse(newNodeId));
           }
-        }
+        });
       }
 
       return results.every((value) => value === true);
