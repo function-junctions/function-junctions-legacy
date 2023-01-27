@@ -1,3 +1,5 @@
+import { conditionalExpression } from '@babel/types';
+import deepmerge from 'deepmerge';
 import {
   get,
   readable,
@@ -8,7 +10,7 @@ import {
 } from 'svelte/store';
 import type { Point } from '../..';
 import type { Position } from '../Drag';
-import type { InternalNode } from '../Nodes';
+import type { InternalNode, NodesState, NodeState } from '../Nodes';
 
 export type SocketConnection = {
   connectedNodeId: string;
@@ -68,15 +70,18 @@ export type LiveConnection = {
 
 export class Sockets<C, S> {
   nodes: Writable<Record<string, InternalNode<C, S>>>;
+  state: Writable<Record<string, NodeState>>;
   editorPosition: Writable<Position>;
   liveConnection: LiveConnection;
 
   constructor(
     editorPosition: Writable<Position>,
     nodes: Writable<Record<string, InternalNode<C, S>>>,
+    state: Writable<Record<string, NodeState>>,
     liveConnection: LiveConnection,
   ) {
     this.nodes = nodes;
+    this.state = state;
     this.editorPosition = editorPosition;
     this.liveConnection = liveConnection;
   }
@@ -189,6 +194,66 @@ export class Sockets<C, S> {
     };
   };
 
+  private isRecurssive = (
+    outputConnection: Omit<ConnectionSocket, 'type'>,
+    inputConnection: Omit<ConnectionSocket, 'type'>,
+  ) => {
+    const { nodeId: outputNodeId, socketId: outputSocketId } = outputConnection;
+    const { nodeId: inputNodeId, socketId: inputSocketId } = inputConnection;
+
+    const tree: Record<string, NodeState & { visited?: boolean }> = deepmerge(get(this.state), {
+      [inputNodeId]: {
+        inputs: {
+          [inputSocketId]: {
+            connection: {
+              connectedNodeId: outputNodeId,
+              connectedSocketId: outputSocketId,
+            },
+          },
+        },
+      },
+    });
+
+    const results: boolean[] = [];
+
+    const traverse = (nodeId: string): boolean => {
+      const { inputs } = tree[nodeId];
+
+      if (tree[nodeId].visited) return false;
+
+      const mappedInputs = Object.keys(inputs ?? {})
+        .map((key) => inputs?.[key])
+        .filter((input) => !!input)
+        .filter(
+          (value, index, self) =>
+            index ===
+            self.findIndex(
+              (t) =>
+                t?.connection?.connectedNodeId === value?.connection?.connectedNodeId &&
+                t?.connection?.connectedSocketId === value?.connection?.connectedSocketId,
+            ),
+        );
+
+      tree[nodeId].visited = true;
+
+      if (mappedInputs.every((connection) => typeof connection !== 'undefined')) {
+        for (let i = 0; i < mappedInputs.length; i += 1) {
+          const input = mappedInputs[i];
+          const newConnection = input?.connection;
+
+          if (newConnection) {
+            const { connectedNodeId: newNodeId } = newConnection;
+            results.push(traverse(newNodeId));
+          }
+        }
+      }
+
+      return results.every((value) => value === true);
+    };
+
+    return !traverse(inputConnection.nodeId);
+  };
+
   public connect(
     type: 'input' | 'output',
     newConnection: { nodeId: string; socketId: string; socketType: string },
@@ -201,16 +266,19 @@ export class Sockets<C, S> {
     const { nodeId, socketId } = socket;
     const nodes = get(this.nodes);
 
+    const isPendingConnection = get(this.liveConnection.show);
+    const pendingConnection = get(this.liveConnection.state);
+
     // If the socket is pending connection
-    if (get(this.liveConnection.show)) {
-      const connection = get(this.liveConnection.state);
+    if (isPendingConnection && pendingConnection) {
+      const { socket: pendingConnectionSocket } = pendingConnection;
 
       // Return if the socket is attempting to connect to the same node
-      if (connection?.socket?.nodeId === nodeId) return;
+      if (!pendingConnectionSocket || pendingConnectionSocket.nodeId === nodeId) return;
 
       // Return if socket is not of the same type
-      if (connection?.socket?.nodeId && connection?.socket?.socketId) {
-        const { nodeId: connectedNodeId, socketId: connectedSocketId } = connection.socket;
+      if (pendingConnectionSocket.nodeId && pendingConnectionSocket.socketId) {
+        const { nodeId: connectedNodeId, socketId: connectedSocketId } = pendingConnectionSocket;
         const oldConnectionType =
           nodes[connectedNodeId][socket.type === 'input' ? 'outputs' : 'inputs']?.[
             connectedSocketId
@@ -220,25 +288,48 @@ export class Sockets<C, S> {
         }
       }
 
-      if (type === 'input' && connection?.socket && connection?.socket.type === 'output') {
-        const { nodeId: connectedNodeId, socketId: connectedSocketId } = connection.socket;
+      if (
+        type === 'input' &&
+        pendingConnectionSocket &&
+        pendingConnectionSocket.type === 'output'
+      ) {
+        const { nodeId: connectedNodeId, socketId: connectedSocketId } = pendingConnectionSocket;
 
         const previousSocketConnection = nodes[nodeId]['inputs']?.[socketId].connection;
 
         if (previousSocketConnection) {
           if (get(previousSocketConnection)) return;
 
-          nodes[nodeId]['inputs']?.[socketId].connection.set({
-            connectedNodeId,
-            connectedSocketId,
+          const stable = !this.isRecurssive(
+            { nodeId: connectedNodeId, socketId: connectedSocketId },
+            { nodeId, socketId },
+          );
+
+          if (stable) {
+            nodes[nodeId]['inputs']?.[socketId].connection.set({
+              connectedNodeId,
+              connectedSocketId,
+            });
+          }
+        }
+      } else if (
+        type === 'output' &&
+        pendingConnectionSocket &&
+        pendingConnectionSocket.type === 'input'
+      ) {
+        const { nodeId: connectedNodeId, socketId: connectedSocketId } = pendingConnectionSocket;
+
+        const stable = !this.isRecurssive(
+          { nodeId: connectedNodeId, socketId: connectedSocketId },
+          { nodeId, socketId },
+        );
+
+        if (stable) {
+          nodes[connectedNodeId]['inputs']?.[connectedSocketId].connection.set({
+            connectedNodeId: nodeId,
+            connectedSocketId: socketId,
           });
         }
-      } else if (type === 'output' && connection?.socket && connection?.socket.type === 'input') {
-        const { nodeId: connectedNodeId, socketId: connectedSocketId } = connection.socket;
-        nodes[connectedNodeId]['inputs']?.[connectedSocketId].connection.set({
-          connectedNodeId: nodeId,
-          connectedSocketId: socketId,
-        });
       }
 
       return;

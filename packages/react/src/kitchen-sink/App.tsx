@@ -31,10 +31,24 @@ function App() {
       outputs: {
         Number: numberSocket,
       },
-      title: 'Testing',
+      component: NumberNode,
+      color: 'linear-gradient(#228cfd, #007aff)',
+    }),
+    [numberSocket],
+  );
+
+  const incrementingNumberNode: NodeBlueprint<
+    Record<string, never>,
+    {
+      Number: FJ.SocketBlueprint<number>;
+    }
+  > = React.useMemo(
+    () => ({
+      outputs: {
+        Number: numberSocket,
+      },
       component: IncrementingNumberNode,
       color: 'linear-gradient(#228cfd, #007aff)',
-      interactable: false,
     }),
     [numberSocket],
   );
@@ -65,8 +79,9 @@ function App() {
     () => ({
       Number: numberNode,
       Math: mathNode,
+      'Incrementing Number': incrementingNumberNode,
     }),
-    [mathNode, numberNode],
+    [mathNode, numberNode, incrementingNumberNode],
   );
 
   const onReady = React.useCallback((editor: FJ.Editor) => {

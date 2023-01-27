@@ -131,7 +131,7 @@ export class Nodes<C, S> {
     this.inputs = inputs;
     this.outputs = outputs;
 
-    this.sockets = new Sockets(position, nodes.current, connection);
+    this.sockets = new Sockets(position, nodes.current, state.nodes, connection);
 
     this.restoreState(get(this.state.nodes));
   }
@@ -478,7 +478,7 @@ export class Nodes<C, S> {
           ),
         ).then((node) => resolve(node));
       } else {
-        throw new Error('Cannot clone node that does not exist');
+        throw new Error('Cannot clone a node that does not exist');
       }
     });
 
